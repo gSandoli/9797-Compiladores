@@ -1,3 +1,0 @@
-/home/gabriel/Documentos/Faculdade/Compiladores/simples_compilador/build/CMakeFiles/rebuild_cache.dir
-/home/gabriel/Documentos/Faculdade/Compiladores/simples_compilador/build/CMakeFiles/edit_cache.dir
-/home/gabriel/Documentos/Faculdade/Compiladores/simples_compilador/build/CMakeFiles/sc.dir

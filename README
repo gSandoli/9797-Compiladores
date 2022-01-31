@@ -1,6 +1,1 @@
-Steps
-
-1. mkdir build
-2. cd build
-3. cmake ..
-4. make
+Para fazer o buildar e testar o projeto, execute o script bt.sh
