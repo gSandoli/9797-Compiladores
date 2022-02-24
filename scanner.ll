@@ -59,24 +59,119 @@ eol     [\n\r]+
 
  /*** BEGIN EXAMPLE - Change the example lexer rules below ***/
 
-pare|continue|para|enquanto|faça|fun|se|verdadeiro|falso|tipo|de|limite|var|inteiro|real|cadeia|ref|retorne|nulo|início|fim {
-  yylval->keywordVal = new std::string(yytext, yyleng);
-  return token::KEYWORD;
-}
-
 [0-9]+ {
      yylval->integerVal = atoi(yytext);
      return token::INTEGER;
  }
 
 [0-9]+"."[0-9]* {
-  yylval->doubleVal = atof(yytext);
-  return token::REAL;
+    yylval->doubleVal = atof(yytext);
+    return token::REAL;
 }
 
-[A-Za-z][A-Za-z0-9_,.-]* {
-  yylval->stringVal = new std::string(yytext, yyleng);
-  return token::IDENTIFIER;
+[A-Za-z][A-Za-z0-9]* {
+    yylval->stringVal = new std::string(yytext, yyleng);
+    return token::IDENTIFIER;
+}
+
+"," {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::VIRGULA;
+}
+
+":" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::DOIS_PONTOS;
+}
+
+";" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::PONTO_VIRGULA;
+}
+
+"(" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::ABR_PRT;
+}
+")" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::FCH_PRT;
+}
+"[" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::ABR_COL;
+}
+"]" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::FCH_COL;
+}
+"{" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::ABR_CHV;
+}
+"}" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::FCH_COL;
+}
+"." {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::PONTO;
+}
+"+" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::SOMA;
+}
+"-" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::SUBTRACAO;
+}
+"*" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::MULTIPLICACAO;
+}
+"/" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::DIVISAO;
+}
+"==" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::IGUAL_IGUAL;
+}
+"!=" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::DIFERENTE;
+}
+"<" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::MENOR;
+}
+"<=" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::MENOR_IGUAL;
+}
+">" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::MAIOR;
+}
+">=" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::MAIOR_IGUAL;
+}
+"&" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::E;
+}
+"|" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::OU;
+}
+":=" {
+	yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::PONTO_IGUAL;
+}
+"=" {
+	yyval->stringVal = new std::string(yytext, yyleng);
+	return token::IGUAL;
 }
 
 {blank} { STEP(); }
