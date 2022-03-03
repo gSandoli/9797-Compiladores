@@ -61,34 +61,126 @@ eol     [\n\r]+
 
 [0-9]+ {
      yylval->integerVal = atoi(yytext);
-     return token::INTEGER;
+     return token::INTEIROV;
  }
 
 [0-9]+"."[0-9]* {
     yylval->doubleVal = atof(yytext);
-    return token::REAL;
+    return token::REALV;
 }
 
-[A-Za-z][A-Za-z0-9]* {
+"pare" {
     yylval->stringVal = new std::string(yytext, yyleng);
-    return token::IDENTIFIER;
+  	return token::PARE;
 }
-
+"continue" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::CONTINUE;
+}
+"para" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::PARA;
+}
+"fpara" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::FPARA;
+}
+"enquanto" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::ENQUANTO;
+}
+"fenquanto" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::FENQUANTO;
+}
+"faça" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::FACA;
+}
+"se" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::SE;
+}
+"fse" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::FSE;
+}
+"verdadeiro" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::VERDADEIRO;
+}
+"falso" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::FALSO;
+}
+"tipo" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::TIPO;
+}
+"de" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::DE;
+}
+"limite" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::LIMITE;
+}
+"global" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::GLOBAL;
+}
+"local" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::LOCAL;
+}
+"inteiro" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::INTEIRO;
+}
+"real" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::REAL;
+}
+"cadeia" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::CADEIA;
+}
+"valor" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::VALOR;
+}
+"ref" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::REF;
+}
+"retorne" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::RETORNE;
+}
+"nulo" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::NULO;
+}
+"início" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::INICIO;
+}
+"fim" {
+    yylval->stringVal = new std::string(yytext, yyleng);
+  	return token::FIM;
+} 
 "," {
-	yylval->stringVal = new std::string(yytext, yyleng);
+	  yylval->stringVal = new std::string(yytext, yyleng);
   	return token::VIRGULA;
 }
-
 ":" {
 	yylval->stringVal = new std::string(yytext, yyleng);
   	return token::DOIS_PONTOS;
 }
-
 ";" {
 	yylval->stringVal = new std::string(yytext, yyleng);
-  	return token::PONTO_VIRGULA;
+  	return token::PONTO_VIRUGLA;
 }
-
 "(" {
 	yylval->stringVal = new std::string(yytext, yyleng);
   	return token::ABR_PRT;
@@ -170,8 +262,13 @@ eol     [\n\r]+
   	return token::PONTO_IGUAL;
 }
 "=" {
-	yyval->stringVal = new std::string(yytext, yyleng);
+	yylval->stringVal = new std::string(yytext, yyleng);
 	return token::IGUAL;
+}
+
+[A-Za-z][A-Za-z0-9]* {
+    yylval->stringVal = new std::string(yytext, yyleng);
+    return token::IDENTIFIER;
 }
 
 {blank} { STEP(); }

@@ -66,10 +66,11 @@
 /* Tokens */
 %token              TOK_EOF 0     "end of file"
 %token			        EOL		        "end of line"
-%token <integerVal> INTEGER		    "integer"
-%token <doubleVal> 	REAL		      "real"
 %token <stringVal> 	IDENTIFIER    "identifier"
-%token <stringVal>  KEYWORD       "keyword"
+%token <integerVal> INTEIROV      "inteiroV"
+%token <doubleVal>  REALV         "realV"
+
+// simbolos
 %token <stringVal>  VIRGULA       "virgula"
 %token <stringVal>  DOIS_PONTOS   "doisPontos"
 %token <stringVal>  PONTO_VIRUGLA "pontoVirgula"
@@ -95,50 +96,100 @@
 %token <stringVal>  PONTO_IGUAL    "pontoIgual"
 %token <stringVal>  IGUAL         "igual"
 
-/* %token <stringVal>  INI_BLOCO     "iniBloco"
-%token <stringVal>  FIM_BLOCO     "fimBloco" */
+//palavras reservadas
+%token <stringVal>  PARE       "pare"
+%token <stringVal>  CONTINUE       "continue"
+%token <stringVal>  PARA       "para"
+%token <stringVal>  FPARA       "fpara"
+%token <stringVal>  ENQUANTO       "enquanto"
+%token <stringVal>  FENQUANTO       "fenquanto"
+%token <stringVal>  FACA       "faça"
+%token <stringVal>  SE       "se"
+%token <stringVal>  FSE       "fse"
+%token <stringVal>  VERDADEIRO       "verdadeiro"
+%token <stringVal>  FALSO       "falso"
+%token <stringVal>  TIPO       "tipo"
+%token <stringVal>  DE       "de"
+%token <stringVal>  LIMITE       "limite"
+%token <stringVal>  GLOBAL       "global"
+%token <stringVal>  LOCAL       "local"
+%token <stringVal>  INTEIRO       "inteiro"
+%token <stringVal>  REAL       "real"
+%token <stringVal>  CADEIA       "cadeia"
+%token <stringVal>  VALOR       "valor"
+%token <stringVal>  REF       "ref"
+%token <stringVal>  RETORNE       "retorne"
+%token <stringVal>  NULO       "nulo"
+%token <stringVal>  INICIO       "início"
+%token <stringVal>  FIM       "fim"
 
-/* entender como iniciar e finalizar um bloco */
+
+// %token <stringVal>  INI_BLOCO     "iniBloco"
+// %token <stringVal>  FIM_BLOCO     "fimBloco"
 
 %%
 
 program:  /* empty */
-        | constant
-        | variable
-        | keyword
-        | virgula
-        | dois_pontos
-        | ponto_virgula
-        | abr_prt
-        | fch_prt
-        | abr_col
-        | fch_col
-        | abr_chv
-        | fch_chv
-        | ponto
-        | soma
-        | subtracao
-        | multiplicacao
-        | divisao
-        | igual_igual
-        | diferente
-        | menor
-        | menor_igual
-        | maior
-        | maior_igual
-        | e
-        | ou
-        | ponto_igual
-        | igual
+        | constant program
+        | variable program
+        | pare program
+        | continue program
+        | para program
+        | fpara program
+        | enquanto program
+        | fenquanto program
+        | faca program
+        | se program
+        | fse program
+        | verdadeiro program
+        | falso program
+        | tipo program
+        | de program
+        | limite program
+        | global program
+        | local program
+        | inteiro program
+        | real program
+        | cadeia program
+        | valor program
+        | ref program
+        | retorne program
+        | nulo program
+        | inicio program
+        | fim program
+        | virgula program
+        | dois_pontos program
+        | ponto_virgula program
+        | abr_prt program
+        | fch_prt program
+        | abr_col program
+        | fch_col program
+        | abr_chv program
+        | fch_chv program
+        | ponto program
+        | soma program
+        | subtracao program
+        | multiplicacao program
+        | divisao program
+        | igual_igual program
+        | diferente program
+        | menor program
+        | menor_igual program
+        | maior program
+        | maior_igual program
+        | e program
+        | ou program
+        | ponto_igual program
+        | igual program
+        | eol program
 
 
-constant : INTEGER { std::cout << "Inteiro: " << $1 << std::endl; }
-         | REAL  { std::cout << "Real: " << $1 << std::endl; }
+constant : INTEIROV { std::cout << "Inteiro: " << $1 << std::endl; }
+         | REALV  { std::cout << "Real: " << $1 << std::endl; }
 
 variable : IDENTIFIER {  std::cout << "Identificador: " << *$1 << std::endl; }
 
-keyword : KEYWORD { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
-
+//estados simbolo
 virgula : VIRGULA { std::cout << "Simbolo: " << *$1 << std::endl; }
 dois_pontos : DOIS_PONTOS { std::cout << "Simbolo: " << *$1 << std::endl; }
 ponto_virgula : PONTO_VIRUGLA { std::cout << "Simbolo: " << *$1 << std::endl; }
@@ -164,9 +215,36 @@ ou : OU { std::cout << "Simbolo: " << *$1 << std::endl; }
 ponto_igual : PONTO_IGUAL { std::cout << "Simbolo: " << *$1 << std::endl; }
 igual : IGUAL { std::cout << "Simbolo: " << *$1 << std::endl; }
 
-/* ini_bloco : INI_BLOCO { std::cout << "Inicio Bloco: " << *$1 << std::endl; }
+//estados palavras reservadas
+pare : PARE { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+continue : CONTINUE { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+para : PARA { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+fpara : FPARA { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+enquanto : ENQUANTO { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+fenquanto : FENQUANTO { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+faca : FACA { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+se : SE { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+fse : FSE { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+verdadeiro : VERDADEIRO { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+falso : FALSO { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+tipo : TIPO { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+de : DE { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+limite : LIMITE { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+global : GLOBAL { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+local : LOCAL { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+inteiro : INTEIRO { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+real : REAL { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+cadeia : CADEIA { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+valor : VALOR { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+ref : REF { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+retorne : RETORNE { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+nulo : NULO { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+inicio : INICIO { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
+fim : FIM { std::cout << "Palavra Reservada: " << *$1 << std::endl; }
 
-fim_bloco : FIM_BLOCO { std::cout << "Fim Bloco: " << *$1 << std::endl; } */
+eol : EOL
+// ini_bloco : INI_BLOCO { std::cout << "Inicio Bloco: " << *$1 << std::endl; }
+// fim_bloco : FIM_BLOCO { std::cout << "Fim Bloco: " << *$1 << std::endl; }
 
 %%
 
