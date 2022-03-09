@@ -22,6 +22,8 @@ typedef Simples::Parser::token_type token_type;
 
 /*** Flex Declarations and Options ***/
 
+%s COMENTARIO
+%s CADEIA
 /* enable scanner to generate debug output. disable this for release
  * versions. */
 %option debug
@@ -59,6 +61,7 @@ eol     [\n\r]+
 
  /*** BEGIN EXAMPLE - Change the example lexer rules below ***/
 
+<INITIAL>{
 [0-9]+ {
      yylval->integerVal = atoi(yytext);
      return token::INTEIROV;
@@ -211,6 +214,45 @@ eol     [\n\r]+
 [A-Za-z][A-Za-z0-9]* {
     yylval->stringVal = new std::string(yytext, yyleng);
     return token::IDENTIFIER;
+}
+
+"/\*" {
+	printf("Inicio comentario.\n");
+	BEGIN(COMENTARIO);
+}
+
+"\"" {
+	printf("Inicio cadeia.\n");
+	BEGIN(CADEIA);
+}
+}
+
+<COMENTARIO>{
+	<<EOF>> {
+		std::cout << "[ERRO LEXICO] Comentario nao terminado.\n";
+		exit(1);
+	}
+
+	"\*/" {
+		std::cout << "Fim comentario.\n";
+		BEGIN(INITIAL);
+	}
+
+	. {}
+}
+
+<CADEIA>{
+	<<EOF>> {
+		std::cout << "[ERRO LEXICO] Comentario nao terminado.\n";
+		exit(1);
+	}
+
+	"\"" {
+		std::cout << " Fim cadeia.\n";
+		BEGIN(INITIAL);
+	}
+
+	. {}
 }
 
 {blank} { STEP(); }

@@ -125,9 +125,11 @@
 program: declaracoes
 
 declaracoes : lista_declaracao_de_tipos
+            | lista_declaracoes_de_globais
 
+/* declaracao de tipos */
 lista_declaracao_de_tipos : 
-                          | TIPO DOIS_PONTOS lista_declaracao_tipo
+                          | TIPO DOIS_PONTOS lista_declaracao_tipo { printf("Declaração de tipos.\n"); } declaracoes
 
 lista_declaracao_tipo : declaracao_tipo
                       | lista_declaracao_tipo declaracao_tipo
@@ -136,74 +138,67 @@ declaracao_tipo : IDENTIFIER IGUAL descritor_tipo
 
 descritor_tipo : IDENTIFIER {std::cout << "declaracao de referencia " << std::endl; }
                | ABR_CHV tipo_campos FCH_CHV {std::cout << "declaracao de struct " << std::endl; }
-			   | ABR_COL tipo_constantes FCH_COL DE IDENTIFIER {std::cout << "declaracao de array" << std::endl; }
+			         | ABR_COL tipo_constantes FCH_COL DE IDENTIFIER {std::cout << "declaracao de array" << std::endl; }
 
 tipo_campos : tipo_campo
-			| tipo_campo VIRGULA tipo_campos
+      			| tipo_campos VIRGULA tipo_campo
 
-tipo_campo : IDENTIFIER DOIS_PONTOS IDENTIFIER
+tipo_campo : IDENTIFIER DOIS_PONTOS IDENTIFIER 
 
 tipo_constantes : INTEIROV
-				| tipo_constantes VIRGULA INTEIROV
+			        	| tipo_constantes VIRGULA INTEIROV
 
-constant : INTEIROV { std::cout << "Inteiro: " << $1 << std::endl; }
-         | REALV  { std::cout << "Real: " << $1 << std::endl; }
+/* declaracao de globais */
+lista_declaracoes_de_globais : 
+                             | GLOBAL DOIS_PONTOS lista_declaracao_variavel { printf("Declaração de variavel global.\n"); }
+                          
+lista_declaracao_variavel : IDENTIFIER DOIS_PONTOS IDENTIFIER PONTO_IGUAL inicializacao
+                          | lista_declaracao_variavel IDENTIFIER DOIS_PONTOS IDENTIFIER PONTO_IGUAL inicializacao
 
-variable : IDENTIFIER {  std::cout << "Identificador: " << *$1 << std::endl; }
+inicializacao : literal /* expr */
+              | ABR_CHV criacao_de_registro FCH_CHV { printf("Declaração de variavel de registro.\n"); }
 
-//estados simbolo
-virgula : VIRGULA { std::cout << "Simbolo: " << std::endl; }
-dois_pontos : DOIS_PONTOS { std::cout << "Simbolo: " << std::endl; }
-ponto_virgula : PONTO_VIRUGLA { std::cout << "Simbolo: " << std::endl; }
-abr_prt : ABR_PRT { std::cout << "Simbolo: " << std::endl; }
-fch_prt : FCH_PRT { std::cout << "Simbolo: " << std::endl; }
-abr_col : ABR_COL { std::cout << "Simbolo: " << std::endl; }
-fch_col : FCH_COL { std::cout << "Simbolo: " << std::endl; }
-abr_chv : ABR_CHV { std::cout << "Simbolo: " << std::endl; }
-fch_chv : FCH_CHV { std::cout << "Simbolo: " << std::endl; }
-ponto : PONTO { std::cout << "Simbolo: " << std::endl; }
-soma : SOMA { std::cout << "Simbolo: " << std::endl; }
-subtracao : SUBTRACAO { std::cout << "Simbolo: " << std::endl; }
-multiplicacao : MULTIPLICACAO { std::cout << "Simbolo: " << std::endl; }
-divisao : DIVISAO { std::cout << "Simbolo: " << std::endl; }
-igual_igual : IGUAL_IGUAL { std::cout << "Simbolo: " << std::endl; }
-diferente : DIFERENTE { std::cout << "Simbolo: " << std::endl; }
-menor : MENOR { std::cout << "Simbolo: " << std::endl; }
-menor_igual : MENOR_IGUAL { std::cout << "Simbolo: " << std::endl; }
-maior : MAIOR { std::cout << "Simbolo: " << std::endl; }
-maior_igual : MAIOR_IGUAL { std::cout << "Simbolo: " << std::endl; }
-e : E { std::cout << "Simbolo: " << std::endl; }
-ou : OU { std::cout << "Simbolo: " << std::endl; }
-ponto_igual : PONTO_IGUAL { std::cout << "Simbolo: " << std::endl; }
-igual : IGUAL { std::cout << "Simbolo: " << std::endl; }
+criacao_de_registro : tipo_registro
+                    | criacao_de_registro VIRGULA tipo_registro
 
-//estados palavras reservadas
-pare : PARE { std::cout << "Palavra Reservada: " << std::endl; }
-continue : CONTINUE { std::cout << "Palavra Reservada: " << std::endl; }
-para : PARA { std::cout << "Palavra Reservada: " << std::endl; }
-fpara : FPARA { std::cout << "Palavra Reservada: " << std::endl; }
-enquanto : ENQUANTO { std::cout << "Palavra Reservada: " << std::endl; }
-fenquanto : FENQUANTO { std::cout << "Palavra Reservada: " << std::endl; }
-faca : FACA { std::cout << "Palavra Reservada: " << std::endl; }
-se : SE { std::cout << "Palavra Reservada: " << std::endl; }
-fse : FSE { std::cout << "Palavra Reservada: " << std::endl; }
-verdadeiro : VERDADEIRO { std::cout << "Palavra Reservada: " << std::endl; }
-falso : FALSO { std::cout << "Palavra Reservada: " << std::endl; }
-tipo : TIPO { std::cout << "Palavra Reservada: " << std::endl; }
-de : DE { std::cout << "Palavra Reservada: " << std::endl; }
-limite : LIMITE { std::cout << "Palavra Reservada: " << std::endl; }
-global : GLOBAL { std::cout << "Palavra Reservada: " << std::endl; }
-local : LOCAL { std::cout << "Palavra Reservada: " << std::endl; }
-valor : VALOR { std::cout << "Palavra Reservada: " << std::endl; }
-ref : REF { std::cout << "Palavra Reservada: " << std::endl; }
-retorne : RETORNE { std::cout << "Palavra Reservada: " << std::endl; }
-nulo : NULO { std::cout << "Palavra Reservada: " << std::endl; }
-inicio : INICIO { std::cout << "Palavra Reservada: " << std::endl; }
-fim : FIM { std::cout << "Palavra Reservada: " << std::endl; }
+tipo_registro : IDENTIFIER IGUAL literal
 
-eol : EOL
-// ini_bloco : INI_BLOCO { std::cout << "Inicio Bloco: " << *$1 << std::endl; }
-// fim_bloco : FIM_BLOCO { std::cout << "Fim Bloco: " << *$1 << std::endl; }
+expr : expr_par
+     | expr_log
+     | expr_rel
+     | expr_ari
+     | criacao_de_registro
+     | NULO
+     | chamada_funcao
+     | local_de_armazenamento
+     | literal
+
+expr_log : E
+         | OU
+
+expr_rel : IGUAL_IGUAL
+         | DIFERENTE
+         | MENOR
+         | MENOR_IGUAL
+         | MAIOR
+         | MAIOR_IGUAL
+
+expr_ari : SOMA
+         | SUBTRACAO
+         | MULTIPLICACAO
+         | DIVISAO
+
+expr_par : ABR_PRT expr FCH_PRT
+
+chamada_funcao : 
+               /*| IDENTIFIER ABR_PRT args FCH_PRT ]
+                  criar estados "args"
+               */
+
+local_de_armazenamento : IDENTIFIER
+
+literal : INTEIROV
+        | REALV
 
 %%
 
