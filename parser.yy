@@ -152,43 +152,42 @@ tipo_constantes : INTEIROV
 lista_declaracoes_de_globais : 
                              | GLOBAL DOIS_PONTOS lista_declaracao_variavel { printf("Declaração de variavel global.\n"); }
                           
-lista_declaracao_variavel : IDENTIFIER DOIS_PONTOS IDENTIFIER PONTO_IGUAL inicializacao
-                          | lista_declaracao_variavel IDENTIFIER DOIS_PONTOS IDENTIFIER PONTO_IGUAL inicializacao
-
-inicializacao : literal /* expr */
-              | ABR_CHV criacao_de_registro FCH_CHV { printf("Declaração de variavel de registro.\n"); }
+lista_declaracao_variavel : IDENTIFIER DOIS_PONTOS IDENTIFIER PONTO_IGUAL expr
+                          | lista_declaracao_variavel IDENTIFIER DOIS_PONTOS IDENTIFIER PONTO_IGUAL expr
 
 criacao_de_registro : tipo_registro
                     | criacao_de_registro VIRGULA tipo_registro
 
 tipo_registro : IDENTIFIER IGUAL literal
 
-expr : expr_par
-     | expr_log
-     | expr_rel
-     | expr_ari
-     | criacao_de_registro
-     | NULO
-     | chamada_funcao
-     | local_de_armazenamento
-     | literal
+expr : expr_log
+     | ABR_CHV criacao_de_registro FCH_CHV { printf("Declaração de variavel de registro.\n"); }
 
-expr_log : E
-         | OU
+expr_log : expr_log OU expr_rel { printf("expr logica OU\n" ); }
+         | expr_log E expr_rel { printf("expr logica E\n" ); }
+         | expr_rel
 
-expr_rel : IGUAL_IGUAL
-         | DIFERENTE
-         | MENOR
-         | MENOR_IGUAL
-         | MAIOR
-         | MAIOR_IGUAL
+expr_rel : expr_rel MENOR_IGUAL expr_ari { printf("expr relacional <=\n" ); }
+         | expr_rel MAIOR_IGUAL expr_ari { printf("expr relacional >=\n" ); }
+         | expr_rel MENOR expr_ari { printf("expr relacional <\n" ); }
+         | expr_rel MAIOR expr_ari { printf("expr relacional >\n" ); }
+         | expr_rel DIFERENTE expr_ari { printf("expr relacional !=\n" ); }
+         | expr_rel IGUAL_IGUAL expr_ari { printf("expr relacional ==\n" ); }
+         | expr_ari
 
-expr_ari : SOMA
-         | SUBTRACAO
-         | MULTIPLICACAO
-         | DIVISAO
+expr_ari : expr_ari SUBTRACAO expr_ari_ { printf("expr aritmetica - \n" ); }
+         | expr_ari SOMA expr_ari_ { printf("expr aritmetica +\n" ); }
+         | expr_ari_ 
 
-expr_par : ABR_PRT expr FCH_PRT
+expr_ari_ : expr_ari_ MULTIPLICACAO fator { printf("expr aritmetica *\n" ); }
+          | expr_ari_ DIVISAO fator { printf("expr aritmetica /\n" ); }
+          | fator
+
+fator : ABR_PRT expr FCH_PRT { printf("achou um fator () \n" ); }
+      | literal { printf("achou um literal\n" ); }
+      | NULO { printf("achou um nulo\n" ); }
+      | chamada_funcao { printf("achou uma chamada de funcao\n" ); }
+      | local_de_armazenamento { printf("achou um local de armazenamento\n" ); }
 
 chamada_funcao : 
                /*| IDENTIFIER ABR_PRT args FCH_PRT ]
@@ -199,6 +198,7 @@ local_de_armazenamento : IDENTIFIER
 
 literal : INTEIROV
         | REALV
+        /* | CADEIAV */
 
 %%
 
