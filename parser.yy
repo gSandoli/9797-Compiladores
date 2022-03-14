@@ -151,7 +151,7 @@ tipo_constantes : INTEIROV
 /* declaracao de globais */
 lista_declaracoes_de_globais : 
                              | GLOBAL DOIS_PONTOS lista_declaracao_variavel { printf("Declaração de variavel global.\n"); }
-                          
+
 lista_declaracao_variavel : IDENTIFIER DOIS_PONTOS IDENTIFIER PONTO_IGUAL expr
                           | lista_declaracao_variavel IDENTIFIER DOIS_PONTOS IDENTIFIER PONTO_IGUAL expr
 
