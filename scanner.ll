@@ -18,6 +18,8 @@ typedef Simples::Parser::token_type token_type;
  * by default returns 0, which is not of token_type. */
 #define yyterminate() return token::TOK_EOF
 
+std::string s_str;
+
 %}
 
 /*** Flex Declarations and Options ***/
@@ -217,12 +219,11 @@ eol     [\n\r]+
 }
 
 "/\*" {
-	printf("Inicio comentario.\n");
 	BEGIN(COMENTARIO);
 }
 
 "\"" {
-	printf("Inicio cadeia.\n");
+	s_str = "";
 	BEGIN(CADEIA);
 }
 }
@@ -234,7 +235,6 @@ eol     [\n\r]+
 	}
 
 	"\*/" {
-		std::cout << "Fim comentario.\n";
 		BEGIN(INITIAL);
 	}
 
@@ -248,24 +248,26 @@ eol     [\n\r]+
 	}
 
 	"\"" {
-		std::cout << " Fim cadeia.\n";
+		/* yylval->cad = s_str; */
+		std::cout <<  "Scanner: " << s_str << "\n";
 		BEGIN(INITIAL);
+		return token::CADEIAV;
 	}
 
-	. {}
+	. {
+		s_str += yytext;
+	}
 }
 
 {blank} { STEP(); }
 
 {eol}  { LINE(yyleng); }
 
-.             {
-                std::cerr << *driver.location_ << " Unexpected token : "
-                                              << *yytext << std::endl;
-                driver.error_ = (driver.error_ == 127 ? 127
-                                : driver.error_ + 1);
-                STEP ();
-              }
+. {
+	std::cerr << *driver.location_ << " Unexpected token : " << *yytext << std::endl;
+	driver.error_ = (driver.error_ == 127 ? 127 : driver.error_ + 1);
+	STEP ();
+}
 
 %%
 

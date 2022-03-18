@@ -69,6 +69,7 @@
 %token <stringVal> 	IDENTIFIER    "identifier"
 %token <integerVal> INTEIROV      "inteiroV"
 %token <doubleVal>  REALV         "realV"
+%token <stringVal>  CADEIAV        "cadeia"
 
 // simbolos
 %token  VIRGULA       "virgula"
@@ -123,6 +124,9 @@
 %%
 
 program: declaracoes
+       | string
+
+string : CADEIAV { std::cout << "Cadeia: " << $1 << std::endl; }
 
 declaracoes : lista_declaracao_de_tipos
             | lista_declaracoes_de_globais
