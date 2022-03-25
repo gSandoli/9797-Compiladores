@@ -120,29 +120,31 @@
 %token  NULO          "nulo"
 %token  INICIO        "início"
 %token  FIM           "fim"
+%token  FUNCAO        "função"
+%token  ACAO          "ação"
 
 %%
 
-program: declaracoes
-       | string
+program: declaracoes { printf("terminou declaracoes\n");}
+       | ACAO DOIS_PONTOS lista_comandos { printf("terminou acoes. fim do programa\n");}
+       /* | string */
 
 string : CADEIAV { std::cout << "Cadeia: " << $1 << std::endl; }
 
-declaracoes : lista_declaracao_de_tipos
-            | lista_declaracoes_de_globais
+declaracoes : lista_declaracao_de_tipos lista_declaracoes_de_globais lista_declaracoes_de_funcoes program
 
 /* declaracao de tipos */
 lista_declaracao_de_tipos : 
-                          | TIPO DOIS_PONTOS lista_declaracao_tipo { printf("Declaração de tipos.\n"); } declaracoes
+                          | TIPO DOIS_PONTOS lista_declaracao_tipo { printf("Declaração de tipos.\n"); }
 
 lista_declaracao_tipo : declaracao_tipo
                       | lista_declaracao_tipo declaracao_tipo
 
 declaracao_tipo : IDENTIFIER IGUAL descritor_tipo
 
-descritor_tipo : IDENTIFIER {std::cout << "declaracao de referencia " << std::endl; }
-               | ABR_CHV tipo_campos FCH_CHV {std::cout << "declaracao de struct " << std::endl; }
-			         | ABR_COL tipo_constantes FCH_COL DE IDENTIFIER {std::cout << "declaracao de array" << std::endl; }
+descritor_tipo : IDENTIFIER
+               | ABR_CHV tipo_campos FCH_CHV
+			         | ABR_COL tipo_constantes FCH_COL DE IDENTIFIER
 
 tipo_campos : tipo_campo
       			| tipo_campos VIRGULA tipo_campo
@@ -164,45 +166,84 @@ criacao_de_registro : tipo_registro
 
 tipo_registro : IDENTIFIER IGUAL literal
 
-expr : expr_log
-     | ABR_CHV criacao_de_registro FCH_CHV { printf("Declaração de variavel de registro.\n"); }
+/* declaracao de funcoes */
 
-expr_log : expr_log OU expr_rel { printf("expr logica OU\n" ); }
-         | expr_log E expr_rel { printf("expr logica E\n" ); }
+lista_declaracoes_de_funcoes: 
+                            | FUNCAO DOIS_PONTOS lista_declaracao_funcao { printf("Declaração de funções\n"); }
+
+lista_declaracao_funcao: 
+                       | IDENTIFIER ABR_PRT args FCH_PRT IGUAL corpo { printf("declaracao metodo\n"); } lista_declaracao_funcao
+                       | IDENTIFIER ABR_PRT args FCH_PRT DOIS_PONTOS IDENTIFIER IGUAL corpo { printf("declaracao funcao\n"); } lista_declaracao_funcao
+
+args: 
+    | modificador IDENTIFIER DOIS_PONTOS IDENTIFIER
+    | args VIRGULA modificador IDENTIFIER DOIS_PONTOS IDENTIFIER 
+
+modificador: VALOR | REF
+
+corpo: declaracao_de_locais ACAO DOIS_PONTOS lista_comandos /* { printf("terminou de ler corpo\n"); } */
+
+declaracao_de_locais:
+                    | LOCAL DOIS_PONTOS lista_declaracao_variavel
+
+/* expressoes */
+expr : expr_log
+     | ABR_CHV criacao_de_registro FCH_CHV
+
+expr_log : expr_log OU expr_rel
+         | expr_log E expr_rel
          | expr_rel
 
-expr_rel : expr_rel MENOR_IGUAL expr_ari { printf("expr relacional <=\n" ); }
-         | expr_rel MAIOR_IGUAL expr_ari { printf("expr relacional >=\n" ); }
-         | expr_rel MENOR expr_ari { printf("expr relacional <\n" ); }
-         | expr_rel MAIOR expr_ari { printf("expr relacional >\n" ); }
-         | expr_rel DIFERENTE expr_ari { printf("expr relacional !=\n" ); }
-         | expr_rel IGUAL_IGUAL expr_ari { printf("expr relacional ==\n" ); }
+expr_rel : expr_rel MENOR_IGUAL expr_ari
+         | expr_rel MAIOR_IGUAL expr_ari
+         | expr_rel MENOR expr_ari
+         | expr_rel MAIOR expr_ari
+         | expr_rel DIFERENTE expr_ari
+         | expr_rel IGUAL_IGUAL expr_ari
          | expr_ari
 
-expr_ari : expr_ari SUBTRACAO expr_ari_ { printf("expr aritmetica - \n" ); }
-         | expr_ari SOMA expr_ari_ { printf("expr aritmetica +\n" ); }
+expr_ari : expr_ari SUBTRACAO expr_ari_
+         | expr_ari SOMA expr_ari_
          | expr_ari_ 
 
-expr_ari_ : expr_ari_ MULTIPLICACAO fator { printf("expr aritmetica *\n" ); }
-          | expr_ari_ DIVISAO fator { printf("expr aritmetica /\n" ); }
+expr_ari_ : expr_ari_ MULTIPLICACAO fator
+          | expr_ari_ DIVISAO fator
           | fator
 
-fator : ABR_PRT expr FCH_PRT { printf("achou um fator () \n" ); }
-      | literal { printf("achou um literal\n" ); }
-      | NULO { printf("achou um nulo\n" ); }
-      | chamada_funcao { printf("achou uma chamada de funcao\n" ); }
-      | local_de_armazenamento { printf("achou um local de armazenamento\n" ); }
+fator : ABR_PRT expr FCH_PRT
+      | literal
+      | NULO
+      | chamada_funcao
+      | local_de_armazenamento
 
-chamada_funcao : 
-               /*| IDENTIFIER ABR_PRT args FCH_PRT ]
-                  criar estados "args"
-               */
+chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT
+
+args_chamada:
+            | expr
+            | args_chamada VIRGULA expr
 
 local_de_armazenamento : IDENTIFIER
+                       | local_de_armazenamento PONTO IDENTIFIER
+                       | local_de_armazenamento ABR_PRT expr FCH_PRT
 
 literal : INTEIROV
         | REALV
         /* | CADEIAV */
+
+/* comandos */
+lista_comandos: comando /* { printf("comando unico\n"); } */
+              | lista_comandos PONTO_VIRUGLA /* { printf("lista comando\n"); } */ comando
+
+comando:
+       | IDENTIFIER PONTO_IGUAL expr /* { printf("atribuicao\n"); } */
+       | chamada_funcao /* { printf("chamada_funcao\n"); } */
+       | SE expr VERDADEIRO lista_comandos FSE /* { printf("if\n"); } */
+       | SE expr VERDADEIRO lista_comandos FALSO lista_comandos FSE /* { printf("if-else\n"); } */
+       | PARA IDENTIFIER DE expr LIMITE expr FACA lista_comandos FPARA /* { printf("for\n"); } */
+       | ENQUANTO expr FACA lista_comandos FENQUANTO /* { printf("while\n"); } */
+       | PARE  /* { printf("pare\n"); } */
+       | CONTINUE  /* { printf("continue\n"); } */
+       | RETORNE expr /* { printf("return\n"); } */
 
 %%
 
