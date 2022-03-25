@@ -139,6 +139,12 @@ eol     [\n\r]+
 }
 "fim" {
 	return token::FIM;
+}
+"função" {
+	return token::FUNCAO;
+} 
+"ação" {
+	return token::ACAO;
 } 
 "," {
 	return token::VIRGULA;
