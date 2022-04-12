@@ -250,7 +250,6 @@ comando: IDENTIFIER PONTO_IGUAL expr
        | PARE  
        | CONTINUE  
        | RETORNE expr 
-
 %%
 
 namespace Simples {
