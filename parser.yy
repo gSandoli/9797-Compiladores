@@ -17,6 +17,8 @@
   #include "driver.hh"
   #include "location.hh"
   #include "position.hh"
+  #include "ast.h"
+  using namespace AST;
 }
 
 %code provides {
@@ -61,6 +63,8 @@
   int  			      integerVal;
   double 			    doubleVal;
   std::string*		stringVal;
+  Fator*           tpFator;
+  Literal*         tpLiteral;
 }
 
 /* Tokens */
@@ -70,6 +74,10 @@
 %token <integerVal> INTEIROV      "inteiroV"
 %token <doubleVal>  REALV         "realV"
 %token <stringVal>  CADEIAV        "cadeia"
+
+// tipos
+%type <tpFator> fator
+%type <tpLiteral> literal
 
 // simbolos
 %token  VIRGULA       "virgula"
@@ -123,13 +131,11 @@
 %token  FUNCAO        "função"
 %token  ACAO          "ação"
 
+
 %%
 
 program: declaracoes { printf("terminou declaracoes\n");}
        | ACAO DOIS_PONTOS lista_comandos { printf("terminou acoes. fim do programa\n");}
-       /* | string */
-
-string : CADEIAV { std::cout << "Cadeia: " << $1 << std::endl; }
 
 declaracoes : lista_declaracao_de_tipos lista_declaracoes_de_globais lista_declaracoes_de_funcoes program
 
@@ -181,7 +187,7 @@ args:
 
 modificador: VALOR | REF
 
-corpo: declaracao_de_locais ACAO DOIS_PONTOS lista_comandos /* { printf("terminou de ler corpo\n"); } */
+corpo: declaracao_de_locais ACAO DOIS_PONTOS lista_comandos 
 
 declaracao_de_locais:
                     | LOCAL DOIS_PONTOS lista_declaracao_variavel
@@ -211,7 +217,7 @@ expr_ari_ : expr_ari_ MULTIPLICACAO fator
           | fator
 
 fator : ABR_PRT expr FCH_PRT
-      | literal
+      | literal { $$ = $1; }
       | NULO
       | chamada_funcao
       | local_de_armazenamento
@@ -226,24 +232,24 @@ local_de_armazenamento : IDENTIFIER
                        | local_de_armazenamento PONTO IDENTIFIER
                        | local_de_armazenamento ABR_PRT expr FCH_PRT
 
-literal : INTEIROV
-        | REALV
-        /* | CADEIAV */
+literal : INTEIROV { $$ = new LiteralInt($1); }
+        | REALV { $$ = new LiteralReal($1); }
+        | CADEIAV { $$ = new LiteralStr(*$1); } /* p usar o valor desse token tem que usar '*' */
 
 /* comandos */
-lista_comandos: comando /* { printf("comando unico\n"); } */
-              | lista_comandos PONTO_VIRUGLA /* { printf("lista comando\n"); } */ comando
+lista_comandos: 
+              | comando 
+              | lista_comandos PONTO_VIRUGLA comando
 
-comando:
-       | IDENTIFIER PONTO_IGUAL expr /* { printf("atribuicao\n"); } */
-       | chamada_funcao /* { printf("chamada_funcao\n"); } */
-       | SE expr VERDADEIRO lista_comandos FSE /* { printf("if\n"); } */
-       | SE expr VERDADEIRO lista_comandos FALSO lista_comandos FSE /* { printf("if-else\n"); } */
-       | PARA IDENTIFIER DE expr LIMITE expr FACA lista_comandos FPARA /* { printf("for\n"); } */
-       | ENQUANTO expr FACA lista_comandos FENQUANTO /* { printf("while\n"); } */
-       | PARE  /* { printf("pare\n"); } */
-       | CONTINUE  /* { printf("continue\n"); } */
-       | RETORNE expr /* { printf("return\n"); } */
+comando: IDENTIFIER PONTO_IGUAL expr 
+       | chamada_funcao 
+       | SE expr VERDADEIRO lista_comandos FSE 
+       | SE expr VERDADEIRO lista_comandos FALSO lista_comandos FSE 
+       | PARA IDENTIFIER DE expr LIMITE expr FACA lista_comandos FPARA 
+       | ENQUANTO expr FACA lista_comandos FENQUANTO 
+       | PARE  
+       | CONTINUE  
+       | RETORNE expr 
 
 %%
 

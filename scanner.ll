@@ -249,14 +249,14 @@ eol     [\n\r]+
 
 <CADEIA>{
 	<<EOF>> {
-		std::cout << "[ERRO LEXICO] Comentario nao terminado.\n";
+		std::cout << "[ERRO LEXICO] Cadeia nao terminada.\n";
 		exit(1);
 	}
 
 	"\"" {
-		/* yylval->cad = s_str; */
 		std::cout <<  "Scanner: " << s_str << "\n";
 		BEGIN(INITIAL);
+		yylval->stringVal = new std::string(s_str);
 		return token::CADEIAV;
 	}
 

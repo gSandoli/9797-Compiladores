@@ -21,17 +21,15 @@ teste2(valor a: inteiro) : inteiro =
         enquanto i < 5 faça
             imprimei(i*2);
             se i > 10 verdadeiro
-                continue;
+                imprimei(i);
+                continue
             falso
-                pare;
-            fse;
+                pare
+            fse
         fenquanto;
 
         para x de 5 limite 10 faça
-            func(1);
-            func(2);
-            func(3);
-            func(4);
+            imprimei(x + 10)
         fpara;
 
         retorne c*2
@@ -50,8 +48,8 @@ teste(valor a: inteiro) =
             i := i + 1;
             se i > 10 verdadeiro
                 continue;
-                diogo();
-            fse;
+                diogo()
+            fse
         fenquanto
 
 calculaNota(ref aluno1: inteiro, ref aluno2: inteiro) : real =
@@ -63,4 +61,4 @@ calculaNota(ref aluno1: inteiro, ref aluno2: inteiro) : real =
 
 ação:
     nota := calculaNota(diogo, gabriel);
-    imprimer(nota);
+    imprimer(nota)
