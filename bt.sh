@@ -6,4 +6,4 @@ cd build
 cmake ..
 make
 cd ..
-./sc -i test.s
+./sc -i test2.s

@@ -3,6 +3,8 @@
 #define AST_H
 
 #include <string>
+#include <iostream>
+using namespace std;
 
 namespace AST
 {
@@ -30,7 +32,7 @@ namespace AST
         int Val;
 
     public:
-        LiteralInt(int Val) : Val(Val) { printf("Criado um nó literal inteiro\n"); }
+        LiteralInt(int Val) : Val(Val) { cout << "Criado um nó literal inteiro: " << Val << endl; }
     };
 
     /// NumberExprAST - Expression class for numeric literals like "1.0".
@@ -39,7 +41,7 @@ namespace AST
         double Val;
 
     public:
-        LiteralReal(int Val) : Val(Val) { printf("Criado um nó literal real\n"); }
+        LiteralReal(int Val) : Val(Val) { cout << "Criado um nó literal inteiro: " << Val << endl; }
     };
 
     /// NumberExprAST - Expression class for numeric literals like "1.0".
@@ -48,7 +50,7 @@ namespace AST
         std::string Val;
 
     public:
-        LiteralStr(std::string Val) : Val(Val) { printf("Criado um nó literal str\n"); }
+        LiteralStr(std::string Val) : Val(Val) { cout << "Criado um nó literal inteiro: " << Val << endl;  }
     };
 }
 
