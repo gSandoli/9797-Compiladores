@@ -1,2 +1,2 @@
 ação:
-    imprimei(10) 
+    imprimei(10)

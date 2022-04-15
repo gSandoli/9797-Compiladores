@@ -254,7 +254,6 @@ eol     [\n\r]+
 	}
 
 	"\"" {
-		std::cout <<  "Scanner: " << s_str << "\n";
 		BEGIN(INITIAL);
 		yylval->stringVal = new std::string(s_str);
 		return token::CADEIAV;

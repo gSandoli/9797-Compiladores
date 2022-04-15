@@ -41,7 +41,7 @@ namespace AST
         double Val;
 
     public:
-        LiteralReal(int Val) : Val(Val) { cout << "Criado um nó literal inteiro: " << Val << endl; }
+        LiteralReal(double Val) : Val(Val) { cout << "Criado um nó literal real: " << Val << endl; }
     };
 
     /// NumberExprAST - Expression class for numeric literals like "1.0".
@@ -50,7 +50,7 @@ namespace AST
         std::string Val;
 
     public:
-        LiteralStr(std::string Val) : Val(Val) { cout << "Criado um nó literal inteiro: " << Val << endl;  }
+        LiteralStr(std::string Val) : Val(Val) { cout << "Criado um nó literal string: " << Val << endl; }
     };
 }
 

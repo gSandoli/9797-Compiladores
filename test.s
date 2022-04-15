@@ -10,6 +10,7 @@ c : inteiro := a == 15
 diogo : inteiro := 0
 dolly : inteiro := 0
 nota : real := 0.0
+test : cadeia := "diogo"
 
 função:
 teste2(valor a: inteiro) : inteiro =

@@ -62,9 +62,9 @@
  /* YYLTYPE */
   int  			      integerVal;
   double 			    doubleVal;
-  std::string*		stringVal;
-  Fator*           tpFator;
-  Literal*         tpLiteral;
+  std::string     *stringVal;
+  Fator           *tpFator;
+  Literal         *tpLiteral;
 }
 
 /* Tokens */
@@ -135,7 +135,7 @@
 %%
 
 program: declaracoes { printf("terminou declaracoes\n");}
-       | ACAO DOIS_PONTOS lista_comandos { $$ = $1; }
+       | ACAO DOIS_PONTOS lista_comandos 
 
 declaracoes : lista_declaracao_de_tipos lista_declaracoes_de_globais lista_declaracoes_de_funcoes program
 
@@ -193,12 +193,12 @@ declaracao_de_locais:
                     | LOCAL DOIS_PONTOS lista_declaracao_variavel
 
 /* expressoes */
-expr : expr_log { $$ = $1; }
+expr : expr_log 
      | ABR_CHV criacao_de_registro FCH_CHV
 
 expr_log : expr_log OU expr_rel
          | expr_log E expr_rel
-         | expr_rel { $$ = $1; }
+         | expr_rel 
 
 expr_rel : expr_rel MENOR_IGUAL expr_ari
          | expr_rel MAIOR_IGUAL expr_ari
@@ -206,26 +206,26 @@ expr_rel : expr_rel MENOR_IGUAL expr_ari
          | expr_rel MAIOR expr_ari
          | expr_rel DIFERENTE expr_ari
          | expr_rel IGUAL_IGUAL expr_ari
-         | expr_ari { $$ = $1; }
+         | expr_ari 
 
 expr_ari : expr_ari SUBTRACAO expr_ari_
          | expr_ari SOMA expr_ari_
-         | expr_ari_ { $$ = $1; }
+         | expr_ari_ 
 
 expr_ari_ : expr_ari_ MULTIPLICACAO fator
           | expr_ari_ DIVISAO fator
-          | fator { $$ = $1; }
+          | fator 
 
 fator : ABR_PRT expr FCH_PRT
-      | literal { $$ = $1; }
+      | literal 
       | NULO
       | chamada_funcao
       | local_de_armazenamento
 
-chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT { $$ = $1; }
+chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT 
 
-args_chamada:
-            | expr { $$ = $1; }
+args_chamada: 
+            | expr 
             | args_chamada VIRGULA expr
 
 local_de_armazenamento : IDENTIFIER
@@ -238,11 +238,11 @@ literal : INTEIROV { $$ = new LiteralInt($1); }
 
 /* comandos */
 lista_comandos: 
-              | comando { $$ = $1; }
+              | comando 
               | lista_comandos PONTO_VIRUGLA comando
 
-comando: IDENTIFIER PONTO_IGUAL expr { $$ = $1; }
-       | chamada_funcao { $$ = $1; }
+comando: IDENTIFIER PONTO_IGUAL expr 
+       | chamada_funcao 
        | SE expr VERDADEIRO lista_comandos FSE 
        | SE expr VERDADEIRO lista_comandos FALSO lista_comandos FSE 
        | PARA IDENTIFIER DE expr LIMITE expr FACA lista_comandos FPARA 
