@@ -14,7 +14,43 @@ namespace AST
         virtual ~ExprAST() {}
     };
 
-    class Fator : public ExprAST
+    class Program : public ExprAST
+    {
+    public:
+        Program() {}
+    };
+
+    class ListaComando : public Program
+    {
+    public:
+        ListaComando() {}
+    };
+
+    class Comando : public ListaComando
+    {
+    public:
+        Comando() {}
+    };
+
+    class ChamadaFuncao : public Comando
+    {
+    public:
+        ChamadaFuncao() {}
+    };
+
+    class ArgsChamada : public ChamadaFuncao
+    {
+    public:
+        ArgsChamada() {}
+    };
+
+    class Expr : public ArgsChamada
+    {
+    public:
+        Expr() {}
+    };
+
+    class Fator : public Expr
     {
     public:
         Fator() {}
@@ -32,7 +68,7 @@ namespace AST
         int Val;
 
     public:
-        LiteralInt(int Val) : Val(Val) { cout << "Criado um nó literal inteiro: " << Val << endl; }
+        LiteralInt(int Val) : Val(Val) { cout << "Nó literal (inteiro): " << Val << endl; }
     };
 
     /// NumberExprAST - Expression class for numeric literals like "1.0".
@@ -41,16 +77,16 @@ namespace AST
         double Val;
 
     public:
-        LiteralReal(double Val) : Val(Val) { cout << "Criado um nó literal real: " << Val << endl; }
+        LiteralReal(double Val) : Val(Val) { cout << "Nó literal (real): " << Val << endl; }
     };
 
     /// NumberExprAST - Expression class for numeric literals like "1.0".
     class LiteralStr : public Literal
     {
-        std::string Val;
+        string Val;
 
     public:
-        LiteralStr(std::string Val) : Val(Val) { cout << "Criado um nó literal string: " << Val << endl; }
+        LiteralStr(string Val) : Val(Val) { cout << "Nó literal (string): " << Val << endl; }
     };
 }
 

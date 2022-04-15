@@ -3,10 +3,11 @@
 #include <unistd.h>
 
 #include "driver.hh"
+using namespace std;
 
 int main(int argc, char **argv)
 {
-  std::string filename;
+  string filename;
   int opt;
   while ((opt = getopt(argc, argv, "i:?")) != EOF)
     switch (opt)
@@ -15,10 +16,10 @@ int main(int argc, char **argv)
       filename = optarg;
       break;
     case '?':
-      std::cerr << "Usuage: tc -i <filename>" << std::endl;
+      cerr << "Usuage: tc -i <filename>" << endl;
       break;
     default:
-      std::cerr << std::endl;
+      cerr << endl;
       abort();
     }
 

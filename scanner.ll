@@ -3,6 +3,7 @@
 #include "parser.hh"
 #include "scanner.hh"
 #include "driver.hh"
+using namespace std;
 
 /*  Defines some macros to update locations */
 #define STEP() do {driver.location_->step();} while (0)
@@ -18,7 +19,7 @@ typedef Simples::Parser::token_type token_type;
  * by default returns 0, which is not of token_type. */
 #define yyterminate() return token::TOK_EOF
 
-std::string s_str;
+string s_str;
 
 %}
 
@@ -220,7 +221,7 @@ eol     [\n\r]+
 }
 
 [A-Za-z][A-Za-z0-9]* {
-    yylval->stringVal = new std::string(yytext, yyleng);
+    yylval->stringVal = new string(yytext, yyleng);
     return token::IDENTIFIER;
 }
 
@@ -236,7 +237,7 @@ eol     [\n\r]+
 
 <COMENTARIO>{
 	<<EOF>> {
-		std::cout << "[ERRO LEXICO] Comentario nao terminado.\n";
+		cout << "[ERRO LEXICO] Comentario nao terminado.\n";
 		exit(1);
 	}
 
@@ -249,13 +250,13 @@ eol     [\n\r]+
 
 <CADEIA>{
 	<<EOF>> {
-		std::cout << "[ERRO LEXICO] Cadeia nao terminada.\n";
+		cout << "[ERRO LEXICO] Cadeia nao terminada.\n";
 		exit(1);
 	}
 
 	"\"" {
 		BEGIN(INITIAL);
-		yylval->stringVal = new std::string(s_str);
+		yylval->stringVal = new string(s_str);
 		return token::CADEIAV;
 	}
 
@@ -269,7 +270,7 @@ eol     [\n\r]+
 {eol}  { LINE(yyleng); }
 
 . {
-	std::cerr << *driver.location_ << " Unexpected token : " << *yytext << std::endl;
+	cerr << *driver.location_ << " Unexpected token : " << *yytext << endl;
 	driver.error_ = (driver.error_ == 127 ? 127 : driver.error_ + 1);
 	STEP ();
 }
@@ -295,6 +296,6 @@ namespace Simples {
 
 int SimplesFlexLexer::yylex()
 {
-  std::cerr << "call parsepitFlexLexer::yylex()!" << std::endl;
+  cerr << "call parsepitFlexLexer::yylex()!" << endl;
   return 0;
 }

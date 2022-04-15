@@ -1,10 +1,12 @@
 #pragma once
 
-# include <string>
-# include <iostream>
-# include <fstream>
+#include <string>
+#include <iostream>
+#include <fstream>
+using namespace std;
 
-namespace Simples {
+namespace Simples
+{
   /// Forward declarations of classes
   class Parser;
   class Scanner;
@@ -17,21 +19,19 @@ namespace Simples {
     ~Driver();
 
     int parse();
-    int parse_file(std::string& path);
+    int parse_file(string &path);
 
     void reset();
 
   private:
-    Scanner*      scanner_;
-    Parser*       parser_;
-    location*     location_;
-    int           error_;
+    Scanner *scanner_;
+    Parser *parser_;
+    location *location_;
+    int error_;
 
     /// Allows Parser and Scanner to access private attributes
     /// of the Driver class
-    friend class  Parser;
-    friend class  Scanner;
+    friend class Parser;
+    friend class Scanner;
   };
 }
-
-

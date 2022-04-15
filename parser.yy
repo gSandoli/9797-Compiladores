@@ -19,6 +19,7 @@
   #include "position.hh"
   #include "ast.h"
   using namespace AST;
+  using namespace std;
 }
 
 %code provides {
@@ -27,7 +28,7 @@
     class Driver;
 
     inline void yyerror (const char* msg) {
-      std::cerr << msg << std::endl;
+      cerr << msg << endl;
     }
   }
 }
@@ -62,9 +63,15 @@
  /* YYLTYPE */
   int  			      integerVal;
   double 			    doubleVal;
-  std::string     *stringVal;
+  string          *stringVal;
   Fator           *tpFator;
   Literal         *tpLiteral;
+  Expr            *expr;
+  ArgsChamada     *argsChamada;
+  ChamadaFuncao   *chamadaFuncao;
+  Comando         *comando;
+  ListaComando    *listaComando;
+  Program         *program;
 }
 
 /* Tokens */
@@ -76,7 +83,13 @@
 %token <stringVal>  CADEIAV        "cadeia"
 
 // tipos
-%type <tpFator> fator
+%type <program> program
+%type <listaComando> lista_comandos
+%type <comando> comando
+%type <chamadaFuncao> chamada_funcao
+%type <argsChamada> args_chamada
+%type <expr> expr expr_ari expr_ari_ expr_log expr_rel 
+%type <tpFator> fator 
 %type <tpLiteral> literal
 
 // simbolos
@@ -131,17 +144,16 @@
 %token  FUNCAO        "função"
 %token  ACAO          "ação"
 
-
 %%
 
-program: declaracoes { printf("terminou declaracoes\n");}
-       | ACAO DOIS_PONTOS lista_comandos 
+program: declaracoes { /*printf("terminou declaracoes\n");*/}
+       | ACAO DOIS_PONTOS lista_comandos { $$ = $3; }
 
 declaracoes : lista_declaracao_de_tipos lista_declaracoes_de_globais lista_declaracoes_de_funcoes program
 
 /* declaracao de tipos */
 lista_declaracao_de_tipos : 
-                          | TIPO DOIS_PONTOS lista_declaracao_tipo { printf("Declaração de tipos.\n"); }
+                          | TIPO DOIS_PONTOS lista_declaracao_tipo { /*printf("Declaração de tipos.\n");*/ }
 
 lista_declaracao_tipo : declaracao_tipo
                       | lista_declaracao_tipo declaracao_tipo
@@ -162,7 +174,7 @@ tipo_constantes : INTEIROV
 
 /* declaracao de globais */
 lista_declaracoes_de_globais : 
-                             | GLOBAL DOIS_PONTOS lista_declaracao_variavel { printf("Declaração de variavel global.\n"); }
+                             | GLOBAL DOIS_PONTOS lista_declaracao_variavel { /*printf("Declaração de variavel global.\n");*/ }
 
 lista_declaracao_variavel : IDENTIFIER DOIS_PONTOS IDENTIFIER PONTO_IGUAL expr
                           | lista_declaracao_variavel IDENTIFIER DOIS_PONTOS IDENTIFIER PONTO_IGUAL expr
@@ -175,11 +187,11 @@ tipo_registro : IDENTIFIER IGUAL literal
 /* declaracao de funcoes */
 
 lista_declaracoes_de_funcoes: 
-                            | FUNCAO DOIS_PONTOS lista_declaracao_funcao { printf("Declaração de funções\n"); }
+                            | FUNCAO DOIS_PONTOS lista_declaracao_funcao { /*printf("Declaração de funções\n");*/ }
 
 lista_declaracao_funcao: 
-                       | IDENTIFIER ABR_PRT args FCH_PRT IGUAL corpo { printf("declaracao metodo\n"); } lista_declaracao_funcao
-                       | IDENTIFIER ABR_PRT args FCH_PRT DOIS_PONTOS IDENTIFIER IGUAL corpo { printf("declaracao funcao\n"); } lista_declaracao_funcao
+                       | IDENTIFIER ABR_PRT args FCH_PRT IGUAL corpo { /*printf("declaracao metodo\n");*/ } lista_declaracao_funcao
+                       | IDENTIFIER ABR_PRT args FCH_PRT DOIS_PONTOS IDENTIFIER IGUAL corpo { /*printf("declaracao funcao\n");*/ } lista_declaracao_funcao
 
 args: 
     | modificador IDENTIFIER DOIS_PONTOS IDENTIFIER
@@ -193,12 +205,12 @@ declaracao_de_locais:
                     | LOCAL DOIS_PONTOS lista_declaracao_variavel
 
 /* expressoes */
-expr : expr_log 
+expr : expr_log { $$ = $1; }
      | ABR_CHV criacao_de_registro FCH_CHV
 
 expr_log : expr_log OU expr_rel
          | expr_log E expr_rel
-         | expr_rel 
+         | expr_rel { $$ = $1; }
 
 expr_rel : expr_rel MENOR_IGUAL expr_ari
          | expr_rel MAIOR_IGUAL expr_ari
@@ -206,26 +218,26 @@ expr_rel : expr_rel MENOR_IGUAL expr_ari
          | expr_rel MAIOR expr_ari
          | expr_rel DIFERENTE expr_ari
          | expr_rel IGUAL_IGUAL expr_ari
-         | expr_ari 
+         | expr_ari { $$ = $1; }
 
 expr_ari : expr_ari SUBTRACAO expr_ari_
          | expr_ari SOMA expr_ari_
-         | expr_ari_ 
+         | expr_ari_ { $$ = $1; }
 
 expr_ari_ : expr_ari_ MULTIPLICACAO fator
           | expr_ari_ DIVISAO fator
-          | fator 
+          | fator { $$ = $1; }
 
 fator : ABR_PRT expr FCH_PRT
-      | literal 
+      | literal { $$ = $1; }
       | NULO
-      | chamada_funcao
+      | chamada_funcao 
       | local_de_armazenamento
 
-chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT 
+chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT { $$ = $3;  }
 
-args_chamada: 
-            | expr 
+args_chamada: { $$ = nullptr; }
+            | expr { $$ = $1; }
             | args_chamada VIRGULA expr
 
 local_de_armazenamento : IDENTIFIER
@@ -237,12 +249,12 @@ literal : INTEIROV { $$ = new LiteralInt($1); }
         | CADEIAV { $$ = new LiteralStr(*$1); }
 
 /* comandos */
-lista_comandos: 
-              | comando 
+lista_comandos: { $$ = nullptr; }
+              | comando { $$ = $1; }
               | lista_comandos PONTO_VIRUGLA comando
 
 comando: IDENTIFIER PONTO_IGUAL expr 
-       | chamada_funcao 
+       | chamada_funcao { $$ = $1; }
        | SE expr VERDADEIRO lista_comandos FSE 
        | SE expr VERDADEIRO lista_comandos FALSO lista_comandos FSE 
        | PARA IDENTIFIER DE expr LIMITE expr FACA lista_comandos FPARA 
@@ -253,8 +265,8 @@ comando: IDENTIFIER PONTO_IGUAL expr
 %%
 
 namespace Simples {
-   void Parser::error(const location&, const std::string& m) {
-        std::cerr << *driver.location_ << ": " << m << std::endl;
+   void Parser::error(const location&, const string& m) {
+        cerr << *driver.location_ << ": " << m << endl;
         driver.error_ = (driver.error_ == 127 ? 127 : driver.error_ + 1);
    }
 }

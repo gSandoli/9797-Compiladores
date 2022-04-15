@@ -4,24 +4,24 @@ integerStruct = {chave : inteiro , value : cadeia}
 integerArray = [10, 15, 20, 25] de inteiro
 
 global :
-a : inteiro := 0
-b : integerStruct := {chave = 0, value = 15 }
-c : inteiro := a == 15
-diogo : inteiro := 0
-dolly : inteiro := 0
-nota : real := 0.0
+a : inteiro := 1
+b : integerStruct := {chave = 2, value = 3 }
+c : inteiro := a == 4
+diogo : inteiro := 5
+dolly : inteiro := 6
+nota : real := 7.7
 test : cadeia := "diogo"
 
 função:
 teste2(valor a: inteiro) : inteiro =
     local:
-        b: inteiro := 5
-        c: inteiro := 0
+        b: inteiro := 8
+        c: inteiro := 9
 
     ação:
-        enquanto i < 5 faça
-            imprimei(i*2);
-            se i > 10 verdadeiro
+        enquanto i < 10 faça
+            imprimei(i*11);
+            se i > 12 verdadeiro
                 imprimei(i);
                 continue
             falso
@@ -29,25 +29,25 @@ teste2(valor a: inteiro) : inteiro =
             fse
         fenquanto;
 
-        para x de 5 limite 10 faça
-            imprimei(x + 10)
+        para x de 13 limite 14 faça
+            imprimei(x + 15)
         fpara;
 
-        retorne c*2
+        retorne c*16
 
 teste(valor a: inteiro) = 
     /* declaracao de variaveis - pronto*/
     local:
-        c: inteiro := 5
-        d: real := 5.56
-        i: inteiro := 0
+        c: inteiro := 17
+        d: real := 18.18
+        i: inteiro := 19
 
     /* lista de comandos */
     ação:
-        enquanto i < 5 faça
-            imprimei(i*2);
-            i := i + 1;
-            se i > 10 verdadeiro
+        enquanto i < 20 faça
+            imprimei(i*21);
+            i := i + 22;
+            se i > 23 verdadeiro
                 continue;
                 diogo()
             fse
@@ -55,9 +55,9 @@ teste(valor a: inteiro) =
 
 calculaNota(ref aluno1: inteiro, ref aluno2: inteiro) : real =
     local:
-        saida : real := 0
+        saida : real := 24
     ação:
-        saida := (aluno1 + aluno2) / 2;
+        saida := (aluno1 + aluno2) / 25;
         retorne saida
 
 ação:
