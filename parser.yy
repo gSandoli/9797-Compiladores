@@ -17,7 +17,11 @@
   #include "driver.hh"
   #include "location.hh"
   #include "position.hh"
-  #include "ast.h"
+  #include "../classes/ast.h"
+  #include "../classes/literal.h"
+  #include "../classes/fator.h"
+  #include "../classes/expressao.h"
+  #include "../classes/funcao.h"
   using namespace AST;
   using namespace std;
 }
@@ -66,7 +70,7 @@
   string          *stringVal;
   Fator           *tpFator;
   Literal         *tpLiteral;
-  Expr            *expr;
+  Expressao       *expressao;
   ArgsChamada     *argsChamada;
   ChamadaFuncao   *chamadaFuncao;
   Comando         *comando;
@@ -88,7 +92,7 @@
 %type <comando> comando
 %type <chamadaFuncao> chamada_funcao
 %type <argsChamada> args_chamada
-%type <expr> expr expr_ari expr_ari_ expr_log expr_rel 
+%type <expressao> expr expr_ari expr_ari_ expr_log expr_rel 
 %type <tpFator> fator 
 %type <tpLiteral> literal
 
@@ -197,7 +201,8 @@ args:
     | modificador IDENTIFIER DOIS_PONTOS IDENTIFIER
     | args VIRGULA modificador IDENTIFIER DOIS_PONTOS IDENTIFIER 
 
-modificador: VALOR | REF
+modificador: VALOR 
+           | REF
 
 corpo: declaracao_de_locais ACAO DOIS_PONTOS lista_comandos 
 
@@ -234,7 +239,7 @@ fator : ABR_PRT expr FCH_PRT
       | chamada_funcao 
       | local_de_armazenamento
 
-chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT { $$ = $3;  }
+chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT { $$ = new ChamadaFuncao(*$1); }
 
 args_chamada: { $$ = nullptr; }
             | expr { $$ = $1; }
@@ -246,7 +251,7 @@ local_de_armazenamento : IDENTIFIER
 
 literal : INTEIROV { $$ = new LiteralInt($1); }
         | REALV { $$ = new LiteralReal($1); }
-        | CADEIAV { $$ = new LiteralStr(*$1); }
+        | CADEIAV { $$ = new LiteralStr($1); }
 
 /* comandos */
 lista_comandos: { $$ = nullptr; }
