@@ -88,5 +88,5 @@ make
 ## Run
 
 ```sh
-./sc -i [FILE]
+./sc [FILE]
 ```

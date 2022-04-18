@@ -11,7 +11,7 @@ build:
 	make ; \
 
 test:
-	@./sc -i test.s ; \
+	@./sc test.s ; \
 
 container: 
 	@docker build -t environment-compiler-9797 . ; \
