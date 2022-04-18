@@ -8,9 +8,9 @@
 
 using namespace std;
 
-namespace AST
+namespace A
 {
-    class ChamadaFuncao : public Comando
+    class ChamadaFuncao : public Ast
     {
         string identifier;
 
@@ -21,10 +21,10 @@ namespace AST
         }
     };
 
-    class ArgsChamada : public ChamadaFuncao
+    class ArgsChamada : public Ast
     {
     public:
-        ArgsChamada() : ChamadaFuncao("") {}
+        ArgsChamada() {}
     };
 }
 

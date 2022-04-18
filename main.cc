@@ -3,6 +3,8 @@
 #include <unistd.h>
 
 #include "driver.hh"
+#include "classes/ast.h"
+
 using namespace std;
 
 static void usage()
@@ -15,13 +17,14 @@ int main(int argc, char **argv)
 {
   string filename;
   string output = "a.out";
-  bool intermediateCode = false;
-  bool assemblyCode = false;
+  bool intermediateCode = false; // fonte.ll
+  bool assemblyCode = false;     // fonte.s
   int opt;
 
   if (argc == 1)
   {
-    cerr << "ERROR: missing arguments" << endl;
+    cerr << "ERROR: missing arguments\n"
+         << endl;
     cout << "USAGE: ./sc [-i] [-s] [-o <destino>] <fonte>" << endl;
     cout << "\t-i : imprime o código intermediário. O arquivo de saída deve chamar fonte.ll // opcional" << endl;
     cout << "\t-s : imprime o código Assembly. O arquivo de saída deve chamar fonte.s // opcional" << endl;

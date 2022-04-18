@@ -5,13 +5,12 @@
 #include <string>
 #include <iostream>
 #include "ast.h"
-#include "expressao.h"
 
 using namespace std;
 
-namespace AST
+namespace A
 {
-    class Fator : public Expressao
+    class Fator : public Ast
     {
     public:
         Fator() {}

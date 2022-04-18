@@ -5,19 +5,17 @@
 #include <string>
 #include <iostream>
 #include "ast.h"
-#include "fator.h"
 
 using namespace std;
 
-namespace AST
+namespace A
 {
-    class Literal : public Fator
+    class Literal : public Ast
     {
     public:
         Literal() {}
     };
 
-    /// NumberExprAST - Expression class for numeric literals like "1.0".
     class LiteralInt : public Literal
     {
         int value;
@@ -29,7 +27,6 @@ namespace AST
         }
     };
 
-    /// NumberExprAST - Expression class for numeric literals like "1.0".
     class LiteralReal : public Literal
     {
         double value;
@@ -41,7 +38,6 @@ namespace AST
         }
     };
 
-    /// NumberExprAST - Expression class for numeric literals like "1.0".
     class LiteralStr : public Literal
     {
         string value;

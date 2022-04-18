@@ -6,27 +6,27 @@
 #include <iostream>
 using namespace std;
 
-namespace AST
+namespace A
 {
-    class ExprAST
+    class Ast
     {
     public:
-        virtual ~ExprAST() {}
+        Ast() {}
     };
 
-    class Program : public ExprAST
+    class Program : public Ast
     {
     public:
         Program() {}
     };
 
-    class ListaComando : public Program
+    class ListaComando : public Ast
     {
     public:
         ListaComando() {}
     };
 
-    class Comando : public ListaComando
+    class Comando : public Ast
     {
     public:
         Comando() {}

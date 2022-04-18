@@ -22,7 +22,7 @@
   #include "../classes/fator.h"
   #include "../classes/expressao.h"
   #include "../classes/funcao.h"
-  using namespace AST;
+  using namespace A;
   using namespace std;
 }
 
@@ -65,17 +65,10 @@
 %union
 {
  /* YYLTYPE */
+  Ast             *ast;
+  string          *stringVal;
   int  			      integerVal;
   double 			    doubleVal;
-  string          *stringVal;
-  Fator           *tpFator;
-  Literal         *tpLiteral;
-  Expressao       *expressao;
-  ArgsChamada     *argsChamada;
-  ChamadaFuncao   *chamadaFuncao;
-  Comando         *comando;
-  ListaComando    *listaComando;
-  Program         *program;
 }
 
 /* Tokens */
@@ -84,17 +77,11 @@
 %token <stringVal> 	IDENTIFIER    "identifier"
 %token <integerVal> INTEIROV      "inteiroV"
 %token <doubleVal>  REALV         "realV"
-%token <stringVal>  CADEIAV        "cadeia"
+%token <stringVal>  CADEIAV       "cadeia"
 
 // tipos
-%type <program> program
-%type <listaComando> lista_comandos
-%type <comando> comando
-%type <chamadaFuncao> chamada_funcao
-%type <argsChamada> args_chamada
-%type <expressao> expr expr_ari expr_ari_ expr_log expr_rel 
-%type <tpFator> fator 
-%type <tpLiteral> literal
+%type <ast> program lista_comandos comando chamada_funcao args_chamada
+%type <ast> expr expr_ari expr_ari_ expr_log expr_rel fator literal
 
 // simbolos
 %token  VIRGULA       "virgula"
