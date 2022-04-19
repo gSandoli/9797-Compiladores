@@ -13,15 +13,22 @@ namespace A
     class Literal : public Ast
     {
     public:
-        Literal() {}
+        enum Type
+        {
+            INTEIRO,
+            REAL,
+            CADEIA
+        };
+
+        Type type;
+        Literal(Type type) : type(type) {}
     };
 
-    class LiteralInt : public Literal
+    class LiteralInteiro : public Literal
     {
-        int value;
-
     public:
-        LiteralInt(int value) : value(value)
+        int value;
+        LiteralInteiro(int value) : Literal(INTEIRO), value(value)
         {
             cout << "Nó literal (inteiro): " << value << endl;
         }
@@ -29,21 +36,19 @@ namespace A
 
     class LiteralReal : public Literal
     {
-        double value;
-
     public:
-        LiteralReal(double value) : value(value)
+        double value;
+        LiteralReal(double value) : Literal(REAL), value(value)
         {
             cout << "Nó literal (real): " << value << endl;
         }
     };
 
-    class LiteralStr : public Literal
+    class LiteralCadeia : public Literal
     {
-        string value;
-
     public:
-        LiteralStr(string *value) : value(*value)
+        string value;
+        LiteralCadeia(string *value) : Literal(CADEIA), value(*value)
         {
             cout << "Nó literal (string): " << *value << endl;
         }

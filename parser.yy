@@ -66,6 +66,7 @@
 {
  /* YYLTYPE */
   Ast             *ast;
+  Literal         *literal;
   string          *stringVal;
   int  			      integerVal;
   double 			    doubleVal;
@@ -81,7 +82,8 @@
 
 // tipos
 %type <ast> program lista_comandos comando chamada_funcao args_chamada
-%type <ast> expr expr_ari expr_ari_ expr_log expr_rel fator literal
+%type <ast> expr expr_ari expr_ari_ expr_log expr_rel fator
+%type <literal> literal
 
 // simbolos
 %token  VIRGULA       "virgula"
@@ -218,10 +220,10 @@ expr_ari : expr_ari SUBTRACAO expr_ari_
 
 expr_ari_ : expr_ari_ MULTIPLICACAO fator
           | expr_ari_ DIVISAO fator
-          | fator { $$ = $1; }
+          | fator { $$ = new ExpressaoAritmetica_Fator($1); }
 
 fator : ABR_PRT expr FCH_PRT
-      | literal { $$ = $1; }
+      | literal { $$ = new FatorLiteral($1); }
       | NULO
       | chamada_funcao 
       | local_de_armazenamento
@@ -236,9 +238,9 @@ local_de_armazenamento : IDENTIFIER
                        | local_de_armazenamento PONTO IDENTIFIER
                        | local_de_armazenamento ABR_PRT expr FCH_PRT
 
-literal : INTEIROV { $$ = new LiteralInt($1); }
+literal : INTEIROV { $$ = new LiteralInteiro($1); }
         | REALV { $$ = new LiteralReal($1); }
-        | CADEIAV { $$ = new LiteralStr($1); }
+        | CADEIAV { $$ = new LiteralCadeia($1); }
 
 /* comandos */
 lista_comandos: { $$ = nullptr; }
