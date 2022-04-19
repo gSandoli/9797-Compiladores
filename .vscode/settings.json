@@ -73,6 +73,7 @@
         "ratio": "cpp",
         "stack": "cpp",
         "variant": "cpp",
-        "__bits": "cpp"
+        "__bits": "cpp",
+        "filesystem": "cpp"
     }
 }

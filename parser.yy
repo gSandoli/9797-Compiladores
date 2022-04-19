@@ -220,7 +220,7 @@ expr_ari : expr_ari SUBTRACAO expr_ari_
 
 expr_ari_ : expr_ari_ MULTIPLICACAO fator
           | expr_ari_ DIVISAO fator
-          | fator { $$ = new ExpressaoAritmetica_Fator($1); }
+          | fator { $$ = $1; }
 
 fator : ABR_PRT expr FCH_PRT
       | literal { $$ = new FatorLiteral($1); }
@@ -228,7 +228,7 @@ fator : ABR_PRT expr FCH_PRT
       | chamada_funcao 
       | local_de_armazenamento
 
-chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT { $$ = new Funcao(*$1); }
+chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT { $$ = new Funcao($1, $3); }
 
 args_chamada: { $$ = nullptr; }
             | expr { $$ = $1; }

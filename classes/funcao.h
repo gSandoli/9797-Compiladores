@@ -5,6 +5,8 @@
 #include <string>
 #include <iostream>
 #include "ast.h"
+#include "fator.h"
+#include "literal.h"
 
 using namespace std;
 
@@ -12,17 +14,18 @@ namespace A
 {
     class Funcao : public Ast
     {
-        string identifier;
-
     public:
-        Funcao(string identifier) : identifier(identifier)
+        string identifier;
+        Ast *args;
+        Funcao(string *identifier, Ast *args) : identifier(*identifier), args(args)
         {
-            cout << "Nó chamada de função: " << identifier.c_str() << endl;
-        }
+            Fator *f = ((Fator *)args);
+            FatorLiteral *fl = ((FatorLiteral *)f);
+            LiteralInteiro *li = ((LiteralInteiro *)fl->literal);
 
-        void test()
-        {
-            cout << "Hello World!\n";
+            cout << "Nó chamada de função:" << endl;
+            cout << "\tChamada: " << *identifier << endl;
+            cout << "\tArgs: " << li->value << endl;
         }
     };
 }

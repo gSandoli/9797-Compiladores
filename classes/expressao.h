@@ -17,18 +17,5 @@ namespace A
     public:
         Expressao() {}
     };
-
-    class ExpressaoAritmetica_Fator : public Ast
-    {
-    public:
-        Ast *fator;
-        ExpressaoAritmetica_Fator(Ast *fator) : fator(fator)
-        {
-            Fator *f = ((Fator *)fator);
-            FatorLiteral *fl = ((FatorLiteral *)fator);
-            LiteralInteiro *li = ((LiteralInteiro *)fl->literal);
-            cout << "Nó expressao aritmetica_: " << li->value << endl;
-        }
-    };
 }
 #endif /* EXPRESSAO_H */
