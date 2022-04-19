@@ -272,7 +272,7 @@ eol     [\n\r]+
 . {
 	cerr << *driver.location_ << " Unexpected token : " << *yytext << endl;
 	driver.error_ = (driver.error_ == 127 ? 127 : driver.error_ + 1);
-	STEP ();
+	STEP();
 }
 
 %%

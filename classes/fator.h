@@ -6,6 +6,7 @@
 #include <iostream>
 #include "ast.h"
 #include "literal.h"
+#include "util/print.h"
 
 using namespace std;
 
@@ -23,7 +24,10 @@ namespace A
             LOCAL_ARMAZENAMENTO
         };
         Type type;
+
         Fator(Type type) : type(type) {}
+
+        virtual void print(FILE *out, int d) const = 0;
     };
 
     class FatorLiteral : public Fator
@@ -33,6 +37,14 @@ namespace A
         FatorLiteral(Literal *literal) : Fator(LITERAL), literal(literal)
         {
             cout << "Nó fator literal: " << ((LiteralInteiro *)literal)->value << endl;
+        }
+
+        void print(FILE *out, int d) const
+        {
+            indent(out, d);
+            fprintf(out, "FatorLiteral(%d,\n", type);
+            literal->print(out, d + 1);
+            fprintf(out, ")");
         }
     };
 }

@@ -12,6 +12,8 @@ namespace A
     {
     public:
         Ast() {}
+
+        virtual void print(FILE *out, int d) const = 0;
     };
 }
 

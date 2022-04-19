@@ -7,6 +7,7 @@
 #include "ast.h"
 #include "fator.h"
 #include "literal.h"
+#include "util/print.h"
 
 using namespace std;
 
@@ -26,6 +27,14 @@ namespace A
             cout << "Nó chamada de função:" << endl;
             cout << "\tChamada: " << *identifier << endl;
             cout << "\tArgs: " << li->value << endl;
+        }
+
+        void print(FILE *out, int d) const
+        {
+            indent(out, d);
+            fprintf(out, "Funcao(%s,\n", identifier.c_str());
+            args->print(out, d + 1);
+            fprintf(out, ")");
         }
     };
 }

@@ -1,6 +1,7 @@
 #include <string>
 #include <iostream>
 #include <unistd.h>
+#include <stdio.h>
 
 #include "driver.hh"
 #include "classes/ast.h"
@@ -77,5 +78,17 @@ int main(int argc, char **argv)
   cout << "MAIN Nó chamada de função:" << endl;
   cout << "\tChamada: " << func->identifier << endl;
   cout << "\tArgs: " << li->value << endl;
+
+  if (intermediateCode)
+  {
+    FILE *out = fopen(output.c_str(), "w");
+    if (out != NULL)
+    {
+      driver.root->print(out, 0);
+      fprintf(out, "\n");
+    }
+    fclose(out);
+  }
+
   return 0;
 }
