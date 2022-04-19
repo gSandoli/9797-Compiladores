@@ -4,6 +4,9 @@
 
 #include "driver.hh"
 #include "classes/ast.h"
+#include "classes/funcao.h"
+#include "classes/fator.h"
+#include "classes/literal.h"
 
 using namespace std;
 
@@ -65,5 +68,14 @@ int main(int argc, char **argv)
 
   Simples::Driver driver;
   driver.parse_file(filename);
+
+  Funcao *func = ((Funcao *)driver.root);
+  Fator *f = ((Fator *)func->args);
+  FatorLiteral *fl = ((FatorLiteral *)f);
+  LiteralInteiro *li = ((LiteralInteiro *)fl->literal);
+
+  cout << "MAIN Nó chamada de função:" << endl;
+  cout << "\tChamada: " << func->identifier << endl;
+  cout << "\tArgs: " << li->value << endl;
   return 0;
 }
