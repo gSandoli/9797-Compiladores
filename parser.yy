@@ -138,7 +138,7 @@
 %%
 
 program: declaracoes { /*printf("terminou declaracoes\n");*/}
-       | ACAO DOIS_PONTOS lista_comandos { $$ = $3; }
+       | ACAO DOIS_PONTOS lista_comandos { driver.root = $3; }
 
 declaracoes : lista_declaracao_de_tipos lista_declaracoes_de_globais lista_declaracoes_de_funcoes program
 
@@ -226,7 +226,7 @@ fator : ABR_PRT expr FCH_PRT
       | chamada_funcao 
       | local_de_armazenamento
 
-chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT { $$ = new ChamadaFuncao(*$1); }
+chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT { $$ = new Funcao(*$1); }
 
 args_chamada: { $$ = nullptr; }
             | expr { $$ = $1; }

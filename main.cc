@@ -7,12 +7,6 @@
 
 using namespace std;
 
-static void usage()
-{
-  fprintf(stderr, "Usage: %s [-n number][-p pagefile] trace n1 n2 ...\n");
-  exit(EXIT_FAILURE);
-}
-
 int main(int argc, char **argv)
 {
   string filename;

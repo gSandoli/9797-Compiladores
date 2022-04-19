@@ -10,21 +10,20 @@ using namespace std;
 
 namespace A
 {
-    class ChamadaFuncao : public Ast
+    class Funcao : public Ast
     {
         string identifier;
 
     public:
-        ChamadaFuncao(string identifier) : identifier(identifier)
+        Funcao(string identifier) : identifier(identifier)
         {
             cout << "Nó chamada de função: " << identifier.c_str() << endl;
         }
-    };
 
-    class ArgsChamada : public Ast
-    {
-    public:
-        ArgsChamada() {}
+        void test()
+        {
+            cout << "Hello World!\n";
+        }
     };
 }
 

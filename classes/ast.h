@@ -13,24 +13,6 @@ namespace A
     public:
         Ast() {}
     };
-
-    class Program : public Ast
-    {
-    public:
-        Program() {}
-    };
-
-    class ListaComando : public Ast
-    {
-    public:
-        ListaComando() {}
-    };
-
-    class Comando : public Ast
-    {
-    public:
-        Comando() {}
-    };
 }
 
 #endif /* AST_H */

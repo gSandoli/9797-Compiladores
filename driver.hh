@@ -3,8 +3,9 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include "classes/ast.h"
 using namespace std;
-
+using namespace A;
 namespace Simples
 {
   /// Forward declarations of classes
@@ -18,9 +19,10 @@ namespace Simples
     Driver();
     ~Driver();
 
+    Ast *root;
+
     int parse();
     int parse_file(string &path);
-
     void reset();
 
   private:
