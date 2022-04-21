@@ -36,7 +36,20 @@ namespace A
         Literal *literal;
         FatorLiteral(Literal *literal) : Fator(LITERAL), literal(literal)
         {
-            cout << "Nó fator literal: " << ((LiteralInteiro *)literal)->value << endl;
+            if (literal->type == Literal::Type::INTEIRO)
+            {
+                cout << "Nó fator literal: " << ((LiteralInteiro *)literal)->value << endl;
+            }
+
+            if (literal->type == Literal::Type::REAL)
+            {
+                cout << "Nó fator literal: " << ((LiteralReal *)literal)->value << endl;
+            }
+
+            if (literal->type == Literal::Type::CADEIA)
+            {
+                cout << "Nó fator literal: " << ((LiteralCadeia *)literal)->value << endl;
+            }
         }
 
         void print(FILE *out, int d) const

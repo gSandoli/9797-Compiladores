@@ -74,6 +74,7 @@
         "stack": "cpp",
         "variant": "cpp",
         "__bits": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "list": "cpp"
     }
 }

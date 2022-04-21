@@ -9,7 +9,12 @@
 #include "classes/fator.h"
 #include "classes/literal.h"
 
+#include <iostream>
+#include <iostream>
+#include "classes/util/function_table.h"
+
 using namespace std;
+using namespace T;
 
 int main(int argc, char **argv)
 {
@@ -90,5 +95,7 @@ int main(int argc, char **argv)
     fclose(out);
   }
 
+  // FunctionTable *table = new FunctionTable();
+  // table->show();
   return 0;
 }
