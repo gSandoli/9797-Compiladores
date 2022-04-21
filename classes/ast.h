@@ -5,7 +5,7 @@
 #include <string>
 #include <iostream>
 #include "util/function_table.h"
-#include "util/var_table.h"
+#include "util/variable_table.h"
 
 using namespace std;
 using namespace T;

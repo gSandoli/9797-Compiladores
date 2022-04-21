@@ -5,7 +5,7 @@
 #include <fstream>
 #include "classes/ast.h"
 #include "classes/util/function_table.h"
-#include "classes/util/var_table.h"
+#include "classes/util/variable_table.h"
 
 using namespace std;
 using namespace A;

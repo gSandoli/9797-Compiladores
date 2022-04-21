@@ -33,42 +33,24 @@ namespace T
         bool exists(const string &name)
         {
             for (int i = 0; i < MAX_SIZE; ++i)
-            {
                 if (table[i][0] == name)
-                {
                     return true;
-                }
-            }
             return false;
         }
 
         bool lookArgs(const string &name, const string &arg)
         {
             for (int i = 0; i < MAX_SIZE; ++i)
-            {
-                if (table[i][0] == name)
-                {
-                    if (table[i][1] == arg)
-                    {
-                        return true;
-                    }
-                }
-            }
+                if (table[i][0] == name && table[i][1] == arg)
+                    return true;
             return false;
         }
 
         bool lookType(const string &name, const string &type)
         {
             for (int i = 0; i < MAX_SIZE; ++i)
-            {
-                if (table[i][0] == name)
-                {
-                    if (table[i][2] == type)
-                    {
-                        return true;
-                    }
-                }
-            }
+                if (table[i][0] == name && table[i][2] == type)
+                    return true;
             return false;
         }
 
@@ -84,18 +66,15 @@ namespace T
                     return true;
                 }
             }
-            return false;
+            cerr << "FunctionTable cheia!" << endl;
+            abort();
         }
 
         void show()
         {
             for (int i = 0; i < MAX_SIZE; ++i)
-            {
                 if (!table[i][0].empty())
-                {
                     cout << table[i][0] << " | " << table[i][1] << " | " << table[i][2] << endl;
-                }
-            }
         }
     };
 };
