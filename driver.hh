@@ -4,8 +4,12 @@
 #include <iostream>
 #include <fstream>
 #include "classes/ast.h"
+#include "classes/util/function_table.h"
+#include "classes/util/var_table.h"
+
 using namespace std;
 using namespace A;
+using namespace T;
 namespace Simples
 {
   /// Forward declarations of classes
@@ -20,6 +24,8 @@ namespace Simples
     ~Driver();
 
     Ast *root;
+    FunctionTable *functionTable;
+    VariableTable *variableTable;
 
     int parse();
     int parse_file(string &path);

@@ -22,8 +22,6 @@ namespace A
         Type type;
 
         Literal(Type type) : type(type) {}
-
-        virtual void print(FILE *out, int d) const = 0;
     };
 
     class LiteralInteiro : public Literal
@@ -32,7 +30,12 @@ namespace A
         int value;
         LiteralInteiro(int value) : Literal(INTEIRO), value(value)
         {
-            cout << "Nó literal (inteiro): " << value << endl;
+            cout << "Construindo nó literal (inteiro): " << value << endl;
+        }
+
+        void semanticAnalyze(VariableTable variableTable, FunctionTable functionTable) const
+        {
+            cout << "Análise semântica do nó literal (inteiro)" << endl;
         }
 
         void print(FILE *out, int d) const
@@ -48,7 +51,11 @@ namespace A
         double value;
         LiteralReal(double value) : Literal(REAL), value(value)
         {
-            cout << "Nó literal (real): " << value << endl;
+            cout << "Construindo nó literal (real): " << value << endl;
+        }
+
+        void semanticAnalyze(VariableTable variableTable, FunctionTable functionTable) const
+        {
         }
 
         void print(FILE *out, int d) const
@@ -64,7 +71,11 @@ namespace A
         string value;
         LiteralCadeia(string *value) : Literal(CADEIA), value(*value)
         {
-            cout << "Nó literal (string): " << *value << endl;
+            cout << "Construindo nó literal (string): " << *value << endl;
+        }
+
+        void semanticAnalyze(VariableTable variableTable, FunctionTable functionTable) const
+        {
         }
 
         void print(FILE *out, int d) const

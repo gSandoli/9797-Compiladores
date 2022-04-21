@@ -4,7 +4,11 @@
 
 #include <string>
 #include <iostream>
+#include "util/function_table.h"
+#include "util/var_table.h"
+
 using namespace std;
+using namespace T;
 
 namespace A
 {
@@ -14,6 +18,7 @@ namespace A
         Ast() {}
 
         virtual void print(FILE *out, int d) const = 0;
+        virtual void semanticAnalyze(VariableTable variableTable, FunctionTable functionTable) const = 0;
     };
 }
 

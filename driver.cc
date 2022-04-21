@@ -7,7 +7,9 @@ namespace Simples
 {
   Driver::Driver() : scanner_(new Scanner()),
                      parser_(new Parser(*this)),
-                     location_(new location()) {}
+                     location_(new location()),
+                     functionTable(new FunctionTable()),
+                     variableTable(new VariableTable()) {}
 
   Driver::~Driver()
   {

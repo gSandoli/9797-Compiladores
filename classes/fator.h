@@ -26,8 +26,6 @@ namespace A
         Type type;
 
         Fator(Type type) : type(type) {}
-
-        virtual void print(FILE *out, int d) const = 0;
     };
 
     class FatorLiteral : public Fator
@@ -38,18 +36,24 @@ namespace A
         {
             if (literal->type == Literal::Type::INTEIRO)
             {
-                cout << "Nó fator literal: " << ((LiteralInteiro *)literal)->value << endl;
+                cout << "Construindo nó fator literal: " << ((LiteralInteiro *)literal)->value << endl;
             }
 
             if (literal->type == Literal::Type::REAL)
             {
-                cout << "Nó fator literal: " << ((LiteralReal *)literal)->value << endl;
+                cout << "Construindo nó fator literal: " << ((LiteralReal *)literal)->value << endl;
             }
 
             if (literal->type == Literal::Type::CADEIA)
             {
-                cout << "Nó fator literal: " << ((LiteralCadeia *)literal)->value << endl;
+                cout << "Construindo nó fator literal: " << ((LiteralCadeia *)literal)->value << endl;
             }
+        }
+
+        void semanticAnalyze(VariableTable variableTable, FunctionTable functionTable) const
+        {
+            cout << "Análise semântica do nó fator literal" << endl;
+            literal->semanticAnalyze(variableTable, functionTable);
         }
 
         void print(FILE *out, int d) const

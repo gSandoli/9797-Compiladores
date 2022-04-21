@@ -1,5 +1,5 @@
 ação:
-    imprimei(1*1)/*;
+    imprimei(1)/*;
     func1(2);
     func2(3);
     func3(4);

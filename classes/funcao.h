@@ -24,9 +24,19 @@ namespace A
             FatorLiteral *fl = ((FatorLiteral *)f);
             LiteralInteiro *li = ((LiteralInteiro *)fl->literal);
 
-            cout << "Nó chamada de função:" << endl;
+            cout << "Construindo nó chamada de função:" << endl;
             cout << "\tChamada: " << *identifier << endl;
             cout << "\tArgs: " << li->value << endl;
+        }
+
+        void semanticAnalyze(VariableTable variableTable, FunctionTable functionTable) const
+        {
+            cout << "Análise semântica do nó chamada de função" << endl;
+            if (!functionTable.exists(identifier))
+            {
+                cerr << "[ERRO SEMÂNTICO] Função não existe: " << identifier << endl;
+            }
+            args->semanticAnalyze(variableTable, functionTable);
         }
 
         void print(FILE *out, int d) const
