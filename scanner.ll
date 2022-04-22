@@ -220,7 +220,7 @@ eol     [\n\r]+
 	return token::IGUAL;
 }
 
-[A-Za-z][A-Za-z0-9]* {
+[_A-Za-z][_A-Za-z0-9]* {
     yylval->stringVal = new string(yytext, yyleng);
     return token::IDENTIFIER;
 }
