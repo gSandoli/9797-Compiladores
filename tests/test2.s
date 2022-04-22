@@ -1,6 +1,6 @@
 ação:
-    imprimei(1)/*;
-    func1(2);
-    func2(3);
-    func3(4);
-    func4(5)*/
+    imprimei(1.2/(3-gereInteiro()));
+    func1(3*4);
+    func2(5-6);
+    func3(7+8);
+    func4(5)

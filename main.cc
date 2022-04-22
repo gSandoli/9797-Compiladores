@@ -20,6 +20,7 @@ int main(int argc, char **argv)
 {
   string filename;
   string output = "a.out";
+  string tree = "tree.out";
   bool intermediateCode = false; // fonte.ll
   bool assemblyCode = false;     // fonte.s
   int opt;
@@ -86,13 +87,19 @@ int main(int argc, char **argv)
 
   driver.root->semanticAnalyze(*driver.variableTable, *driver.functionTable);
 
+  FILE *treeOutput = fopen(tree.c_str(), "w");
+  if (treeOutput != NULL)
+  {
+    driver.root->print(treeOutput, 0);
+  }
+  fclose(treeOutput);
+
   if (intermediateCode)
   {
     FILE *out = fopen(output.c_str(), "w");
     if (out != NULL)
     {
-      driver.root->print(out, 0);
-      fprintf(out, "\n");
+      // implementar o código intermediario aqui
     }
     fclose(out);
   }

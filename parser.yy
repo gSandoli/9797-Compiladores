@@ -22,6 +22,8 @@
   #include "../classes/fator.h"
   #include "../classes/expressao.h"
   #include "../classes/funcao.h"
+  #include "../classes/comando.h"
+
   using namespace A;
   using namespace std;
 }
@@ -82,8 +84,7 @@
 
 // tipos
 %type <ast> program lista_comandos comando chamada_funcao args_chamada
-%type <ast> expr expr_ari expr_ari_ expr_log expr_rel fator
-%type <literal> literal
+%type <ast> expr expr_ari expr_ari_ expr_log expr_rel fator literal
 
 // simbolos
 %token  VIRGULA       "virgula"
@@ -214,18 +215,18 @@ expr_rel : expr_rel MENOR_IGUAL expr_ari
          | expr_rel IGUAL_IGUAL expr_ari
          | expr_ari { $$ = $1; }
 
-expr_ari : expr_ari SUBTRACAO expr_ari_
-         | expr_ari SOMA expr_ari_
+expr_ari : expr_ari SUBTRACAO expr_ari_ { $$ = new ExpressaoAritmeticaSubtracao($1, $3); }
+         | expr_ari SOMA expr_ari_ { $$ = new ExpressaoAritmeticaSoma($1, $3); }
          | expr_ari_ { $$ = $1; }
 
-expr_ari_ : expr_ari_ MULTIPLICACAO fator
-          | expr_ari_ DIVISAO fator
+expr_ari_ : expr_ari_ MULTIPLICACAO fator { $$ = new ExpressaoAritmeticaMultiplicacao($1, $3); }
+          | expr_ari_ DIVISAO fator { $$ = new ExpressaoAritmeticaDivisao($1, $3); }
           | fator { $$ = $1; }
 
-fator : ABR_PRT expr FCH_PRT
+fator : ABR_PRT expr FCH_PRT { $$ = new FatorExpressao($2); }
       | literal { $$ = new FatorLiteral($1); }
-      | NULO
-      | chamada_funcao 
+      | NULO { $$ = new FatorNil(); }
+      | chamada_funcao { $$ = new FatorFuncao($1); }
       | local_de_armazenamento
 
 chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT { $$ = new Funcao($1, $3); }
@@ -245,7 +246,7 @@ literal : INTEIROV { $$ = new LiteralInteiro($1); }
 /* comandos */
 lista_comandos: { $$ = nullptr; }
               | comando { $$ = $1; }
-              | lista_comandos PONTO_VIRUGLA comando
+              | lista_comandos PONTO_VIRUGLA comando { $$ = new ListaComando($1, $3); }
 
 comando: IDENTIFIER PONTO_IGUAL expr 
        | chamada_funcao { $$ = $1; }

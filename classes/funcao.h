@@ -20,13 +20,7 @@ namespace A
         Ast *args;
         Funcao(string *identifier, Ast *args) : identifier(*identifier), args(args)
         {
-            Fator *f = ((Fator *)args);
-            FatorLiteral *fl = ((FatorLiteral *)f);
-            LiteralInteiro *li = ((LiteralInteiro *)fl->literal);
-
-            cout << "Construindo nó chamada de função:" << endl;
-            cout << "\tChamada: " << *identifier << endl;
-            cout << "\tArgs: " << li->value << endl;
+            cout << "Construindo nó chamada de função: " << *identifier << endl;
         }
 
         void semanticAnalyze(VariableTable variableTable, FunctionTable functionTable) const
@@ -36,15 +30,26 @@ namespace A
             {
                 cerr << "[ERRO SEMÂNTICO] Função não existe: " << identifier << endl;
             }
-            args->semanticAnalyze(variableTable, functionTable);
+            if (args != nullptr)
+            {
+                args->semanticAnalyze(variableTable, functionTable);
+            }
         }
 
         void print(FILE *out, int d) const
         {
             indent(out, d);
-            fprintf(out, "Funcao(%s,\n", identifier.c_str());
-            args->print(out, d + 1);
-            fprintf(out, ")");
+            if (args != nullptr)
+            {
+                fprintf(out, "Funcao(%s,\n", identifier.c_str());
+                args->print(out, d + 1);
+                indent(out, d);
+                fprintf(out, ")\n");
+            }
+            else
+            {
+                fprintf(out, "Funcao(%s)", identifier.c_str());
+            }
         }
     };
 }

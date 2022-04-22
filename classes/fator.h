@@ -17,7 +17,7 @@ namespace A
     public:
         enum Type
         {
-            EXPRESSSAO,
+            EXPRESSAO,
             LITERAL,
             NIL,
             FUNCAO,
@@ -31,22 +31,23 @@ namespace A
     class FatorLiteral : public Fator
     {
     public:
-        Literal *literal;
-        FatorLiteral(Literal *literal) : Fator(LITERAL), literal(literal)
+        Ast *literal;
+        FatorLiteral(Ast *literal) : Fator(LITERAL), literal(literal)
         {
-            if (literal->type == Literal::Type::INTEIRO)
+            Literal *fl = ((Literal *)literal);
+            if (fl->type == Literal::Type::INTEIRO)
             {
-                cout << "Construindo nó fator literal: " << ((LiteralInteiro *)literal)->value << endl;
+                cout << "Construindo nó fator literal: " << ((LiteralInteiro *)fl)->value << endl;
             }
 
-            if (literal->type == Literal::Type::REAL)
+            if (fl->type == Literal::Type::REAL)
             {
-                cout << "Construindo nó fator literal: " << ((LiteralReal *)literal)->value << endl;
+                cout << "Construindo nó fator literal: " << ((LiteralReal *)fl)->value << endl;
             }
 
-            if (literal->type == Literal::Type::CADEIA)
+            if (fl->type == Literal::Type::CADEIA)
             {
-                cout << "Construindo nó fator literal: " << ((LiteralCadeia *)literal)->value << endl;
+                cout << "Construindo nó fator literal: " << ((LiteralCadeia *)fl)->value << endl;
             }
         }
 
@@ -59,9 +60,82 @@ namespace A
         void print(FILE *out, int d) const
         {
             indent(out, d);
-            fprintf(out, "FatorLiteral(%d,\n", type);
+            fprintf(out, "FatorLiteral(\n");
             literal->print(out, d + 1);
-            fprintf(out, ")");
+            fprintf(out, "\n");
+            indent(out, d);
+            fprintf(out, ")\n");
+        }
+    };
+
+    class FatorExpressao : public Fator
+    {
+    public:
+        Ast *expressao;
+        FatorExpressao(Ast *expressao) : Fator(EXPRESSAO), expressao(expressao)
+        {
+            cout << "Construindo nó fator expressão" << endl;
+        }
+
+        void semanticAnalyze(VariableTable variableTable, FunctionTable functionTable) const
+        {
+            cout << "Análise semântica do nó fator expressão" << endl;
+            expressao->semanticAnalyze(variableTable, functionTable);
+        }
+
+        void print(FILE *out, int d) const
+        {
+            indent(out, d);
+            fprintf(out, "FatorExpressao(\n");
+            expressao->print(out, d + 1);
+            indent(out, d);
+            fprintf(out, ")\n");
+        }
+    };
+
+    class FatorFuncao : public Fator
+    {
+    public:
+        Ast *funcao;
+        FatorFuncao(Ast *funcao) : Fator(FUNCAO), funcao(funcao)
+        {
+            cout << "Construindo nó fator função" << endl;
+        }
+
+        void semanticAnalyze(VariableTable variableTable, FunctionTable functionTable) const
+        {
+            cout << "Análise semântica do nó fator função" << endl;
+            funcao->semanticAnalyze(variableTable, functionTable);
+        }
+
+        void print(FILE *out, int d) const
+        {
+            indent(out, d);
+            fprintf(out, "FatorFuncao(\n");
+            funcao->print(out, d + 1);
+            fprintf(out, "\n");
+            indent(out, d);
+            fprintf(out, ")\n");
+        }
+    };
+
+    class FatorNil : public Fator
+    {
+    public:
+        FatorNil() : Fator(NIL)
+        {
+            cout << "Construindo nó fator nil" << endl;
+        }
+
+        void semanticAnalyze(VariableTable variableTable, FunctionTable functionTable) const
+        {
+            cout << "Análise semântica do nó fator nil" << endl;
+        }
+
+        void print(FILE *out, int d) const
+        {
+            indent(out, d);
+            fprintf(out, "FatorNil(NULL)\n");
         }
     };
 }
