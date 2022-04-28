@@ -14,9 +14,9 @@ namespace A
     class ListaComando : public Ast
     {
     public:
-        Ast *list;
         Ast *comando;
-        ListaComando(Ast *list, Ast *comando) : list(list), comando(comando)
+        Ast *list;
+        ListaComando(Ast *comando, Ast *list) : comando(comando), list(list)
         {
             cout << "Construindo nó lista de comando" << endl;
         }

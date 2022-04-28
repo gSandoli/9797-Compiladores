@@ -246,7 +246,7 @@ literal : INTEIROV { $$ = new LiteralInteiro($1); }
 /* comandos */
 lista_comandos: { $$ = nullptr; }
               | comando { $$ = $1; }
-              | lista_comandos PONTO_VIRUGLA comando { $$ = new ListaComando($1, $3); }
+              | comando PONTO_VIRUGLA lista_comandos { $$ = new ListaComando($1, $3); }
 
 comando: IDENTIFIER PONTO_IGUAL expr 
        | chamada_funcao { $$ = $1; }
