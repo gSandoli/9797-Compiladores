@@ -215,21 +215,21 @@ expr_rel : expr_rel MENOR_IGUAL expr_ari
          | expr_rel IGUAL_IGUAL expr_ari
          | expr_ari { $$ = $1; }
 
-expr_ari : expr_ari SUBTRACAO expr_ari_ { $$ = new ExpressaoAritmeticaSubtracao($1, $3); }
-         | expr_ari SOMA expr_ari_ { $$ = new ExpressaoAritmeticaSoma($1, $3); }
+expr_ari : expr_ari SUBTRACAO expr_ari_ { $$ = new ExpressaoAritmeticaSubtracao(driver.line, driver.col, $1, $3); }
+         | expr_ari SOMA expr_ari_ { $$ = new ExpressaoAritmeticaSoma(driver.line, driver.col, $1, $3); }
          | expr_ari_ { $$ = $1; }
 
-expr_ari_ : expr_ari_ MULTIPLICACAO fator { $$ = new ExpressaoAritmeticaMultiplicacao($1, $3); }
-          | expr_ari_ DIVISAO fator { $$ = new ExpressaoAritmeticaDivisao($1, $3); }
+expr_ari_ : expr_ari_ MULTIPLICACAO fator { $$ = new ExpressaoAritmeticaMultiplicacao(driver.line, driver.col, $1, $3); }
+          | expr_ari_ DIVISAO fator { $$ = new ExpressaoAritmeticaDivisao(driver.line, driver.col, $1, $3); }
           | fator { $$ = $1; }
 
-fator : ABR_PRT expr FCH_PRT { $$ = new FatorExpressao($2); }
-      | literal { $$ = new FatorLiteral($1); }
-      | NULO { $$ = new FatorNil(); }
-      | chamada_funcao { $$ = new FatorFuncao($1); }
+fator : ABR_PRT expr FCH_PRT { $$ = new FatorExpressao(driver.line, driver.col, $2); }
+      | literal { $$ = new FatorLiteral(driver.line, driver.col, $1); }
+      | NULO { $$ = new FatorNil(driver.line, driver.col); }
+      | chamada_funcao { $$ = new FatorFuncao(driver.line, driver.col, $1); }
       | local_de_armazenamento
 
-chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT { $$ = new Funcao($1, $3); }
+chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT { $$ = new Funcao(driver.line, driver.col, $1, $3); }
 
 args_chamada: { $$ = nullptr; }
             | expr { $$ = $1; }
@@ -239,14 +239,14 @@ local_de_armazenamento : IDENTIFIER
                        | local_de_armazenamento PONTO IDENTIFIER
                        | local_de_armazenamento ABR_PRT expr FCH_PRT
 
-literal : INTEIROV { $$ = new LiteralInteiro($1); }
-        | REALV { $$ = new LiteralReal($1); }
-        | CADEIAV { $$ = new LiteralCadeia($1); }
+literal : INTEIROV {  $$ = new LiteralInteiro(driver.line, driver.col, $1); }
+        | REALV { $$ = new LiteralReal(driver.line, driver.col,$1); }
+        | CADEIAV { $$ = new LiteralCadeia(driver.line, driver.col,$1); }
 
 /* comandos */
 lista_comandos: { $$ = nullptr; }
               | comando { $$ = $1; }
-              | comando PONTO_VIRUGLA lista_comandos { $$ = new ListaComando($1, $3); }
+              | comando PONTO_VIRUGLA lista_comandos { $$ = new ListaComando(driver.line, driver.col, $1, $3); }
 
 comando: IDENTIFIER PONTO_IGUAL expr 
        | chamada_funcao { $$ = $1; }

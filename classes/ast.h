@@ -1,25 +1,30 @@
-// arquivo header das classes e métodos utilizados para construir a AST do compilador
+// arquivo header das classes e métodos utilizados para construir a AST do
+// compilador
 #ifndef AST_H // include guard
 #define AST_H
 
-#include <string>
-#include <iostream>
 #include "util/function_table.h"
 #include "util/variable_table.h"
+#include <iostream>
+#include <string>
 
 using namespace std;
 using namespace T;
 
-namespace A
-{
-    class Ast
-    {
-    public:
-        Ast() {}
+namespace A {
+class Ast {
+public:
+  int line;
+  int col;
 
-        virtual void print(FILE *out, int d) const = 0;
-        virtual void semanticAnalyze(VariableTable variableTable, FunctionTable functionTable) const = 0;
-    };
-}
+  Ast(int line, int col) : line(line), col(col) {
+    cout << line << ":" << col << " ";
+  }
+
+  virtual void print(FILE *out, int d) const = 0;
+  virtual void semanticAnalyze(VariableTable variableTable,
+                               FunctionTable functionTable) const = 0;
+};
+} // namespace A
 
 #endif /* AST_H */

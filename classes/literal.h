@@ -1,90 +1,76 @@
-// arquivo header das classes e métodos utilizados para construir a AST do compilador
+// arquivo header das classes e métodos utilizados para construir a AST do
+// compilador
 #ifndef LITERAL_H // include guard
 #define LITERAL_H
 
-#include <string>
-#include <iostream>
 #include "ast.h"
 #include "util/print.h"
+#include <iostream>
+#include <string>
 
 using namespace std;
-namespace A
-{
-    class Literal : public Ast
-    {
-    public:
-        enum Type
-        {
-            INTEIRO,
-            REAL,
-            CADEIA
-        };
+namespace A {
+class Literal : public Ast {
+public:
+  enum Type { INTEIRO, REAL, CADEIA };
 
-        Type type;
+  Type type;
 
-        Literal(Type type) : type(type) {}
-    };
+  Literal(int line, int col, Type type) : Ast(line, col), type(type) {}
+};
 
-    class LiteralInteiro : public Literal
-    {
-    public:
-        int value;
-        LiteralInteiro(int value) : Literal(INTEIRO), value(value)
-        {
-            cout << "Construindo nó literal (inteiro): " << value << endl;
-        }
+class LiteralInteiro : public Literal {
+public:
+  int value;
+  LiteralInteiro(int line, int col, int value)
+      : Literal(line, col, INTEIRO), value(value) {
+    cout << "Construindo nó literal (inteiro): " << value << endl;
+  }
 
-        void semanticAnalyze(VariableTable variableTable, FunctionTable functionTable) const
-        {
-            cout << "Análise semântica do nó literal (inteiro)" << endl;
-        }
+  void semanticAnalyze(VariableTable variableTable,
+                       FunctionTable functionTable) const {
+    cout << "Análise semântica do nó literal (inteiro)" << endl;
+  }
 
-        void print(FILE *out, int d) const
-        {
-            indent(out, d);
-            fprintf(out, "LiteralInteiro(%d)", value);
-        }
-    };
+  void print(FILE *out, int d) const {
+    indent(out, d);
+    fprintf(out, "LiteralInteiro(%d)", value);
+  }
+};
 
-    class LiteralReal : public Literal
-    {
-    public:
-        double value;
-        LiteralReal(double value) : Literal(REAL), value(value)
-        {
-            cout << "Construindo nó literal (real): " << value << endl;
-        }
+class LiteralReal : public Literal {
+public:
+  double value;
+  LiteralReal(int line, int col, double value)
+      : Literal(line, col, REAL), value(value) {
+    cout << "Construindo nó literal (real): " << value << endl;
+  }
 
-        void semanticAnalyze(VariableTable variableTable, FunctionTable functionTable) const
-        {
-        }
+  void semanticAnalyze(VariableTable variableTable,
+                       FunctionTable functionTable) const {}
 
-        void print(FILE *out, int d) const
-        {
-            indent(out, d);
-            fprintf(out, "LiteralReal(%f)", value);
-        }
-    };
+  void print(FILE *out, int d) const {
+    indent(out, d);
+    fprintf(out, "LiteralReal(%f)", value);
+  }
+};
 
-    class LiteralCadeia : public Literal
-    {
-    public:
-        string value;
-        LiteralCadeia(string *value) : Literal(CADEIA), value(*value)
-        {
-            cout << "Construindo nó literal (string): " << *value << endl;
-        }
+class LiteralCadeia : public Literal {
+public:
+  string value;
+  LiteralCadeia(int line, int col, string *value)
+      : Literal(line, col, CADEIA), value(*value) {
+    cout << "Construindo nó literal (string): " << *value << endl;
+  }
 
-        void semanticAnalyze(VariableTable variableTable, FunctionTable functionTable) const
-        {
-        }
+  void semanticAnalyze(VariableTable variableTable,
+                       FunctionTable functionTable) const {}
 
-        void print(FILE *out, int d) const
-        {
-            indent(out, d);
-            fprintf(out, "LiteralCadeia(%s)", value.c_str());
-        }
-    };
-}
+  void print(FILE *out, int d) const {
+    indent(out, d);
+    fprintf(out, "LiteralCadeia(%s)", value.c_str());
+  }
+};
+} // namespace A
 
 #endif /* LITERAL_H */
