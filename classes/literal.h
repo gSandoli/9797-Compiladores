@@ -24,7 +24,8 @@ public:
   int value;
   LiteralInteiro(int line, int col, int value)
       : Literal(line, col, INTEIRO), value(value) {
-    cout << "Construindo nó literal (inteiro): " << value << endl;
+    cout << "Construindo nó literal (inteiro " << type << "): " << value
+         << endl;
   }
 
   void semanticAnalyze(VariableTable variableTable,
@@ -43,11 +44,13 @@ public:
   double value;
   LiteralReal(int line, int col, double value)
       : Literal(line, col, REAL), value(value) {
-    cout << "Construindo nó literal (real): " << value << endl;
+    cout << "Construindo nó literal (real " << type << "): " << value << endl;
   }
 
   void semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {}
+                       FunctionTable functionTable) const {
+    cout << "Análise semântica do nó literal (real)" << endl;
+  }
 
   void print(FILE *out, int d) const {
     indent(out, d);
@@ -60,11 +63,14 @@ public:
   string value;
   LiteralCadeia(int line, int col, string *value)
       : Literal(line, col, CADEIA), value(*value) {
-    cout << "Construindo nó literal (string): " << *value << endl;
+    cout << "Construindo nó literal (cadeia " << type << "): " << *value
+         << endl;
   }
 
   void semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {}
+                       FunctionTable functionTable) const {
+    cout << "Análise semântica do nó literal (cadeia)" << endl;
+  }
 
   void print(FILE *out, int d) const {
     indent(out, d);

@@ -26,8 +26,9 @@ public:
                        FunctionTable functionTable) const {
     cout << "Análise semântica do nó chamada de função" << endl;
     if (!functionTable.exists(identifier)) {
-      cerr << "[ERRO SEMÂNTICO] Função não existe: " << identifier << " "
-           << line << ":" << col << endl;
+      cerr << "[ERRO SEMÂNTICO] Função não existe: " << identifier << " ";
+      printPosition();
+      exit(0);
     }
     if (args != nullptr) {
       args->semanticAnalyze(variableTable, functionTable);

@@ -240,8 +240,8 @@ local_de_armazenamento : IDENTIFIER
                        | local_de_armazenamento ABR_PRT expr FCH_PRT
 
 literal : INTEIROV {  $$ = new LiteralInteiro(driver.line, driver.col, $1); }
-        | REALV { $$ = new LiteralReal(driver.line, driver.col,$1); }
-        | CADEIAV { $$ = new LiteralCadeia(driver.line, driver.col,$1); }
+        | REALV { $$ = new LiteralReal(driver.line, driver.col, $1); }
+        | CADEIAV { $$ = new LiteralCadeia(driver.line, driver.col, $1); }
 
 /* comandos */
 lista_comandos: { $$ = nullptr; }

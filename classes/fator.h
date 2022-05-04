@@ -26,19 +26,23 @@ public:
   FatorLiteral(int line, int col, Ast *literal)
       : Fator(line, col, LITERAL), literal(literal) {
     Literal *fl = ((Literal *)literal);
-    if (fl->type == Literal::Type::INTEIRO) {
+    switch (fl->type) {
+    case Literal::Type::INTEIRO:
       cout << "Construindo nó fator literal: " << ((LiteralInteiro *)fl)->value
            << endl;
-    }
-
-    if (fl->type == Literal::Type::REAL) {
+      break;
+    case Literal::Type::REAL:
       cout << "Construindo nó fator literal: " << ((LiteralReal *)fl)->value
            << endl;
-    }
-
-    if (fl->type == Literal::Type::CADEIA) {
+      break;
+    case Literal::Type::CADEIA:
       cout << "Construindo nó fator literal: " << ((LiteralCadeia *)fl)->value
            << endl;
+      break;
+    default:
+      cerr << "[ERRO] Tipo de literal inexistente";
+      printPosition();
+      exit(0);
     }
   }
 
