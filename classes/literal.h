@@ -6,9 +6,17 @@
 #include "ast.h"
 #include "util/print.h"
 #include <iostream>
+#include <ostream>
 #include <string>
 
+#include "llvm/ADT/APFloat.h"
+#include "llvm/ADT/APInt.h"
+#include "llvm/IR/Constants.h"
+#include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/Value.h"
+
 using namespace std;
+using namespace llvm;
 namespace A {
 class Literal : public Ast {
 public:
@@ -29,8 +37,15 @@ public:
   }
 
   void semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {
-    cout << "Análise semântica do nó literal (inteiro)" << endl;
+                       FunctionTable functionTable) const {}
+
+  Value *tradutor(unique_ptr<LLVMContext> context,
+                  unique_ptr<IRBuilder<>> builder, unique_ptr<Module> module) {
+    cout << "Tradutor nó literal (inteiro)" << endl;
+    ConstantInt *ci;
+    ci = ConstantInt::get(*context, APInt(64, value));
+    cout << "ci: " << ci->getType()->getTypeID() << endl;
+    return ci;
   }
 
   void print(FILE *out, int d) const {
@@ -48,8 +63,16 @@ public:
   }
 
   void semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {
-    cout << "Análise semântica do nó literal (real)" << endl;
+                       FunctionTable functionTable) const {}
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder,
+                  unique_ptr<Module> &module) {
+    cout << "Tradutor nó literal (real)" << endl;
+    ConstantFP *ret;
+    ret = ConstantFP::get(*context, APFloat(value));
+    cout << "cf: " << ret->getType()->getTypeID() << endl;
+    return ret;
   }
 
   void print(FILE *out, int d) const {
@@ -68,8 +91,13 @@ public:
   }
 
   void semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {
-    cout << "Análise semântica do nó literal (cadeia)" << endl;
+                       FunctionTable functionTable) const {}
+
+  // TOODO: achar a "classe" do llvm que referencia string
+  Value *tradutor(unique_ptr<LLVMContext> context,
+                  unique_ptr<IRBuilder<>> builder, unique_ptr<Module> module) {
+    // return ConstantFP::get(context, APFloat(value));
+    return nullptr;
   }
 
   void print(FILE *out, int d) const {

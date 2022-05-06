@@ -17,6 +17,9 @@ container:
 	@docker build -t environment-compiler-9797 . ; \
 	docker run --name diogo -it -d environment-compiler-9797 ; \
 
+container-run:
+	@docker run --name diogo -it -d environment-compiler-9797 ; \
+
 cp: 
 	@docker cp .  diogo:code/ ; \
 	docker exec -it diogo /bin/bash ; \

@@ -9,8 +9,17 @@
 #include "util/print.h"
 #include <iostream>
 #include <string>
+#include <type_traits>
+
+#include "llvm/ADT/APFloat.h"
+#include "llvm/IR/DerivedTypes.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/Type.h"
+#include "llvm/IR/Value.h"
 
 using namespace std;
+using namespace llvm;
 
 namespace A {
 class Funcao : public Ast {
@@ -33,6 +42,35 @@ public:
     if (args != nullptr) {
       args->semanticAnalyze(variableTable, functionTable);
     }
+  }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder,
+                  unique_ptr<Module> &module) {
+    cout << "Tradutor do nó Chamada de Função" << endl;
+
+    // std::vector<Type *> Ints(1, Type::getInt64Ty(*context));
+    std::vector<Type *> Doubles(1, Type::getDoublePtrTy(*context));
+
+    FunctionType *FT =
+        FunctionType::get(Type::getVoidTy(*context), Doubles, false);
+
+    Function *F = Function::Create(FT, Function::ExternalLinkage, "imprimer",
+                                   module.get());
+
+    /* Cria um novo vetor de Value com os argumentos*/
+    vector<Value *> ArgsV;
+    Fator *f((Fator *)args);
+    FatorLiteral *fl = ((FatorLiteral *)f);
+    LiteralReal *li = ((LiteralReal *)fl->literal);
+    ArgsV.push_back(li->tradutor(context, builder, module));
+    // cout << "vl: " << vl->getType()->getTypeID() << endl;
+    // ArgsV.push_back(vl);
+
+    // retorna a chamada de função
+    cout << "ArgsV: " << ArgsV.at(0)->getType()->getTypeID() << endl;
+    Value *v = builder->CreateCall(F, ArgsV);
+    return v;
   }
 
   void print(FILE *out, int d) const {

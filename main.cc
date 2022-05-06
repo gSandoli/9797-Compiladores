@@ -1,23 +1,26 @@
-#include <string>
 #include <iostream>
-#include <unistd.h>
+#include <llvm/IR/Module.h>
 #include <stdio.h>
+#include <string>
+#include <unistd.h>
 
-#include "driver.hh"
 #include "classes/ast.h"
-#include "classes/funcao.h"
 #include "classes/fator.h"
+#include "classes/funcao.h"
 #include "classes/literal.h"
+#include "driver.hh"
 
-#include <iostream>
-#include <iostream>
 #include "classes/util/function_table.h"
+#include <iostream>
+
+#include "classes/codegen/codegen.cpp"
+#include <map>
 
 using namespace std;
 using namespace T;
+using namespace llvm;
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
   string filename;
   string output = "a.out";
   string tree = "tree.out";
@@ -25,22 +28,25 @@ int main(int argc, char **argv)
   bool assemblyCode = false;     // fonte.s
   int opt;
 
-  if (argc == 1)
-  {
-    cerr << "ERROR: missing arguments\n"
-         << endl;
+  if (argc == 1) {
+    cerr << "ERROR: missing arguments\n" << endl;
     cout << "USAGE: ./sc [-i] [-s] [-o <destino>] <fonte>" << endl;
-    cout << "\t-i : imprime o código intermediário. O arquivo de saída deve chamar fonte.ll // opcional" << endl;
-    cout << "\t-s : imprime o código Assembly. O arquivo de saída deve chamar fonte.s // opcional" << endl;
-    cout << "\t-o <destino> : gera o executável com o nome destino. Caso não seja fornecido, deve ser gerado um arquivo chamado a.out. // optional" << endl;
+    cout << "\t-i : imprime o código intermediário. O arquivo de saída deve "
+            "chamar fonte.ll // opcional"
+         << endl;
+    cout << "\t-s : imprime o código Assembly. O arquivo de saída deve chamar "
+            "fonte.s // opcional"
+         << endl;
+    cout << "\t-o <destino> : gera o executável com o nome destino. Caso não "
+            "seja fornecido, deve ser gerado um arquivo chamado a.out. // "
+            "optional"
+         << endl;
     cout << "\t<fonte> : código fonte, cujo extensão é .s" << endl;
     abort();
   }
 
-  while ((opt = getopt(argc, argv, "iso:")) != EOF)
-  {
-    switch (opt)
-    {
+  while ((opt = getopt(argc, argv, "iso:")) != EOF) {
+    switch (opt) {
     case 'i':
       intermediateCode = true;
       break;
@@ -58,18 +64,13 @@ int main(int argc, char **argv)
   }
 
   int argsNotParsed = argc - optind;
-  if (argsNotParsed < 1)
-  {
+  if (argsNotParsed < 1) {
     cerr << "ERROR: source file is missing" << endl;
     abort();
-  }
-  else if (argsNotParsed > 1)
-  {
+  } else if (argsNotParsed > 1) {
     cerr << "ERROR: source file is wrong" << endl;
     abort();
-  }
-  else
-  {
+  } else {
     filename = argv[optind];
   }
 
@@ -88,23 +89,30 @@ int main(int argc, char **argv)
   driver.root->semanticAnalyze(*driver.variableTable, *driver.functionTable);
 
   FILE *treeOutput = fopen(tree.c_str(), "w");
-  if (treeOutput != NULL)
-  {
+  if (treeOutput != NULL) {
     driver.root->print(treeOutput, 0);
   }
   fclose(treeOutput);
 
-  if (intermediateCode)
-  {
+  if (intermediateCode) {
     FILE *out = fopen(output.c_str(), "w");
-    if (out != NULL)
-    {
+    if (out != NULL) {
       // implementar o código intermediario aqui
     }
     fclose(out);
   }
 
-  // FunctionTable *table = new FunctionTable();
-  // table->show();
+  static unique_ptr<LLVMContext> context;
+  static unique_ptr<Module> module;
+  static unique_ptr<IRBuilder<>> builder;
+  static map<string, Value *> NamedValues;
+
+  context = make_unique<LLVMContext>();
+  builder = make_unique<IRBuilder<>>(*context);
+  module = make_unique<Module>("teste", *context);
+
+  /* Geração de código intermediário */
+  Value *codegen = tradutor(context, builder, module, driver.root);
+
   return 0;
 }

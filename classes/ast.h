@@ -8,8 +8,12 @@
 #include <iostream>
 #include <string>
 
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/LLVMContext.h"
+
 using namespace std;
 using namespace T;
+using namespace llvm;
 
 namespace A {
 class Ast {
