@@ -1,2 +1,2 @@
 ação:
-    imprimer(100.50)
+    imprimer(100.2)

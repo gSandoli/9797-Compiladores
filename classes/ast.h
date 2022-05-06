@@ -21,9 +21,7 @@ public:
   int line;
   int col;
 
-  Ast(int line, int col) : line(line), col(col) {
-    cout << line << ":" << col << " ";
-  }
+  Ast(int line, int col) : line(line), col(col) {}
 
   virtual void print(FILE *out, int d) const = 0;
   virtual void semanticAnalyze(VariableTable variableTable,
@@ -32,7 +30,8 @@ public:
     cout << " (" << line << ":" << col << ")" << endl;
   };
 
-  // virtual Value *tradutor(unique_ptr<LLVMContext> &context, unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module) = 0;
+  // virtual Value *tradutor(unique_ptr<LLVMContext> &context,
+  // unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module) = 0;
 };
 } // namespace A
 

@@ -7,6 +7,7 @@
 #include "fator.h"
 #include "literal.h"
 #include "util/print.h"
+#include <cstdlib>
 #include <iostream>
 #include <string>
 #include <type_traits>
@@ -47,14 +48,16 @@ public:
     if (args != nullptr) {
       args->semanticAnalyze(variableTable, functionTable);
       Fator *f = ((Fator *)args);
-      // validando se tipo de parâmetro é esperado na função
-      if (f->type == Fator::LITERAL &&
-          ((FatorLiteral *)f)->type != functionTable.getArgs(identifier)) {
-        cout << ((FatorLiteral *)f)->type << endl;
-        cout << functionTable.getArgs(identifier) << endl;
-        cerr << "[ERRO SEMÂNTICO] Tipo de parâmetro incorreto: " << identifier;
-        printPosition();
-        exit(0);
+      if (f->type == Fator::LITERAL) {
+        // fazendo cast para literal e verificando tipo de literal
+        FatorLiteral *fl = ((FatorLiteral *)f);
+        if (((Literal *)fl->literal)->type !=
+            functionTable.getArgs(identifier)) {
+          cerr << "[ERRO SEMÂNTICO] Tipo de parâmetro incorreto: "
+               << identifier;
+          printPosition();
+          exit(0);
+        }
       }
     }
   }
@@ -63,26 +66,27 @@ public:
                   unique_ptr<IRBuilder<>> &builder,
                   unique_ptr<Module> &module) {
 
-    // std::vector<Type *> Ints(1, Type::getInt64Ty(*context));
-    std::vector<Type *> Doubles(1, Type::getDoubleTy(*context));
-    FunctionType *FT =
-        FunctionType::get(Type::getVoidTy(*context), Doubles, false);
-
-    Function *F = Function::Create(FT, Function::ExternalLinkage, "imprimer",
-                                   module.get());
-
-    /* Cria um novo vetor de Value com os argumentos*/
-    vector<Value *> ArgsV;
     Fator *f((Fator *)args);
     FatorLiteral *fl = ((FatorLiteral *)f);
-    // LiteralReal *li = ((LiteralReal *)fl->literal);
-    ArgsV.push_back(fl->tradutor(context, builder, module));
-    // cout << "vl: " << vl->getType()->getTypeID() << endl;
-    // ArgsV.push_back(vl);
+    Literal *literal = ((Literal *)fl->literal);
+    std::vector<Type *> Params;
 
-    // retorna a chamada de função
-    Value *v = builder->CreateCall(F, ArgsV);
-    return v;
+    // verificando tipo do parâmetro
+    if (literal->type == Literal::Type::INTEIRO) {
+      Params.push_back(Type::getInt64Ty(*context));
+    } else if (literal->type == Literal::Type::REAL) {
+      Params.push_back(Type::getDoubleTy(*context));
+    }
+
+    FunctionType *FT =
+        FunctionType::get(Type::getVoidTy(*context), Params, false);
+
+    Function *F = Function::Create(FT, Function::ExternalLinkage, identifier,
+                                   module.get());
+
+    vector<Value *> ArgsV;
+    ArgsV.push_back(fl->tradutor(context, builder, module));
+    return builder->CreateCall(F, ArgsV);
   }
 
   void print(FILE *out, int d) const {

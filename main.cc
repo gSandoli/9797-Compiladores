@@ -24,7 +24,6 @@ using namespace llvm;
 int main(int argc, char **argv) {
   string filename;
   string folder = "output/";
-  string lib = folder + "lib.o";
   string output = folder + "a.out";
   string fonte = folder + "fonte.ll";
   string fonteAssembly = folder + "fonte.s";
@@ -84,15 +83,6 @@ int main(int argc, char **argv) {
   Simples::Driver driver;
   driver.parse_file(filename);
 
-  // Funcao *func = ((Funcao *)driver.root);
-  // Fator *f = ((Fator *)func->args);
-  // FatorLiteral *fl = ((FatorLiteral *)f);
-  // LiteralInteiro *li = ((LiteralInteiro *)fl->literal);
-
-  // cout << "MAIN Nó chamada de função:" << endl;
-  // cout << "\tChamada: " << func->identifier << endl;
-  // cout << "\tArgs: " << li->value << endl;
-
   driver.root->semanticAnalyze(*driver.variableTable, *driver.functionTable);
 
   system("mkdir -p output");
@@ -116,6 +106,7 @@ int main(int argc, char **argv) {
       tradutor(context, builder, module, driver.root, llvmFile, fonte);
 
   if (assemblyCode) {
+    // default: llc-13 output/fonte.ll -o output/fonte.s
     const string cmdAss = "llc-13 " + fonte + " -o " + fonteAssembly;
     system(cmdAss.c_str());
     cout << "Wrote " << fonteAssembly << endl;
@@ -126,10 +117,20 @@ int main(int argc, char **argv) {
     system(cmdLib.c_str());
   }
 
-  const string cmdLib = "clang-13 -fpic -c -o " + lib + " classes/util/lib.cpp";
+  const string cmdLib =
+      "clang-13 -fpic -c -o output/lib.o classes/util/lib.cpp";
   system(cmdLib.c_str());
-  const string cmd = "g++ " + llvmFile + " " + lib + " -o " + output;
+  // default: g++ output/llvm.out output/lib.o -o output/a.out
+  const string cmd = "g++ " + llvmFile + " output/lib.o -o " + output;
   system(cmd.c_str());
   cout << "Wrote " << output << endl;
+  // Funcao *func = ((Funcao *)driver.root);
+  // Fator *f = ((Fator *)func->args);
+  // FatorLiteral *fl = ((FatorLiteral *)f);
+  // LiteralInteiro *li = ((LiteralInteiro *)fl->literal);
+
+  // cout << "MAIN Nó chamada de função:" << endl;
+  // cout << "\tChamada: " << func->identifier << endl;
+  // cout << "\tArgs: " << li->value << endl;
   return 0;
 }
