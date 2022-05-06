@@ -11,7 +11,6 @@
 #include <string>
 #include <type_traits>
 
-#include "llvm/ADT/APFloat.h"
 #include "llvm/IR/DerivedTypes.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/LLVMContext.h"
@@ -61,8 +60,8 @@ public:
     vector<Value *> ArgsV;
     Fator *f((Fator *)args);
     FatorLiteral *fl = ((FatorLiteral *)f);
-    LiteralReal *li = ((LiteralReal *)fl->literal);
-    ArgsV.push_back(li->tradutor(context, builder, module));
+    // LiteralReal *li = ((LiteralReal *)fl->literal);
+    ArgsV.push_back(fl->tradutor(context, builder, module));
     // cout << "vl: " << vl->getType()->getTypeID() << endl;
     // ArgsV.push_back(vl);
 

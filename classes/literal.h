@@ -25,27 +25,23 @@ public:
   Type type;
 
   Literal(int line, int col, Type type) : Ast(line, col), type(type) {}
+  virtual Value *tradutor(unique_ptr<LLVMContext> &context, unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module) = 0;
+
 };
 
 class LiteralInteiro : public Literal {
 public:
   int value;
   LiteralInteiro(int line, int col, int value)
-      : Literal(line, col, INTEIRO), value(value) {
-    cout << "Construindo nó literal (inteiro " << type << "): " << value
-         << endl;
-  }
+      : Literal(line, col, INTEIRO), value(value) {}
 
   void semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {}
 
-  Value *tradutor(unique_ptr<LLVMContext> context,
-                  unique_ptr<IRBuilder<>> builder, unique_ptr<Module> module) {
-    cout << "Tradutor nó literal (inteiro)" << endl;
-    ConstantInt *ci;
-    ci = ConstantInt::get(*context, APInt(64, value));
-    cout << "ci: " << ci->getType()->getTypeID() << endl;
-    return ci;
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder,
+                  unique_ptr<Module> &module) {
+    return ConstantInt::get(*context, APInt(64, value));
   }
 
   void print(FILE *out, int d) const {
@@ -58,9 +54,7 @@ class LiteralReal : public Literal {
 public:
   double value;
   LiteralReal(int line, int col, double value)
-      : Literal(line, col, REAL), value(value) {
-    cout << "Construindo nó literal (real " << type << "): " << value << endl;
-  }
+      : Literal(line, col, REAL), value(value) {}
 
   void semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {}
@@ -68,11 +62,7 @@ public:
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder,
                   unique_ptr<Module> &module) {
-    cout << "Tradutor nó literal (real)" << endl;
-    ConstantFP *ret;
-    ret = ConstantFP::get(*context, APFloat(value));
-    cout << "cf: " << ret->getType()->getTypeID() << endl;
-    return ret;
+    return ConstantFP::get(*context, APFloat(value));
   }
 
   void print(FILE *out, int d) const {
@@ -94,10 +84,10 @@ public:
                        FunctionTable functionTable) const {}
 
   // TOODO: achar a "classe" do llvm que referencia string
-  Value *tradutor(unique_ptr<LLVMContext> context,
-                  unique_ptr<IRBuilder<>> builder, unique_ptr<Module> module) {
-    // return ConstantFP::get(context, APFloat(value));
-    return nullptr;
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder,
+                  unique_ptr<Module> &module) {
+    return builder->CreateGlobalStringPtr(value, "str");
   }
 
   void print(FILE *out, int d) const {

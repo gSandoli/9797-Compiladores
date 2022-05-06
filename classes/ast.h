@@ -31,6 +31,8 @@ public:
   void printPosition() const {
     cout << " (" << line << ":" << col << ")" << endl;
   };
+
+  // virtual Value *tradutor(unique_ptr<LLVMContext> &context, unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module) = 0;
 };
 } // namespace A
 

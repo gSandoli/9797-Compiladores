@@ -158,14 +158,6 @@ eol     [\n\r]+
 	ADJ_COL;
 	return token::NULO;
 }
-"início" {
-	ADJ_COL;
-	return token::INICIO;
-}
-"fim" {
-	ADJ_COL;
-	return token::FIM;
-}
 "função" {
 	ADJ_COL;
 	return token::FUNCAO;

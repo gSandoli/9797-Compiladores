@@ -19,6 +19,7 @@ public:
   enum Type { SOMA, SUBTRACAO, DIVISAO, MULTIPLICACAO };
   Type type;
   Expressao(int line, int col, Type type) : Ast(line, col), type(type) {}
+  Value *tradutor(unique_ptr<LLVMContext> &context, unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module);
 };
 
 class ExpressaoAritmeticaDivisao : public Expressao {
@@ -141,6 +142,15 @@ public:
     indent(out, d);
     fprintf(out, ")\n");
   }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder,
+                  unique_ptr<Module> &module) {
+    auto L = ((Fator *)esquerda)->tradutor(context, builder, module);
+    auto R = ((Fator *)direita)->tradutor(context, builder, module);
+
+    return nullptr;
+  }
 };
 
 class ExpressaoAritmeticaMultiplicacao : public Expressao {
@@ -254,6 +264,15 @@ public:
     indent(out, d);
     fprintf(out, ")\n");
   }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder,
+                  unique_ptr<Module> &module) {
+    auto L = ((Fator *)esquerda)->tradutor(context, builder, module);
+    auto R = ((Fator *)direita)->tradutor(context, builder, module);
+
+    return nullptr;
+  }
 };
 
 class ExpressaoAritmeticaSoma : public Expressao {
@@ -364,6 +383,15 @@ public:
     indent(out, d);
     fprintf(out, ")\n");
   }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder,
+                  unique_ptr<Module> &module) {
+    auto L = ((Fator *)esquerda)->tradutor(context, builder, module);
+    auto R = ((Fator *)direita)->tradutor(context, builder, module);
+
+    return nullptr;
+  }
 };
 
 class ExpressaoAritmeticaSubtracao : public Expressao {
@@ -473,6 +501,15 @@ public:
     direita->print(out, d + 1);
     indent(out, d);
     fprintf(out, ")\n");
+  }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder,
+                  unique_ptr<Module> &module) {
+    auto L = ((Fator *)esquerda)->tradutor(context, builder, module);
+    auto R = ((Fator *)direita)->tradutor(context, builder, module);
+
+    return nullptr;
   }
 };
 } // namespace A

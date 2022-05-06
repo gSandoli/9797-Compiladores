@@ -104,6 +104,6 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   // pass.run(*module);
   dest.flush();
 
-  outs() << "Wrote " << filename << "\n";
+  // outs() << "Wrote " << filename << "\n";
   return nullptr;
 }

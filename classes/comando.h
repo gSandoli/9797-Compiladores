@@ -36,6 +36,10 @@ public:
     indent(out, d);
     fprintf(out, ")\n");
   }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context, unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module){
+    return nullptr;
+  }
 };
 } // namespace A
 #endif /* COMANDO_H */

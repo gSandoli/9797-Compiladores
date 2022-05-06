@@ -76,7 +76,6 @@
 
 /* Tokens */
 %token              TOK_EOF 0     "end of file"
-%token			        EOL		        "end of line"
 %token <stringVal> 	IDENTIFIER    "identifier"
 %token <integerVal> INTEIROV      "inteiroV"
 %token <doubleVal>  REALV         "realV"
@@ -133,8 +132,6 @@
 %token  REF           "ref"
 %token  RETORNE       "retorne"
 %token  NULO          "nulo"
-%token  INICIO        "início"
-%token  FIM           "fim"
 %token  FUNCAO        "função"
 %token  ACAO          "ação"
 

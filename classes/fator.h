@@ -6,7 +6,9 @@
 #include "ast.h"
 #include "literal.h"
 #include "util/print.h"
+#include <cstddef>
 #include <iostream>
+#include <llvm-13/llvm/IR/Constants.h>
 #include <string>
 
 using namespace std;
@@ -18,6 +20,7 @@ public:
   Type type;
 
   Fator(int line, int col, Type type) : Ast(line, col), type(type) {}
+  Value *tradutor(unique_ptr<LLVMContext> &context, unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module);
 };
 
 class FatorLiteral : public Fator {
@@ -60,6 +63,13 @@ public:
     indent(out, d);
     fprintf(out, ")\n");
   }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder,
+                  unique_ptr<Module> &module) {
+    Value *v = ((Literal *)literal)->tradutor(context, builder, module);
+    return v;
+  }
 };
 
 class FatorExpressao : public Fator {
@@ -82,6 +92,14 @@ public:
     expressao->print(out, d + 1);
     indent(out, d);
     fprintf(out, ")\n");
+  }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder,
+                  unique_ptr<Module> &module) {
+    // Value *v = ((Expressao *)expressao)->tradutor(context, builder, module);
+    // return v;
+    return nullptr;
   }
 };
 
@@ -107,6 +125,14 @@ public:
     indent(out, d);
     fprintf(out, ")\n");
   }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder,
+                  unique_ptr<Module> &module) {
+    // Value *v = ((Funcao *)funcao)->tradutor(context, builder, module);
+    // return v;
+    return nullptr;
+  }
 };
 
 class FatorNil : public Fator {
@@ -123,6 +149,12 @@ public:
   void print(FILE *out, int d) const {
     indent(out, d);
     fprintf(out, "FatorNil(NULL)\n");
+  }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder,
+                  unique_ptr<Module> &module) {
+    return ConstantPointerNull::get(PointerType::getUnqual(StructType::get(*context)));
   }
 };
 } // namespace A
