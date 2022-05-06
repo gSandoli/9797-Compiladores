@@ -27,7 +27,7 @@ using namespace A;
 
 Value *tradutor(unique_ptr<LLVMContext> &context,
                 unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                Ast *root) {
+                Ast *root, string filename) {
   deque<StructType *> staticLink;
   AllocaInst *currentFrame;
   size_t currentLevel = 0;
@@ -83,7 +83,6 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   // ReturnInst::Create(context, block);
   cout << "Finalizaou geração de código." << endl;
 
-  auto filename = "output.o";
   error_code EC;
   raw_fd_ostream dest(filename, EC, sys::fs::OF_None);
 

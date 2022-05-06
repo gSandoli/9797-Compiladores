@@ -1,2 +1,2 @@
 ação:
-    imprimer("diogo")
+    imprimer(100.50)

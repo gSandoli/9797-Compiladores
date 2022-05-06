@@ -1,6 +1,7 @@
 #include <iostream>
 #include <llvm/IR/Module.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string>
 #include <unistd.h>
 
@@ -22,8 +23,13 @@ using namespace llvm;
 
 int main(int argc, char **argv) {
   string filename;
-  string output = "a.out";
-  string tree = "tree.out";
+  string folder = "output/";
+  string lib = folder + "lib.o";
+  string output = folder + "a.out";
+  string fonte = folder + "fonte.ll";
+  string fonteAssembly = folder + "fonte.s";
+  string tree = folder + "tree.out";
+  string llvmFile = folder + "llvm.out";
   bool intermediateCode = false; // fonte.ll
   bool assemblyCode = false;     // fonte.s
   int opt;
@@ -56,6 +62,7 @@ int main(int argc, char **argv) {
     case 'o':
       output = optarg;
       output += ".out";
+      output = folder + output;
       break;
     default:
       cerr << endl;
@@ -88,6 +95,7 @@ int main(int argc, char **argv) {
 
   driver.root->semanticAnalyze(*driver.variableTable, *driver.functionTable);
 
+  system("mkdir -p output");
   FILE *treeOutput = fopen(tree.c_str(), "w");
   if (treeOutput != NULL) {
     driver.root->print(treeOutput, 0);
@@ -112,7 +120,13 @@ int main(int argc, char **argv) {
   module = make_unique<Module>("teste", *context);
 
   /* Geração de código intermediário */
-  Value *codegen = tradutor(context, builder, module, driver.root);
+  Value *codegen = tradutor(context, builder, module, driver.root, llvmFile);
+
+  const string cmdLib = "clang-13 -c -o" + lib + " classes/util/lib.cpp";
+  system(cmdLib.c_str());
+  const string cmd = "g++ " + llvmFile + " " + lib + " -o" + output;
+  system(cmd.c_str());
+  cout << "Wrote " << output << endl;
 
   return 0;
 }
