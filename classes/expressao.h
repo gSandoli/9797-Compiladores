@@ -19,7 +19,8 @@ public:
   enum Type { SOMA, SUBTRACAO, DIVISAO, MULTIPLICACAO };
   Type type;
   Expressao(int line, int col, Type type) : Ast(line, col), type(type) {}
-  Value *tradutor(unique_ptr<LLVMContext> &context, unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module);
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module);
 };
 
 class ExpressaoAritmeticaDivisao : public Expressao {

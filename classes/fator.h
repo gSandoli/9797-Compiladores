@@ -20,7 +20,8 @@ public:
   Type type;
 
   Fator(int line, int col, Type type) : Ast(line, col), type(type) {}
-  Value *tradutor(unique_ptr<LLVMContext> &context, unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module);
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module);
 };
 
 class FatorLiteral : public Fator {
@@ -29,29 +30,10 @@ public:
   FatorLiteral(int line, int col, Ast *literal)
       : Fator(line, col, LITERAL), literal(literal) {
     Literal *fl = ((Literal *)literal);
-    switch (fl->type) {
-    case Literal::Type::INTEIRO:
-      cout << "Construindo nó fator literal: " << ((LiteralInteiro *)fl)->value
-           << endl;
-      break;
-    case Literal::Type::REAL:
-      cout << "Construindo nó fator literal: " << ((LiteralReal *)fl)->value
-           << endl;
-      break;
-    case Literal::Type::CADEIA:
-      cout << "Construindo nó fator literal: " << ((LiteralCadeia *)fl)->value
-           << endl;
-      break;
-    default:
-      cerr << "[ERRO] Tipo de literal inexistente";
-      printPosition();
-      exit(0);
-    }
   }
 
   void semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
-    cout << "Análise semântica do nó fator literal" << endl;
     literal->semanticAnalyze(variableTable, functionTable);
   }
 
@@ -76,13 +58,10 @@ class FatorExpressao : public Fator {
 public:
   Ast *expressao;
   FatorExpressao(int line, int col, Ast *expressao)
-      : Fator(line, col, EXPRESSAO), expressao(expressao) {
-    cout << "Construindo nó fator expressão" << endl;
-  }
+      : Fator(line, col, EXPRESSAO), expressao(expressao) {}
 
   void semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
-    cout << "Análise semântica do nó fator expressão" << endl;
     expressao->semanticAnalyze(variableTable, functionTable);
   }
 
@@ -107,13 +86,10 @@ class FatorFuncao : public Fator {
 public:
   Ast *funcao;
   FatorFuncao(int line, int col, Ast *funcao)
-      : Fator(line, col, FUNCAO), funcao(funcao) {
-    cout << "Construindo nó fator função" << endl;
-  }
+      : Fator(line, col, FUNCAO), funcao(funcao) {}
 
   void semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
-    cout << "Análise semântica do nó fator função" << endl;
     funcao->semanticAnalyze(variableTable, functionTable);
   }
 
@@ -137,14 +113,10 @@ public:
 
 class FatorNil : public Fator {
 public:
-  FatorNil(int line, int col) : Fator(line, col, NIL) {
-    cout << "Construindo nó fator nil" << endl;
-  }
+  FatorNil(int line, int col) : Fator(line, col, NIL) {}
 
   void semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {
-    cout << "Análise semântica do nó fator nil" << endl;
-  }
+                       FunctionTable functionTable) const {}
 
   void print(FILE *out, int d) const {
     indent(out, d);
@@ -154,7 +126,8 @@ public:
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder,
                   unique_ptr<Module> &module) {
-    return ConstantPointerNull::get(PointerType::getUnqual(StructType::get(*context)));
+    return ConstantPointerNull::get(
+        PointerType::getUnqual(StructType::get(*context)));
   }
 };
 } // namespace A

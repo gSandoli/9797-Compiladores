@@ -26,27 +26,42 @@ public:
   string identifier;
   Ast *args;
   Funcao(int line, int col, string *identifier, Ast *args)
-      : Ast(line, col), identifier(*identifier), args(args) {
-    cout << "Construindo nó chamada de função: " << *identifier << endl;
-  }
+      : Ast(line, col), identifier(*identifier), args(args) {}
 
   void semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
-    cout << "Análise semântica do nó chamada de função" << endl;
+    // validando se função existe
     if (!functionTable.exists(identifier)) {
-      cerr << "[ERRO SEMÂNTICO] Função não existe: " << identifier << " ";
+      cerr << "[ERRO SEMÂNTICO] Função não existe: " << identifier;
       printPosition();
       exit(0);
     }
+
+    // validando se função necessita de parâmetros
+    if (functionTable.getArgs(identifier) != 0 && args == nullptr) {
+      cerr << "[ERRO SEMÂNTICO] Parâmetros faltando: " << identifier;
+      printPosition();
+      exit(0);
+    }
+
     if (args != nullptr) {
       args->semanticAnalyze(variableTable, functionTable);
+      Fator *f = ((Fator *)args);
+      // validando se tipo de parâmetro é esperado na função
+      if (f->type == Fator::LITERAL &&
+          ((FatorLiteral *)f)->type != functionTable.getArgs(identifier)) {
+        cout << ((FatorLiteral *)f)->type << endl;
+        cout << functionTable.getArgs(identifier) << endl;
+        cerr << "[ERRO SEMÂNTICO] Tipo de parâmetro incorreto: " << identifier;
+        printPosition();
+        exit(0);
+      }
     }
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder,
                   unique_ptr<Module> &module) {
-    cout << "Tradutor do nó Chamada de Função" << endl;
 
     // std::vector<Type *> Ints(1, Type::getInt64Ty(*context));
     std::vector<Type *> Doubles(1, Type::getDoubleTy(*context));

@@ -89,7 +89,7 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
     return nullptr;
   }
 
-  auto fileType = CGFT_ObjectFile;
+  CodeGenFileType fileType = CGFT_ObjectFile;
 
   if (targetMachine->addPassesToEmitFile(pm, dest, nullptr, fileType)) {
     errs() << "TheTargetMachine can't emit a file of this type";
@@ -102,7 +102,7 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   pm.run(*module);
   dest.flush();
 
-  outs() << "Wrote " << outputFileName << "\n";
-  outs() << "Wrote " << intermediateCodeFilename << "\n";
+  cout << "Wrote " << outputFileName << endl;
+  cout << "Wrote " << intermediateCodeFilename << endl;
   return nullptr;
 }

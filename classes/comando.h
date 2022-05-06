@@ -16,9 +16,7 @@ public:
   Ast *comando;
   Ast *list;
   ListaComando(int line, int col, Ast *comando, Ast *list)
-      : Ast(line, col), comando(comando), list(list) {
-    cout << "Construindo nó lista de comando" << endl;
-  }
+      : Ast(line, col), comando(comando), list(list) {}
 
   void semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
@@ -37,7 +35,9 @@ public:
     fprintf(out, ")\n");
   }
 
-  Value *tradutor(unique_ptr<LLVMContext> &context, unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module){
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder,
+                  unique_ptr<Module> &module) {
     return nullptr;
   }
 };

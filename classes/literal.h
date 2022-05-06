@@ -25,8 +25,9 @@ public:
   Type type;
 
   Literal(int line, int col, Type type) : Ast(line, col), type(type) {}
-  virtual Value *tradutor(unique_ptr<LLVMContext> &context, unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module) = 0;
-
+  virtual Value *tradutor(unique_ptr<LLVMContext> &context,
+                          unique_ptr<IRBuilder<>> &builder,
+                          unique_ptr<Module> &module) = 0;
 };
 
 class LiteralInteiro : public Literal {
@@ -75,10 +76,7 @@ class LiteralCadeia : public Literal {
 public:
   string value;
   LiteralCadeia(int line, int col, string *value)
-      : Literal(line, col, CADEIA), value(*value) {
-    cout << "Construindo nó literal (cadeia " << type << "): " << *value
-         << endl;
-  }
+      : Literal(line, col, CADEIA), value(*value) {}
 
   void semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {}

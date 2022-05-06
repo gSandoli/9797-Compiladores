@@ -126,9 +126,9 @@ int main(int argc, char **argv) {
     system(cmdLib.c_str());
   }
 
-  const string cmdLib = "clang-13 -c -o" + lib + " classes/util/lib.cpp";
+  const string cmdLib = "clang-13 -fpic -c -o " + lib + " classes/util/lib.cpp";
   system(cmdLib.c_str());
-  const string cmd = "g++ " + llvmFile + " " + lib + " -o" + output;
+  const string cmd = "g++ " + llvmFile + " " + lib + " -o " + output;
   system(cmd.c_str());
   cout << "Wrote " << output << endl;
   return 0;

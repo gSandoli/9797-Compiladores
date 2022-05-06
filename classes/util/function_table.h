@@ -53,11 +53,19 @@ public:
     return false;
   }
 
-  int lookArgs(const string &name, const string &arg) {
+  int getArgs(const string &name) {
     for (int i = 0; i < MAX_SIZE; ++i)
-      if (table[i][0] == name && table[i][1] == arg)
-        return true;
-    return false;
+      if (table[i][0] == name) {
+        if (table[i][1] == "inteiro")
+          return 0;
+        if (table[i][1] == "real")
+          return 1;
+        if (table[i][1] == "cadeia")
+          return 2;
+        else
+          return -1;
+      }
+    return 0;
   }
 
   int getType(const string &name) {
