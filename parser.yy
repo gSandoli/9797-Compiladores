@@ -137,14 +137,14 @@
 
 %%
 
-program: declaracoes { /*printf("terminou declaracoes\n");*/}
+program: declaracoes 
        | ACAO DOIS_PONTOS lista_comandos { driver.root = $3; }
 
 declaracoes : lista_declaracao_de_tipos lista_declaracoes_de_globais lista_declaracoes_de_funcoes program
 
 /* declaracao de tipos */
 lista_declaracao_de_tipos : 
-                          | TIPO DOIS_PONTOS lista_declaracao_tipo { /*printf("Declaração de tipos.\n");*/ }
+                          | TIPO DOIS_PONTOS lista_declaracao_tipo 
 
 lista_declaracao_tipo : declaracao_tipo
                       | lista_declaracao_tipo declaracao_tipo
@@ -165,7 +165,7 @@ tipo_constantes : INTEIROV
 
 /* declaracao de globais */
 lista_declaracoes_de_globais : 
-                             | GLOBAL DOIS_PONTOS lista_declaracao_variavel { /*printf("Declaração de variavel global.\n");*/ }
+                             | GLOBAL DOIS_PONTOS lista_declaracao_variavel 
 
 lista_declaracao_variavel : IDENTIFIER DOIS_PONTOS IDENTIFIER PONTO_IGUAL expr
                           | lista_declaracao_variavel IDENTIFIER DOIS_PONTOS IDENTIFIER PONTO_IGUAL expr
@@ -178,11 +178,11 @@ tipo_registro : IDENTIFIER IGUAL literal
 /* declaracao de funcoes */
 
 lista_declaracoes_de_funcoes: 
-                            | FUNCAO DOIS_PONTOS lista_declaracao_funcao { /*printf("Declaração de funções\n");*/ }
+                            | FUNCAO DOIS_PONTOS lista_declaracao_funcao 
 
 lista_declaracao_funcao: 
-                       | IDENTIFIER ABR_PRT args FCH_PRT IGUAL corpo { /*printf("declaracao metodo\n");*/ } lista_declaracao_funcao
-                       | IDENTIFIER ABR_PRT args FCH_PRT DOIS_PONTOS IDENTIFIER IGUAL corpo { /*printf("declaracao funcao\n");*/ } lista_declaracao_funcao
+                       | IDENTIFIER ABR_PRT args FCH_PRT IGUAL corpo lista_declaracao_funcao
+                       | IDENTIFIER ABR_PRT args FCH_PRT DOIS_PONTOS IDENTIFIER IGUAL corpo lista_declaracao_funcao
 
 args: 
     | modificador IDENTIFIER DOIS_PONTOS IDENTIFIER
