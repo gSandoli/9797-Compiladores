@@ -27,7 +27,8 @@ using namespace A;
 
 Value *tradutor(unique_ptr<LLVMContext> &context,
                 unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                Ast *root, string filename) {
+                Ast *root, string outputFileName,
+                string intermediateCodeFilename) {
   deque<StructType *> staticLink;
   AllocaInst *currentFrame;
   size_t currentLevel = 0;
@@ -80,30 +81,28 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
     exit(0);
   }
 
-  // ReturnInst::Create(context, block);
-  cout << "Finalizaou geração de código." << endl;
-
   error_code EC;
-  raw_fd_ostream dest(filename, EC, sys::fs::OF_None);
+  raw_fd_ostream dest(outputFileName, EC, sys::fs::OF_None);
 
   if (EC) {
     errs() << "Could not open file: " << EC.message();
     return nullptr;
   }
 
-  // legacy::PassManager pass;
   auto fileType = CGFT_ObjectFile;
 
-  cout << "Fim." << endl;
   if (targetMachine->addPassesToEmitFile(pm, dest, nullptr, fileType)) {
     errs() << "TheTargetMachine can't emit a file of this type";
     return nullptr;
   }
 
+  raw_fd_ostream destFonte(intermediateCodeFilename, EC, sys::fs::OF_Text);
+  module->print(destFonte, nullptr);
+
   pm.run(*module);
-  // pass.run(*module);
   dest.flush();
 
-  outs() << "Wrote " << filename << "\n";
+  outs() << "Wrote " << outputFileName << "\n";
+  outs() << "Wrote " << intermediateCodeFilename << "\n";
   return nullptr;
 }
