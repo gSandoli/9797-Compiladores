@@ -50,8 +50,7 @@ public:
     cout << "Tradutor do nó Chamada de Função" << endl;
 
     // std::vector<Type *> Ints(1, Type::getInt64Ty(*context));
-    std::vector<Type *> Doubles(1, Type::getDoublePtrTy(*context));
-
+    std::vector<Type *> Doubles(1, Type::getDoubleTy(*context));
     FunctionType *FT =
         FunctionType::get(Type::getVoidTy(*context), Doubles, false);
 
@@ -68,7 +67,6 @@ public:
     // ArgsV.push_back(vl);
 
     // retorna a chamada de função
-    cout << "ArgsV: " << ArgsV.at(0)->getType()->getTypeID() << endl;
     Value *v = builder->CreateCall(F, ArgsV);
     return v;
   }

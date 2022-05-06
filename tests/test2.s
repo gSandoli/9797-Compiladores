@@ -1,2 +1,2 @@
 ação:
-    imprimer(1.2)
+    imprimer("diogo")

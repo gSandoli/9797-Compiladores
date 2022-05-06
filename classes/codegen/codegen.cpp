@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <llvm/IR/Constant.h>
 #include <llvm/IR/DerivedTypes.h>
+#include <llvm/IR/Function.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/IRPrintingPasses.h>
 #include <llvm/IR/Instructions.h>
@@ -42,36 +43,29 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
 
   auto targetTriple = sys::getDefaultTargetTriple();
   module->setTargetTriple(targetTriple);
-
   string error;
   auto target = TargetRegistry::lookupTarget(targetTriple, error);
-
   if (!target) {
     errs() << error;
     return nullptr;
   }
-
   auto CPU = "generic";
   auto features = "";
-
   TargetOptions opt;
   auto RM = Optional<Reloc::Model>();
   auto targetMachine =
       target->createTargetMachine(targetTriple, CPU, features, opt, RM);
-
   module->setDataLayout(targetMachine->createDataLayout());
+
   vector<Type *> args;
-  auto mainProto =
-      FunctionType::get(Type::getInt64Ty(*context), makeArrayRef(args), false);
+  auto mainProto = FunctionType::get(Type::getVoidTy(*context), args, false);
   auto mainFunction = Function::Create(mainProto, GlobalValue::ExternalLinkage,
                                        "main", module.get());
-
   staticLink.push_front(StructType::create(*context, "main"));
-
+  vector<Type *> localVar;
+  staticLink.front()->setBody(localVar);
   auto block = BasicBlock::Create(*context, "entry", mainFunction);
-
   builder->SetInsertPoint(block);
-
   IRBuilder<> TmpB(&mainFunction->getEntryBlock(),
                    mainFunction->getEntryBlock().begin());
   currentFrame = TmpB.CreateAlloca(staticLink.front(), nullptr, "mainframe");
@@ -80,8 +74,7 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   Funcao *f = ((Funcao *)root);
   f->tradutor(context, builder, module);
 
-  builder->CreateRet(
-      ConstantInt::get(Type::getInt64Ty(*context), APInt(64, 0)));
+  builder->CreateRetVoid();
   if (verifyFunction(*mainFunction, &errs())) {
     cerr << "Erro na geração de código." << endl;
     exit(0);
@@ -92,6 +85,7 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
 
   auto filename = "output.o";
   error_code EC;
+  raw_fd_ostream dest(filename, EC, sys::fs::OF_None);
 
   if (EC) {
     errs() << "Could not open file: " << EC.message();
@@ -102,16 +96,14 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   auto fileType = CGFT_ObjectFile;
 
   cout << "Fim." << endl;
-  /*
   if (targetMachine->addPassesToEmitFile(pm, dest, nullptr, fileType)) {
     errs() << "TheTargetMachine can't emit a file of this type";
     return nullptr;
   }
-  */
 
   pm.run(*module);
   // pass.run(*module);
-  // dest.flush();
+  dest.flush();
 
   outs() << "Wrote " << filename << "\n";
   return nullptr;
