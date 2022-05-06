@@ -102,14 +102,6 @@ int main(int argc, char **argv) {
   }
   fclose(treeOutput);
 
-  if (intermediateCode) {
-    FILE *out = fopen(output.c_str(), "w");
-    if (out != NULL) {
-      // implementar o código intermediario aqui
-    }
-    fclose(out);
-  }
-
   static unique_ptr<LLVMContext> context;
   static unique_ptr<Module> module;
   static unique_ptr<IRBuilder<>> builder;
@@ -120,13 +112,24 @@ int main(int argc, char **argv) {
   module = make_unique<Module>("teste", *context);
 
   /* Geração de código intermediário */
-  Value *codegen = tradutor(context, builder, module, driver.root, llvmFile);
+  Value *codegen =
+      tradutor(context, builder, module, driver.root, llvmFile, fonte);
+
+  if (assemblyCode) {
+    const string cmdAss = "llc-13 " + fonte + " -o " + fonteAssembly;
+    system(cmdAss.c_str());
+    cout << "Wrote " << fonteAssembly << endl;
+  }
+
+  if (!intermediateCode) {
+    const string cmdLib = "rm -rf " + fonte;
+    system(cmdLib.c_str());
+  }
 
   const string cmdLib = "clang-13 -c -o" + lib + " classes/util/lib.cpp";
   system(cmdLib.c_str());
   const string cmd = "g++ " + llvmFile + " " + lib + " -o" + output;
   system(cmd.c_str());
   cout << "Wrote " << output << endl;
-
   return 0;
 }
