@@ -56,7 +56,7 @@ public:
       printPosition();
       exit(0);
     }
-    vector<Type *> Params;
+
     if (args != nullptr) {
       vector<Value *> ArgsV;
       ArgsV.push_back(args->tradutor(context, builder, module, functions));
