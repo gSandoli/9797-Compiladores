@@ -59,6 +59,11 @@ public:
           printPosition();
           exit(0);
         }
+      } else if (f->type == Fator::FUNCAO) {
+        // fazendo cast para literal e verificando tipo de literal
+        FatorFuncao *fc = ((FatorFuncao *)f);
+        Funcao *f = ((Funcao *)fc->funcao);
+        cout << f->identifier << endl;
       }
     }
   }
@@ -75,20 +80,32 @@ public:
 
     std::vector<Type *> Params;
     if (args != nullptr) {
-      Fator *f((Fator *)args);
-      FatorLiteral *fl = ((FatorLiteral *)f);
-      Literal *literal = ((Literal *)fl->literal);
-
-      // verificando tipo do parâmetro
-      if (literal->type == Literal::Type::INTEIRO) {
-        Params.push_back(Type::getInt64Ty(*context));
-      } else if (literal->type == Literal::Type::REAL) {
-        Params.push_back(Type::getDoubleTy(*context));
-      } else if (literal->type == Literal::Type::CADEIA) {
-        Params.push_back(PointerType::getUnqual(Type::getInt8Ty(*context)));
-      }
       vector<Value *> ArgsV;
-      ArgsV.push_back(fl->tradutor(context, builder, module));
+
+      Fator *f = ((Fator *)args);
+
+      if (f->type == Fator::LITERAL) {
+
+        FatorLiteral *fl = ((FatorLiteral *)f);
+        Literal *literal = ((Literal *)fl->literal);
+
+        // verificando tipo do parâmetro
+        if (literal->type == Literal::Type::INTEIRO) {
+          Params.push_back(Type::getInt64Ty(*context));
+        } else if (literal->type == Literal::Type::REAL) {
+          Params.push_back(Type::getDoubleTy(*context));
+        } else if (literal->type == Literal::Type::CADEIA) {
+          Params.push_back(PointerType::getUnqual(Type::getInt8Ty(*context)));
+        }
+        ArgsV.push_back(fl->tradutor(context, builder, module));
+
+      } else if (f->type == Fator::FUNCAO) {
+
+        FatorFuncao *fc = ((FatorFuncao *)f);
+        Funcao *f = ((Funcao *)fc->funcao);
+        ArgsV.push_back(f->tradutor(context, builder, module, functions));
+      }
+
       return builder->CreateCall(fn, ArgsV);
     }
 
