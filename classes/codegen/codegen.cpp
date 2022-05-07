@@ -26,18 +26,16 @@ using namespace llvm;
 using namespace std;
 using namespace A;
 
-Function *createFunction(unique_ptr<Module> &module,
-                         SymbolTable<Function> functions,
-                         std::string const &name,
-                         std::vector<Type *> const &args, Type *retType) {
+void createFunction(unique_ptr<Module> &module,
+                    SymbolTable<Function> &functions, std::string const &name,
+                    std::vector<Type *> const &args, Type *retType) {
   auto functionType = FunctionType::get(retType, args, false);
   auto function = Function::Create(functionType, Function::ExternalLinkage,
                                    name, module.get());
   functions.push(name, function);
-  return function;
 }
 
-void seedFunctions(SymbolTable<Function> functions,
+void seedFunctions(SymbolTable<Function> &functions,
                    unique_ptr<LLVMContext> &context,
                    unique_ptr<Module> &module) {
   Type *doubleType{Type::getDoubleTy(*context)};
@@ -45,26 +43,19 @@ void seedFunctions(SymbolTable<Function> functions,
   Type *voidType{Type::getVoidTy(*context)};
   Type *stringType{PointerType::getUnqual(Type::getInt8Ty(*context))};
 
-  functions["print"] =
-      createFunction(module, functions, "print", {stringType}, voidType);
-  functions["printd"] =
-      createFunction(module, functions, "printd", {intType}, voidType);
-  functions["flush"] = createFunction(module, functions, "flush", {}, voidType);
-  functions["getchar"] =
-      createFunction(module, functions, "getchar_", {}, stringType);
-  functions["ord"] =
-      createFunction(module, functions, "ord", {stringType}, intType);
-  functions["chr"] =
-      createFunction(module, functions, "chr", {intType}, stringType);
-  functions["size"] =
-      createFunction(module, functions, "size", {stringType}, intType);
+  createFunction(module, functions, "print", {stringType}, voidType);
+  createFunction(module, functions, "printd", {intType}, voidType);
+  createFunction(module, functions, "flush", {}, voidType);
+  createFunction(module, functions, "getchar_", {}, stringType);
+  createFunction(module, functions, "ord", {stringType}, intType);
+  createFunction(module, functions, "chr", {intType}, stringType);
+  createFunction(module, functions, "size", {stringType}, intType);
 }
 
 Value *tradutor(unique_ptr<LLVMContext> &context,
                 unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                 Ast *root, string outputFileName,
                 string intermediateCodeFilename) {
-  SymbolTable<Function> functions;
 
   deque<StructType *> staticLink;
   AllocaInst *currentFrame;
@@ -103,7 +94,13 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   vector<Type *> localVar;
   staticLink.front()->setBody(localVar);
   auto block = BasicBlock::Create(*context, "entry", mainFunction);
-  seedFunctions(functions, *context, *module);
+  SymbolTable<Function> functions;
+  functions.enter();
+  seedFunctions(functions, context, module);
+  Function *fn = functions.lookup("print");
+  if (fn)
+    cout << "Funcao retornada (seed): " << fn->getFunction().getName().str()
+         << endl;
   builder->SetInsertPoint(block);
   IRBuilder<> TmpB(&mainFunction->getEntryBlock(),
                    mainFunction->getEntryBlock().begin());

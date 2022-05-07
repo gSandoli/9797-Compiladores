@@ -2,6 +2,7 @@
 #define SYMBOLTABLE_H
 
 #include <deque>
+#include <iostream>
 #include <memory>
 #include <string>
 #include <unordered_map>
