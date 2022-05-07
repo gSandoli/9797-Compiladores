@@ -1,5 +1,6 @@
 #include "../ast.h"
 #include "../funcao.h"
+#include "../util/symboltable.h"
 #include <cstddef>
 #include <llvm/IR/Constant.h>
 #include <llvm/IR/DerivedTypes.h>
@@ -25,10 +26,46 @@ using namespace llvm;
 using namespace std;
 using namespace A;
 
+Function *createFunction(unique_ptr<Module> &module,
+                         SymbolTable<Function> functions,
+                         std::string const &name,
+                         std::vector<Type *> const &args, Type *retType) {
+  auto functionType = FunctionType::get(retType, args, false);
+  auto function = Function::Create(functionType, Function::ExternalLinkage,
+                                   name, module.get());
+  functions.push(name, function);
+  return function;
+}
+
+void seedFunctions(SymbolTable<Function> functions,
+                   unique_ptr<LLVMContext> &context,
+                   unique_ptr<Module> &module) {
+  Type *doubleType{Type::getDoubleTy(*context)};
+  Type *intType{Type::getInt64Ty(*context)};
+  Type *voidType{Type::getVoidTy(*context)};
+  Type *stringType{PointerType::getUnqual(Type::getInt8Ty(*context))};
+
+  functions["print"] =
+      createFunction(module, functions, "print", {stringType}, voidType);
+  functions["printd"] =
+      createFunction(module, functions, "printd", {intType}, voidType);
+  functions["flush"] = createFunction(module, functions, "flush", {}, voidType);
+  functions["getchar"] =
+      createFunction(module, functions, "getchar_", {}, stringType);
+  functions["ord"] =
+      createFunction(module, functions, "ord", {stringType}, intType);
+  functions["chr"] =
+      createFunction(module, functions, "chr", {intType}, stringType);
+  functions["size"] =
+      createFunction(module, functions, "size", {stringType}, intType);
+}
+
 Value *tradutor(unique_ptr<LLVMContext> &context,
                 unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                 Ast *root, string outputFileName,
                 string intermediateCodeFilename) {
+  SymbolTable<Function> functions;
+
   deque<StructType *> staticLink;
   AllocaInst *currentFrame;
   size_t currentLevel = 0;
@@ -66,6 +103,7 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   vector<Type *> localVar;
   staticLink.front()->setBody(localVar);
   auto block = BasicBlock::Create(*context, "entry", mainFunction);
+  seedFunctions(functions, *context, *module);
   builder->SetInsertPoint(block);
   IRBuilder<> TmpB(&mainFunction->getEntryBlock(),
                    mainFunction->getEntryBlock().begin());
