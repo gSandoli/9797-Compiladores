@@ -88,7 +88,7 @@ public:
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions) const {
-    return builder->CreateGlobalStringPtr(value, "str");
+    return builder->CreateGlobalStringPtr(value, "str" + value.substr(0, 2));
   }
 
   void print(FILE *out, int d) const {

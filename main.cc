@@ -113,7 +113,7 @@ int main(int argc, char **argv) {
   }
 
   const string cmdLib =
-      "clang-13 -fpic -c -o output/lib.o classes/util/lib.cpp";
+      "clang-13 -c -o output/lib.o classes/util/lib.cpp";
   system(cmdLib.c_str());
   // default: g++ output/llvm.out output/lib.o -o output/a.out
   const string cmd = "g++ " + llvmFile + " output/lib.o -o " + output;
