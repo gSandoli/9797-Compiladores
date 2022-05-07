@@ -41,7 +41,6 @@ public:
                   SymbolTable<Function> &functions) {
     comando->tradutor(context, builder, module, functions);
     return list->tradutor(context, builder, module, functions);
-    ;
   }
 };
 } // namespace A

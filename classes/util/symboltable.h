@@ -35,7 +35,7 @@ template <typename T> T *&SymbolTable<T>::operator[](const string &name) {
 }
 
 template <typename T> T *&SymbolTable<T>::lookup(const string &name) {
-  for (auto stack : stack_)
+  for (unordered_map<std::string, T *> stack : stack_)
     if (stack[name])
       return stack[name];
   return stack_.front()[name];
