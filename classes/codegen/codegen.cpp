@@ -1,9 +1,6 @@
 #include "../ast.h"
 #include "../funcao.h"
 #include "../util/symboltable.h"
-#include <cstddef>
-#include <llvm/IR/Constant.h>
-#include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/Function.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/IRPrintingPasses.h>
@@ -28,6 +25,9 @@ using namespace llvm;
 using namespace sys;
 using namespace fs;
 
+/*
+* Método para criar funções do LLVM com linkagem externa
+*/
 void createFunction(unique_ptr<Module> &module,
                     SymbolTable<Function> &functions, string const &name,
                     vector<Type *> const &args, Type *retType) {
@@ -37,6 +37,9 @@ void createFunction(unique_ptr<Module> &module,
   functions.push(name, function);
 }
 
+/*
+* Método que cria as funções LLVM da biblioteca padrão
+*/
 void seedFunctions(SymbolTable<Function> &functions,
                    unique_ptr<LLVMContext> &context,
                    unique_ptr<Module> &module) {
@@ -65,67 +68,74 @@ void seedFunctions(SymbolTable<Function> &functions,
   createFunction(module, functions, "gere_real", {}, doubleType);
 }
 
+/*
+* Método principal para criação da representação intermediária e de código executável
+*/
 Value *tradutor(unique_ptr<LLVMContext> &context,
                 unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                 Ast *root, string outputFileName,
                 string intermediateCodeFilename) {
 
-  deque<StructType *> staticLink;
-  AllocaInst *currentFrame;
-  size_t currentLevel = 0;
-
-  legacy::PassManager pm;
-  pm.add(createPrintModulePass(outs()));
-
+  // Inicialização dos targets para geração de código
   InitializeAllTargetInfos();
   InitializeAllTargets();
   InitializeAllTargetMCs();
   InitializeAllAsmParsers();
   InitializeAllAsmPrinters();
 
+  // Retorna o targetTriple da máquina atual, e configura o module para utilizá-lo
   string targetTriple = getDefaultTargetTriple();
   module->setTargetTriple(targetTriple);
   string error;
+
+  // Retorna o target desejado
   const Target *target = TargetRegistry::lookupTarget(targetTriple, error);
   if (!target) {
     errs() << error;
     return nullptr;
   }
+
+  // Configurações para a máquina alvo.
   StringRef CPU = "generic";
   StringRef features = "";
   TargetOptions opt;
   Optional<Reloc::Model> RM = Optional<Reloc::Model>();
   TargetMachine *targetMachine =
       target->createTargetMachine(targetTriple, CPU, features, opt, RM);
-
   module->setDataLayout(targetMachine->createDataLayout());
 
+  // Cria o prototipo da função main, do tipo void.
   vector<Type *> args;
   FunctionType *mainProto =
       FunctionType::get(Type::getVoidTy(*context), args, false);
   Function *mainFunction = Function::Create(
       mainProto, GlobalValue::ExternalLinkage, "main", module.get());
-
-  staticLink.push_front(StructType::create(*context, "main"));
-  vector<Type *> localVar;
-  staticLink.front()->setBody(localVar);
+  
+  // Cria o bloco básico da função principal
   BasicBlock *block = BasicBlock::Create(*context, "entry", mainFunction);
   SymbolTable<Function> functions;
+
+  // Cria as chamdas de funções da bilbioteca padrão
   seedFunctions(functions, context, module);
-  builder->SetInsertPoint(block);
+
+  // Seta o entry point da main  
+  builder->SetInsertPoint(block);  
   IRBuilder<> TmpB(&mainFunction->getEntryBlock(),
                    mainFunction->getEntryBlock().begin());
-  currentFrame = TmpB.CreateAlloca(staticLink.front(), nullptr, "mainframe");
-  currentLevel = 0;
 
+  // Chama os métodos tradutor de toda a árvore
   root->tradutor(context, builder, module, functions);
 
+  // Cria o retorno da função main
   builder->CreateRetVoid();
+
+  // Verifica o código gerado
   if (verifyFunction(*mainFunction, &errs())) {
     cerr << "Erro na geração de código." << endl;
     exit(0);
   }
 
+  // Abre o descritor de arquivo destino
   error_code EC;
   raw_fd_ostream dest(outputFileName, EC, OF_None);
 
@@ -134,16 +144,20 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
     return nullptr;
   }
 
+  // Cria o pass que vai gerar o object file
+  legacy::PassManager pm;
+  pm.add(createPrintModulePass(outs()));
   CodeGenFileType fileType = CGFT_ObjectFile;
-
   if (targetMachine->addPassesToEmitFile(pm, dest, nullptr, fileType)) {
     errs() << "TheTargetMachine não pode emitir um arquivo deste tipo";
     return nullptr;
   }
 
+  // Escreve o arquivo .ll
   raw_fd_ostream destFonte(intermediateCodeFilename, EC, OF_Text);
   module->print(destFonte, nullptr);
 
+  // Escreve o arquivo .o
   pm.run(*module);
   dest.flush();
   return nullptr;
