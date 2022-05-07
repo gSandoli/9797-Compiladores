@@ -20,9 +20,10 @@ public:
 
   void semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
-    cout << "Análise semântica do nó lista de comando" << endl;
     comando->semanticAnalyze(variableTable, functionTable);
-    list->semanticAnalyze(variableTable, functionTable);
+    if (list != 0) {
+      list->semanticAnalyze(variableTable, functionTable);
+    }
   }
 
   void print(FILE *out, int d) const {
@@ -36,9 +37,11 @@ public:
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder,
-                  unique_ptr<Module> &module) {
-    return nullptr;
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) {
+    comando->tradutor(context, builder, module, functions);
+    return list->tradutor(context, builder, module, functions);
+    ;
   }
 };
 } // namespace A

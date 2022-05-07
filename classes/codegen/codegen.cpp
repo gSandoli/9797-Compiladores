@@ -22,16 +22,18 @@
 #include <llvm/Target/TargetOptions.h>
 #include <system_error>
 
-using namespace llvm;
 using namespace std;
 using namespace A;
+using namespace llvm;
+using namespace sys;
+using namespace fs;
 
 void createFunction(unique_ptr<Module> &module,
-                    SymbolTable<Function> &functions, std::string const &name,
-                    std::vector<Type *> const &args, Type *retType) {
-  auto functionType = FunctionType::get(retType, args, false);
-  auto function = Function::Create(functionType, Function::ExternalLinkage,
-                                   name, module.get());
+                    SymbolTable<Function> &functions, string const &name,
+                    vector<Type *> const &args, Type *retType) {
+  FunctionType *functionType = FunctionType::get(retType, args, false);
+  Function *function = Function::Create(functionType, Function::ExternalLinkage,
+                                        name, module.get());
   functions.push(name, function);
 }
 
@@ -81,32 +83,34 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   InitializeAllAsmParsers();
   InitializeAllAsmPrinters();
 
-  auto targetTriple = sys::getDefaultTargetTriple();
+  string targetTriple = getDefaultTargetTriple();
   module->setTargetTriple(targetTriple);
   string error;
-  auto target = TargetRegistry::lookupTarget(targetTriple, error);
+  const Target *target = TargetRegistry::lookupTarget(targetTriple, error);
   if (!target) {
     errs() << error;
     return nullptr;
   }
-  auto CPU = "generic";
-  auto features = "";
+  StringRef CPU = "generic";
+  StringRef features = "";
   TargetOptions opt;
-  auto RM = Optional<Reloc::Model>();
-  auto targetMachine =
+  Optional<Reloc::Model> RM = Optional<Reloc::Model>();
+  TargetMachine *targetMachine =
       target->createTargetMachine(targetTriple, CPU, features, opt, RM);
+
   module->setDataLayout(targetMachine->createDataLayout());
 
   vector<Type *> args;
-  auto mainProto = FunctionType::get(Type::getVoidTy(*context), args, false);
-  auto mainFunction = Function::Create(mainProto, GlobalValue::ExternalLinkage,
-                                       "main", module.get());
+  FunctionType *mainProto =
+      FunctionType::get(Type::getVoidTy(*context), args, false);
+  Function *mainFunction = Function::Create(
+      mainProto, GlobalValue::ExternalLinkage, "main", module.get());
+
   staticLink.push_front(StructType::create(*context, "main"));
   vector<Type *> localVar;
   staticLink.front()->setBody(localVar);
-  auto block = BasicBlock::Create(*context, "entry", mainFunction);
+  BasicBlock *block = BasicBlock::Create(*context, "entry", mainFunction);
   SymbolTable<Function> functions;
-  functions.enter();
   seedFunctions(functions, context, module);
   builder->SetInsertPoint(block);
   IRBuilder<> TmpB(&mainFunction->getEntryBlock(),
@@ -114,8 +118,7 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   currentFrame = TmpB.CreateAlloca(staticLink.front(), nullptr, "mainframe");
   currentLevel = 0;
 
-  Funcao *f = ((Funcao *)root);
-  f->tradutor(context, builder, module, functions);
+  root->tradutor(context, builder, module, functions);
 
   builder->CreateRetVoid();
   if (verifyFunction(*mainFunction, &errs())) {
@@ -124,7 +127,7 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   }
 
   error_code EC;
-  raw_fd_ostream dest(outputFileName, EC, sys::fs::OF_None);
+  raw_fd_ostream dest(outputFileName, EC, OF_None);
 
   if (EC) {
     errs() << "Could not open file: " << EC.message();
@@ -138,13 +141,10 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
     return nullptr;
   }
 
-  raw_fd_ostream destFonte(intermediateCodeFilename, EC, sys::fs::OF_Text);
+  raw_fd_ostream destFonte(intermediateCodeFilename, EC, OF_Text);
   module->print(destFonte, nullptr);
 
   pm.run(*module);
   dest.flush();
-
-  cout << "Wrote " << outputFileName << endl;
-  cout << "Wrote " << intermediateCodeFilename << endl;
   return nullptr;
 }

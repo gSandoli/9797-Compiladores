@@ -218,7 +218,7 @@ expr_ari : expr_ari SUBTRACAO expr_ari_ { $$ = new ExpressaoAritmeticaSubtracao(
 
 expr_ari_ : expr_ari_ MULTIPLICACAO fator { $$ = new ExpressaoAritmeticaMultiplicacao(driver.line, driver.col, $1, $3); }
           | expr_ari_ DIVISAO fator { $$ = new ExpressaoAritmeticaDivisao(driver.line, driver.col, $1, $3); }
-          | fator { $$ = $1; }
+          | fator { $$ = new ExpressaoFator(driver.line, driver.col, $1); }
 
 fator : ABR_PRT expr FCH_PRT { $$ = new FatorExpressao(driver.line, driver.col, $2); }
       | literal { $$ = new FatorLiteral(driver.line, driver.col, $1); }

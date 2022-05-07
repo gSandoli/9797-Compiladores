@@ -5,11 +5,11 @@
 using namespace std;
 
 extern "C" {
-void imprimei(int i) { cout << i; }
+void imprimei(int i) { cout << i << endl; }
 
-void imprimer(double r) { cout << r; }
+void imprimer(double r) { cout << r << endl; }
 
-void imprimec(char *c) { cout << c; }
+void imprimec(char *c) { cout << c << endl; }
 
 void emite() { cout.flush(); }
 

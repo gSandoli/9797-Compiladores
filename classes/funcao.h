@@ -45,27 +45,6 @@ public:
       printPosition();
       exit(0);
     }
-
-    if (args != nullptr) {
-      args->semanticAnalyze(variableTable, functionTable);
-      Fator *f = ((Fator *)args);
-      if (f->type == Fator::LITERAL) {
-        // fazendo cast para literal e verificando tipo de literal
-        FatorLiteral *fl = ((FatorLiteral *)f);
-        if (((Literal *)fl->literal)->type !=
-            functionTable.getArgs(identifier)) {
-          cerr << "[ERRO SEMÂNTICO] Tipo de parâmetro incorreto: "
-               << identifier;
-          printPosition();
-          exit(0);
-        }
-      } else if (f->type == Fator::FUNCAO) {
-        // fazendo cast para literal e verificando tipo de literal
-        FatorFuncao *fc = ((FatorFuncao *)f);
-        Funcao *f = ((Funcao *)fc->funcao);
-        cout << f->identifier << endl;
-      }
-    }
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
@@ -77,35 +56,10 @@ public:
       printPosition();
       exit(0);
     }
-
-    std::vector<Type *> Params;
+    vector<Type *> Params;
     if (args != nullptr) {
       vector<Value *> ArgsV;
-
-      Fator *f = ((Fator *)args);
-
-      if (f->type == Fator::LITERAL) {
-
-        FatorLiteral *fl = ((FatorLiteral *)f);
-        Literal *literal = ((Literal *)fl->literal);
-
-        // verificando tipo do parâmetro
-        if (literal->type == Literal::Type::INTEIRO) {
-          Params.push_back(Type::getInt64Ty(*context));
-        } else if (literal->type == Literal::Type::REAL) {
-          Params.push_back(Type::getDoubleTy(*context));
-        } else if (literal->type == Literal::Type::CADEIA) {
-          Params.push_back(PointerType::getUnqual(Type::getInt8Ty(*context)));
-        }
-        ArgsV.push_back(fl->tradutor(context, builder, module));
-
-      } else if (f->type == Fator::FUNCAO) {
-
-        FatorFuncao *fc = ((FatorFuncao *)f);
-        Funcao *f = ((Funcao *)fc->funcao);
-        ArgsV.push_back(f->tradutor(context, builder, module, functions));
-      }
-
+      ArgsV.push_back(args->tradutor(context, builder, module, functions));
       return builder->CreateCall(fn, ArgsV);
     }
 

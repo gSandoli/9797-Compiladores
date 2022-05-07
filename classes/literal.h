@@ -25,9 +25,6 @@ public:
   Type type;
 
   Literal(int line, int col, Type type) : Ast(line, col), type(type) {}
-  virtual Value *tradutor(unique_ptr<LLVMContext> &context,
-                          unique_ptr<IRBuilder<>> &builder,
-                          unique_ptr<Module> &module) = 0;
 };
 
 class LiteralInteiro : public Literal {
@@ -40,8 +37,8 @@ public:
                        FunctionTable functionTable) const {}
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder,
-                  unique_ptr<Module> &module) {
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) {
     return ConstantInt::get(*context, APInt(64, value));
   }
 
@@ -61,8 +58,8 @@ public:
                        FunctionTable functionTable) const {}
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder,
-                  unique_ptr<Module> &module) {
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) {
     return ConstantFP::get(*context, APFloat(value));
   }
 
@@ -83,8 +80,8 @@ public:
 
   // TOODO: achar a "classe" do llvm que referencia string
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder,
-                  unique_ptr<Module> &module) {
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) {
     return builder->CreateGlobalStringPtr(value, "str");
   }
 

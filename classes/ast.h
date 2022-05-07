@@ -4,6 +4,7 @@
 #define AST_H
 
 #include "util/function_table.h"
+#include "util/symboltable.h"
 #include "util/variable_table.h"
 #include <iostream>
 #include <string>
@@ -30,8 +31,10 @@ public:
     cout << " (" << line << ":" << col << ")" << endl;
   };
 
-  // virtual Value *tradutor(unique_ptr<LLVMContext> &context,
-  // unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module) = 0;
+  virtual Value *tradutor(unique_ptr<LLVMContext> &context,
+                          unique_ptr<IRBuilder<>> &builder,
+                          unique_ptr<Module> &module,
+                          SymbolTable<Function> &functions) = 0;
 };
 } // namespace A
 

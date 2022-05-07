@@ -20,8 +20,6 @@ public:
   Type type;
 
   Fator(int line, int col, Type type) : Ast(line, col), type(type) {}
-  Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module);
 };
 
 class FatorLiteral : public Fator {
@@ -47,10 +45,9 @@ public:
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder,
-                  unique_ptr<Module> &module) {
-    Value *v = ((Literal *)literal)->tradutor(context, builder, module);
-    return v;
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) {
+    return literal->tradutor(context, builder, module, functions);
   }
 };
 
@@ -74,11 +71,9 @@ public:
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder,
-                  unique_ptr<Module> &module) {
-    // Value *v = ((Expressao *)expressao)->tradutor(context, builder, module);
-    // return v;
-    return nullptr;
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) {
+    return expressao->tradutor(context, builder, module, functions);
   }
 };
 
@@ -103,11 +98,9 @@ public:
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder,
-                  unique_ptr<Module> &module) {
-    // Value *v = ((Funcao *)funcao)->tradutor(context, builder, module);
-    // return v;
-    return nullptr;
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) {
+    return funcao->tradutor(context, builder, module, functions);
   }
 };
 
@@ -124,8 +117,8 @@ public:
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder,
-                  unique_ptr<Module> &module) {
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) {
     return ConstantPointerNull::get(
         PointerType::getUnqual(StructType::get(*context)));
   }

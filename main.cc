@@ -92,16 +92,12 @@ int main(int argc, char **argv) {
   }
   fclose(treeOutput);
 
-  static unique_ptr<LLVMContext> context;
-  static unique_ptr<Module> module;
-  static unique_ptr<IRBuilder<>> builder;
+  static unique_ptr<LLVMContext> context = make_unique<LLVMContext>();
+  static unique_ptr<Module> module = make_unique<Module>("main", *context);
+  static unique_ptr<IRBuilder<>> builder = make_unique<IRBuilder<>>(*context);
   static map<string, Value *> NamedValues;
 
-  context = make_unique<LLVMContext>();
-  builder = make_unique<IRBuilder<>>(*context);
-  module = make_unique<Module>("teste", *context);
-
-  /* Geração de código intermediário */
+  // Geração de código intermediário
   Value *codegen =
       tradutor(context, builder, module, driver.root, llvmFile, fonte);
 
@@ -109,12 +105,11 @@ int main(int argc, char **argv) {
     // default: llc-13 output/fonte.ll -o output/fonte.s
     const string cmdAss = "llc-13 " + fonte + " -o " + fonteAssembly;
     system(cmdAss.c_str());
-    cout << "Wrote " << fonteAssembly << endl;
   }
 
   if (!intermediateCode) {
-    const string cmdLib = "rm -rf " + fonte;
-    system(cmdLib.c_str());
+    const string cmdRmFileLib = "rm -rf " + fonte;
+    system(cmdRmFileLib.c_str());
   }
 
   const string cmdLib =
@@ -123,14 +118,5 @@ int main(int argc, char **argv) {
   // default: g++ output/llvm.out output/lib.o -o output/a.out
   const string cmd = "g++ " + llvmFile + " output/lib.o -o " + output;
   system(cmd.c_str());
-  cout << "Wrote " << output << endl;
-  // Funcao *func = ((Funcao *)driver.root);
-  // Fator *f = ((Fator *)func->args);
-  // FatorLiteral *fl = ((FatorLiteral *)f);
-  // LiteralInteiro *li = ((LiteralInteiro *)fl->literal);
-
-  // cout << "MAIN Nó chamada de função:" << endl;
-  // cout << "\tChamada: " << func->identifier << endl;
-  // cout << "\tArgs: " << li->value << endl;
   return 0;
 }
