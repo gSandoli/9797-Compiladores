@@ -322,7 +322,7 @@ eol     [\n\r]+
 
 . {
 	ADJ_COL;
-	cerr << *driver.location_ << " Unexpected token : " << *yytext << endl;
+	cerr << *driver.location_ << " token inesperado : " << *yytext << endl;
 	driver.error_ = (driver.error_ == 127 ? 127 : driver.error_ + 1);
 	STEP();
 }

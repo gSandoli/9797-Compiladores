@@ -130,14 +130,14 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   raw_fd_ostream dest(outputFileName, EC, OF_None);
 
   if (EC) {
-    errs() << "Could not open file: " << EC.message();
+    errs() << "Não foi possível abrir o arquivo: " << EC.message();
     return nullptr;
   }
 
   CodeGenFileType fileType = CGFT_ObjectFile;
 
   if (targetMachine->addPassesToEmitFile(pm, dest, nullptr, fileType)) {
-    errs() << "TheTargetMachine can't emit a file of this type";
+    errs() << "TheTargetMachine não pode emitir um arquivo deste tipo";
     return nullptr;
   }
 

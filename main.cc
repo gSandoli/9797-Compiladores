@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
   int opt;
 
   if (argc == 1) {
-    cerr << "ERROR: missing arguments\n" << endl;
+    cerr << "[ERRO] faltando argumentos\n" << endl;
     cout << "USAGE: ./sc [-i] [-s] [-o <destino>] <fonte>" << endl;
     cout << "\t-i : imprime o código intermediário. O arquivo de saída deve "
             "chamar fonte.ll // opcional"
@@ -71,10 +71,10 @@ int main(int argc, char **argv) {
 
   int argsNotParsed = argc - optind;
   if (argsNotParsed < 1) {
-    cerr << "ERROR: source file is missing" << endl;
+    cerr << "[ERRO] arquivo de origem está faltando" << endl;
     abort();
   } else if (argsNotParsed > 1) {
-    cerr << "ERROR: source file is wrong" << endl;
+    cerr << "[ERRO] arquivo de origem está errado" << endl;
     abort();
   } else {
     filename = argv[optind];
