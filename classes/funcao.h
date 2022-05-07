@@ -7,6 +7,7 @@
 #include "fator.h"
 #include "literal.h"
 #include "util/print.h"
+#include "util/symboltable.h"
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -63,30 +64,35 @@ public:
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder,
-                  unique_ptr<Module> &module) {
-
-    Fator *f((Fator *)args);
-    FatorLiteral *fl = ((FatorLiteral *)f);
-    Literal *literal = ((Literal *)fl->literal);
-    std::vector<Type *> Params;
-
-    // verificando tipo do parâmetro
-    if (literal->type == Literal::Type::INTEIRO) {
-      Params.push_back(Type::getInt64Ty(*context));
-    } else if (literal->type == Literal::Type::REAL) {
-      Params.push_back(Type::getDoubleTy(*context));
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) {
+    Function *fn = functions.lookup(identifier);
+    if (!fn) {
+      cerr << "[ERRO DE GERAÇÃO DE CÓDIGO] Função não existe: " << identifier;
+      printPosition();
+      exit(0);
     }
 
-    FunctionType *FT =
-        FunctionType::get(Type::getVoidTy(*context), Params, false);
+    std::vector<Type *> Params;
+    if (args != nullptr) {
+      Fator *f((Fator *)args);
+      FatorLiteral *fl = ((FatorLiteral *)f);
+      Literal *literal = ((Literal *)fl->literal);
 
-    Function *F = Function::Create(FT, Function::ExternalLinkage, identifier,
-                                   module.get());
+      // verificando tipo do parâmetro
+      if (literal->type == Literal::Type::INTEIRO) {
+        Params.push_back(Type::getInt64Ty(*context));
+      } else if (literal->type == Literal::Type::REAL) {
+        Params.push_back(Type::getDoubleTy(*context));
+      } else if (literal->type == Literal::Type::CADEIA) {
+        Params.push_back(PointerType::getUnqual(Type::getInt8Ty(*context)));
+      }
+      vector<Value *> ArgsV;
+      ArgsV.push_back(fl->tradutor(context, builder, module));
+      return builder->CreateCall(fn, ArgsV);
+    }
 
-    vector<Value *> ArgsV;
-    ArgsV.push_back(fl->tradutor(context, builder, module));
-    return builder->CreateCall(F, ArgsV);
+    return builder->CreateCall(fn);
   }
 
   void print(FILE *out, int d) const {

@@ -34,10 +34,7 @@ class LiteralInteiro : public Literal {
 public:
   int value;
   LiteralInteiro(int line, int col, int value)
-      : Literal(line, col, INTEIRO), value(value) {
-    cout << INTEIRO << endl;
-    cout << value << endl;
-  }
+      : Literal(line, col, INTEIRO), value(value) {}
 
   void semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {}

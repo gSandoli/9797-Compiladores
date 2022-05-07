@@ -43,13 +43,24 @@ void seedFunctions(SymbolTable<Function> &functions,
   Type *voidType{Type::getVoidTy(*context)};
   Type *stringType{PointerType::getUnqual(Type::getInt8Ty(*context))};
 
-  createFunction(module, functions, "print", {stringType}, voidType);
-  createFunction(module, functions, "printd", {intType}, voidType);
-  createFunction(module, functions, "flush", {}, voidType);
-  createFunction(module, functions, "getchar_", {}, stringType);
-  createFunction(module, functions, "ord", {stringType}, intType);
+  createFunction(module, functions, "imprimei", {intType}, voidType);
+  createFunction(module, functions, "imprimer", {doubleType}, voidType);
+  createFunction(module, functions, "imprimec", {stringType}, voidType);
+  createFunction(module, functions, "emite", {}, voidType);
+  createFunction(module, functions, "lc", {}, stringType);
+  createFunction(module, functions, "li", {}, intType);
+  createFunction(module, functions, "lr", {}, doubleType);
+  createFunction(module, functions, "ordem", {stringType}, intType);
   createFunction(module, functions, "chr", {intType}, stringType);
-  createFunction(module, functions, "size", {stringType}, intType);
+  createFunction(module, functions, "tamanho", {stringType}, intType);
+  createFunction(module, functions, "subcadeia", {stringType, intType, intType},
+                 stringType);
+  createFunction(module, functions, "concatene", {stringType, stringType},
+                 stringType);
+  createFunction(module, functions, "inverter", {intType}, intType);
+  createFunction(module, functions, "termine", {intType}, voidType);
+  createFunction(module, functions, "gere_inteiro", {}, intType);
+  createFunction(module, functions, "gere_real", {}, doubleType);
 }
 
 Value *tradutor(unique_ptr<LLVMContext> &context,
@@ -97,10 +108,6 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   SymbolTable<Function> functions;
   functions.enter();
   seedFunctions(functions, context, module);
-  Function *fn = functions.lookup("print");
-  if (fn)
-    cout << "Funcao retornada (seed): " << fn->getFunction().getName().str()
-         << endl;
   builder->SetInsertPoint(block);
   IRBuilder<> TmpB(&mainFunction->getEntryBlock(),
                    mainFunction->getEntryBlock().begin());
@@ -108,7 +115,7 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   currentLevel = 0;
 
   Funcao *f = ((Funcao *)root);
-  f->tradutor(context, builder, module);
+  f->tradutor(context, builder, module, functions);
 
   builder->CreateRetVoid();
   if (verifyFunction(*mainFunction, &errs())) {

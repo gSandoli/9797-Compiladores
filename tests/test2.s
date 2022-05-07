@@ -1,2 +1,2 @@
 ação:
-    imprimer(100.2)
+    gere_inteiro()

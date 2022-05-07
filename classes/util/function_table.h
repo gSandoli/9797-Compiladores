@@ -62,8 +62,6 @@ public:
           return 1;
         if (table[i][1] == "cadeia")
           return 2;
-        else
-          return -1;
       }
     return 0;
   }
