@@ -26,9 +26,11 @@ public:
   Ast *fator;
   ExpressaoFator(int line, int col, Ast *fator)
       : Expressao(line, col, FATOR), fator(fator) {}
-  void semanticAnalyze(VariableTable variableTable,
+
+  Ast *semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
     fator->semanticAnalyze(variableTable, functionTable);
+    return ((Ast *)this);
   }
 
   void print(FILE *out, int d) const {
@@ -41,7 +43,7 @@ public:
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) {
+                  SymbolTable<Function> &functions) const {
     return fator->tradutor(context, builder, module, functions);
   }
 };
@@ -53,7 +55,7 @@ public:
   ExpressaoAritmeticaDivisao(int line, int col, Ast *esquerda, Ast *direita)
       : Expressao(line, col, DIVISAO), esquerda(esquerda), direita(direita) {}
 
-  void semanticAnalyze(VariableTable variableTable,
+  Ast *semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
     cout << "Análise semântica do nó expressão aritmética (divisão) " << endl;
     esquerda->semanticAnalyze(variableTable, functionTable);
@@ -153,6 +155,7 @@ public:
         exit(0);
       }
     }
+    return ((Ast *)this);
   }
 
   void print(FILE *out, int d) const {
@@ -167,7 +170,7 @@ public:
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) {
+                  SymbolTable<Function> &functions) const {
     Value *L = esquerda->tradutor(context, builder, module, functions);
     Value *R = direita->tradutor(context, builder, module, functions);
     Value *RL = builder->CreateSIToFP(L, llvm::Type::getDoubleTy(*context));
@@ -192,7 +195,7 @@ public:
       : Expressao(line, col, MULTIPLICACAO), esquerda(esquerda),
         direita(direita) {}
 
-  void semanticAnalyze(VariableTable variableTable,
+  Ast *semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
     cout << "Análise semântica do nó expressão aritmética (multiplicação) "
          << endl;
@@ -281,6 +284,7 @@ public:
         exit(0);
       }
     }
+    return ((Ast *)this);
   }
 
   void print(FILE *out, int d) const {
@@ -295,7 +299,7 @@ public:
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) {
+                  SymbolTable<Function> &functions) const {
     Value *L = esquerda->tradutor(context, builder, module, functions);
     Value *R = direita->tradutor(context, builder, module, functions);
     if (L->getType()->getTypeID() == llvm::Type::IntegerTyID &&
@@ -314,7 +318,7 @@ public:
   ExpressaoAritmeticaSoma(int line, int col, Ast *esquerda, Ast *direita)
       : Expressao(line, col, SOMA), esquerda(esquerda), direita(direita) {}
 
-  void semanticAnalyze(VariableTable variableTable,
+  Ast *semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
     cout << "Análise semântica do nó expressão aritmética (soma) " << endl;
     esquerda->semanticAnalyze(variableTable, functionTable);
@@ -402,6 +406,20 @@ public:
         exit(0);
       }
     }
+    return ((Ast *)this);
+  }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) const {
+    Value *L = esquerda->tradutor(context, builder, module, functions);
+    Value *R = direita->tradutor(context, builder, module, functions);
+    if (L->getType()->getTypeID() == llvm::Type::IntegerTyID &&
+        R->getType()->getTypeID() == llvm::Type::IntegerTyID) {
+      return builder->CreateAdd(L, R, "addtmp");
+    } else {
+      return builder->CreateFAdd(L, R, "addftmp");
+    }
   }
 
   void print(FILE *out, int d) const {
@@ -413,19 +431,6 @@ public:
     indent(out, d);
     fprintf(out, ")\n");
   }
-
-  Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) {
-    Value *L = esquerda->tradutor(context, builder, module, functions);
-    Value *R = direita->tradutor(context, builder, module, functions);
-    if (L->getType()->getTypeID() == llvm::Type::IntegerTyID &&
-        R->getType()->getTypeID() == llvm::Type::IntegerTyID) {
-      return builder->CreateAdd(L, R, "addtmp");
-    } else {
-      return builder->CreateFAdd(L, R, "addftmp");
-    }
-  }
 };
 
 class ExpressaoAritmeticaSubtracao : public Expressao {
@@ -435,7 +440,7 @@ public:
   ExpressaoAritmeticaSubtracao(int line, int col, Ast *esquerda, Ast *direita)
       : Expressao(line, col, SUBTRACAO), esquerda(esquerda), direita(direita) {}
 
-  void semanticAnalyze(VariableTable variableTable,
+  Ast *semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
     cout << "Análise semântica do nó expressão aritmética (subtração) " << endl;
     esquerda->semanticAnalyze(variableTable, functionTable);
@@ -523,6 +528,20 @@ public:
         exit(0);
       }
     }
+    return ((Ast *)this);
+  }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) const {
+    Value *L = esquerda->tradutor(context, builder, module, functions);
+    Value *R = direita->tradutor(context, builder, module, functions);
+    if (L->getType()->getTypeID() == llvm::Type::IntegerTyID &&
+        R->getType()->getTypeID() == llvm::Type::IntegerTyID) {
+      return builder->CreateSub(L, R, "subtmp");
+    } else {
+      return builder->CreateFSub(L, R, "subftmp");
+    }
   }
 
   void print(FILE *out, int d) const {
@@ -533,19 +552,6 @@ public:
     direita->print(out, d + 1);
     indent(out, d);
     fprintf(out, ")\n");
-  }
-
-  Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) {
-    Value *L = esquerda->tradutor(context, builder, module, functions);
-    Value *R = direita->tradutor(context, builder, module, functions);
-    if (L->getType()->getTypeID() == llvm::Type::IntegerTyID &&
-        R->getType()->getTypeID() == llvm::Type::IntegerTyID) {
-      return builder->CreateSub(L, R, "subtmp");
-    } else {
-      return builder->CreateFSub(L, R, "subftmp");
-    }
   }
 };
 } // namespace A

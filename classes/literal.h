@@ -33,12 +33,14 @@ public:
   LiteralInteiro(int line, int col, int value)
       : Literal(line, col, INTEIRO), value(value) {}
 
-  void semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {}
+  Ast *semanticAnalyze(VariableTable variableTable,
+                       FunctionTable functionTable) const {
+    return ((Ast *)this);
+  }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) {
+                  SymbolTable<Function> &functions) const {
     return ConstantInt::get(*context, APInt(64, value));
   }
 
@@ -54,12 +56,14 @@ public:
   LiteralReal(int line, int col, double value)
       : Literal(line, col, REAL), value(value) {}
 
-  void semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {}
+  Ast *semanticAnalyze(VariableTable variableTable,
+                       FunctionTable functionTable) const {
+    return ((Ast *)this);
+  }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) {
+                  SymbolTable<Function> &functions) const {
     return ConstantFP::get(*context, APFloat(value));
   }
 
@@ -75,13 +79,15 @@ public:
   LiteralCadeia(int line, int col, string *value)
       : Literal(line, col, CADEIA), value(*value) {}
 
-  void semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {}
+  Ast *semanticAnalyze(VariableTable variableTable,
+                       FunctionTable functionTable) const {
+    return ((Ast *)this);
+  }
 
   // TOODO: achar a "classe" do llvm que referencia string
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) {
+                  SymbolTable<Function> &functions) const {
     return builder->CreateGlobalStringPtr(value, "str");
   }
 

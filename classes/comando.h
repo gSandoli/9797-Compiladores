@@ -18,12 +18,20 @@ public:
   ListaComando(int line, int col, Ast *comando, Ast *list)
       : Ast(line, col), comando(comando), list(list) {}
 
-  void semanticAnalyze(VariableTable variableTable,
+  Ast *semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
     comando->semanticAnalyze(variableTable, functionTable);
     if (list != 0) {
       list->semanticAnalyze(variableTable, functionTable);
     }
+    return ((Ast *)this);
+  }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) const {
+    comando->tradutor(context, builder, module, functions);
+    return list->tradutor(context, builder, module, functions);
   }
 
   void print(FILE *out, int d) const {
@@ -34,13 +42,6 @@ public:
     list->print(out, d + 1);
     indent(out, d);
     fprintf(out, ")\n");
-  }
-
-  Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) {
-    comando->tradutor(context, builder, module, functions);
-    return list->tradutor(context, builder, module, functions);
   }
 };
 } // namespace A

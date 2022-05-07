@@ -4,8 +4,6 @@
 #define FUNCAO_H
 
 #include "ast.h"
-#include "fator.h"
-#include "literal.h"
 #include "util/print.h"
 #include "util/symboltable.h"
 #include <cstdlib>
@@ -30,7 +28,7 @@ public:
   Funcao(int line, int col, string *identifier, Ast *args)
       : Ast(line, col), identifier(*identifier), args(args) {}
 
-  void semanticAnalyze(VariableTable variableTable,
+  Ast *semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
     // validando se função existe
     if (!functionTable.exists(identifier)) {
@@ -45,11 +43,12 @@ public:
       printPosition();
       exit(0);
     }
+    return ((Ast *)this);
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) {
+                  SymbolTable<Function> &functions) const {
     Function *fn = functions.lookup(identifier);
     if (!fn) {
       cerr << "[ERRO DE GERAÇÃO DE CÓDIGO] Função não existe: " << identifier;

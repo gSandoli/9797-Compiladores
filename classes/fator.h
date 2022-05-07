@@ -30,9 +30,16 @@ public:
     Literal *fl = ((Literal *)literal);
   }
 
-  void semanticAnalyze(VariableTable variableTable,
+  Ast *semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
     literal->semanticAnalyze(variableTable, functionTable);
+    return ((Ast *)this);
+  }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) const {
+    return literal->tradutor(context, builder, module, functions);
   }
 
   void print(FILE *out, int d) const {
@@ -43,12 +50,6 @@ public:
     indent(out, d);
     fprintf(out, ")\n");
   }
-
-  Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) {
-    return literal->tradutor(context, builder, module, functions);
-  }
 };
 
 class FatorExpressao : public Fator {
@@ -57,9 +58,16 @@ public:
   FatorExpressao(int line, int col, Ast *expressao)
       : Fator(line, col, EXPRESSAO), expressao(expressao) {}
 
-  void semanticAnalyze(VariableTable variableTable,
+  Ast *semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
     expressao->semanticAnalyze(variableTable, functionTable);
+    return ((Ast *)this);
+  }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) const {
+    return expressao->tradutor(context, builder, module, functions);
   }
 
   void print(FILE *out, int d) const {
@@ -69,12 +77,6 @@ public:
     indent(out, d);
     fprintf(out, ")\n");
   }
-
-  Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) {
-    return expressao->tradutor(context, builder, module, functions);
-  }
 };
 
 class FatorFuncao : public Fator {
@@ -83,9 +85,16 @@ public:
   FatorFuncao(int line, int col, Ast *funcao)
       : Fator(line, col, FUNCAO), funcao(funcao) {}
 
-  void semanticAnalyze(VariableTable variableTable,
+  Ast *semanticAnalyze(VariableTable variableTable,
                        FunctionTable functionTable) const {
     funcao->semanticAnalyze(variableTable, functionTable);
+    return ((Ast *)this);
+  }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) const {
+    return funcao->tradutor(context, builder, module, functions);
   }
 
   void print(FILE *out, int d) const {
@@ -96,31 +105,27 @@ public:
     indent(out, d);
     fprintf(out, ")\n");
   }
-
-  Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) {
-    return funcao->tradutor(context, builder, module, functions);
-  }
 };
 
 class FatorNil : public Fator {
 public:
   FatorNil(int line, int col) : Fator(line, col, NIL) {}
 
-  void semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {}
-
-  void print(FILE *out, int d) const {
-    indent(out, d);
-    fprintf(out, "FatorNil(NULL)\n");
+  Ast *semanticAnalyze(VariableTable variableTable,
+                       FunctionTable functionTable) const {
+    return ((Ast *)this);
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) {
+                  SymbolTable<Function> &functions) const {
     return ConstantPointerNull::get(
         PointerType::getUnqual(StructType::get(*context)));
+  }
+
+  void print(FILE *out, int d) const {
+    indent(out, d);
+    fprintf(out, "FatorNil(NULL)\n");
   }
 };
 } // namespace A
