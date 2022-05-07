@@ -30,9 +30,9 @@ public:
     Literal *fl = ((Literal *)literal);
   }
 
-  Ast *semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {
-    literal->semanticAnalyze(variableTable, functionTable);
+  Ast *semanticAnalyze(
+      SymbolTable<SemanticTableFunction> semanticTableFunction) const {
+    literal->semanticAnalyze(semanticTableFunction);
     return ((Ast *)this);
   }
 
@@ -58,9 +58,9 @@ public:
   FatorExpressao(int line, int col, Ast *expressao)
       : Fator(line, col, EXPRESSAO), expressao(expressao) {}
 
-  Ast *semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {
-    expressao->semanticAnalyze(variableTable, functionTable);
+  Ast *semanticAnalyze(
+      SymbolTable<SemanticTableFunction> semanticTableFunction) const {
+    expressao->semanticAnalyze(semanticTableFunction);
     return ((Ast *)this);
   }
 
@@ -85,9 +85,9 @@ public:
   FatorFuncao(int line, int col, Ast *funcao)
       : Fator(line, col, FUNCAO), funcao(funcao) {}
 
-  Ast *semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {
-    funcao->semanticAnalyze(variableTable, functionTable);
+  Ast *semanticAnalyze(
+      SymbolTable<SemanticTableFunction> semanticTableFunction) const {
+    funcao->semanticAnalyze(semanticTableFunction);
     return ((Ast *)this);
   }
 
@@ -111,8 +111,8 @@ class FatorNil : public Fator {
 public:
   FatorNil(int line, int col) : Fator(line, col, NIL) {}
 
-  Ast *semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {
+  Ast *semanticAnalyze(
+      SymbolTable<SemanticTableFunction> semanticTableFunction) const {
     return ((Ast *)this);
   }
 

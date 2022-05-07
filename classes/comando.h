@@ -18,11 +18,11 @@ public:
   ListaComando(int line, int col, Ast *comando, Ast *list)
       : Ast(line, col), comando(comando), list(list) {}
 
-  Ast *semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {
-    comando->semanticAnalyze(variableTable, functionTable);
+  Ast *semanticAnalyze(
+      SymbolTable<SemanticTableFunction> semanticTableFunction) const {
+    comando->semanticAnalyze(semanticTableFunction);
     if (list != 0) {
-      list->semanticAnalyze(variableTable, functionTable);
+      list->semanticAnalyze(semanticTableFunction);
     }
     return ((Ast *)this);
   }

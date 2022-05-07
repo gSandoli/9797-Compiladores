@@ -1,15 +1,12 @@
 #pragma once
 
 #include "classes/ast.h"
-#include "classes/util/function_table.h"
-#include "classes/util/variable_table.h"
 #include <fstream>
 #include <iostream>
 #include <string>
 
 using namespace std;
 using namespace A;
-using namespace T;
 namespace Simples {
 /// Forward declarations of classes
 class Parser;
@@ -22,10 +19,9 @@ public:
   ~Driver();
 
   Ast *root;
-  FunctionTable *functionTable;
-  VariableTable *variableTable;
   int line = 1;
   int col = 0;
+  SymbolTable<SemanticTableFunction> semanticTableFunctions;
 
   int parse();
   int parse_file(string &path);

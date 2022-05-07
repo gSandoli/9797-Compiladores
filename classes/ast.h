@@ -3,9 +3,8 @@
 #ifndef AST_H // include guard
 #define AST_H
 
-#include "util/function_table.h"
+#include "util/semantic_table_function.h"
 #include "util/symboltable.h"
-#include "util/variable_table.h"
 #include <iostream>
 #include <string>
 
@@ -13,7 +12,6 @@
 #include "llvm/IR/LLVMContext.h"
 
 using namespace std;
-using namespace T;
 using namespace llvm;
 
 namespace A {
@@ -28,8 +26,8 @@ public:
     cout << " (" << line << ":" << col << ")" << endl;
   };
 
-  virtual Ast *semanticAnalyze(VariableTable variableTable,
-                               FunctionTable functionTable) const = 0;
+  virtual Ast *semanticAnalyze(
+      SymbolTable<SemanticTableFunction> semanticTableFunction) const = 0;
 
   virtual Value *tradutor(unique_ptr<LLVMContext> &context,
                           unique_ptr<IRBuilder<>> &builder,

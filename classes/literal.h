@@ -33,8 +33,8 @@ public:
   LiteralInteiro(int line, int col, int value)
       : Literal(line, col, INTEIRO), value(value) {}
 
-  Ast *semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {
+  Ast *semanticAnalyze(
+      SymbolTable<SemanticTableFunction> semanticTableFunction) const {
     return ((Ast *)this);
   }
 
@@ -56,8 +56,8 @@ public:
   LiteralReal(int line, int col, double value)
       : Literal(line, col, REAL), value(value) {}
 
-  Ast *semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {
+  Ast *semanticAnalyze(
+      SymbolTable<SemanticTableFunction> semanticTableFunction) const {
     return ((Ast *)this);
   }
 
@@ -79,8 +79,8 @@ public:
   LiteralCadeia(int line, int col, string *value)
       : Literal(line, col, CADEIA), value(*value) {}
 
-  Ast *semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {
+  Ast *semanticAnalyze(
+      SymbolTable<SemanticTableFunction> semanticTableFunction) const {
     return ((Ast *)this);
   }
 

@@ -28,9 +28,21 @@ public:
   Funcao(int line, int col, string *identifier, Ast *args)
       : Ast(line, col), identifier(*identifier), args(args) {}
 
-  Ast *semanticAnalyze(VariableTable variableTable,
-                       FunctionTable functionTable) const {
+  Ast *semanticAnalyze(
+      SymbolTable<SemanticTableFunction> semanticTableFunction) const {
+    SemanticTableFunction *sf = semanticTableFunction.lookup(identifier);
     // validando se função existe
+    if (sf == 0) {
+      cerr << "[ERRO SEMÂNTICO] Função não existe: " << identifier;
+      printPosition();
+      exit(0);
+    }
+    if (!sf->args.empty() && args == nullptr) {
+      cerr << "[ERRO SEMÂNTICO] Parâmetros faltando: " << identifier;
+      printPosition();
+      exit(0);
+    }
+    /*
     if (!functionTable.exists(identifier)) {
       cerr << "[ERRO SEMÂNTICO] Função não existe: " << identifier;
       printPosition();
@@ -42,7 +54,7 @@ public:
       cerr << "[ERRO SEMÂNTICO] Parâmetros faltando: " << identifier;
       printPosition();
       exit(0);
-    }
+    }*/
     return ((Ast *)this);
   }
 

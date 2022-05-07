@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
   Simples::Driver driver;
   driver.parse_file(filename);
 
-  driver.root->semanticAnalyze(*driver.variableTable, *driver.functionTable);
+  driver.root->semanticAnalyze(driver.semanticTableFunctions);
 
   system("mkdir -p output");
   FILE *treeOutput = fopen(tree.c_str(), "w");
@@ -118,5 +118,12 @@ int main(int argc, char **argv) {
   // default: g++ output/llvm.out output/lib.o -o output/a.out
   const string cmd = "g++ " + llvmFile + " output/lib.o -o " + output;
   system(cmd.c_str());
+
+  SemanticTableFunction *sf = driver.semanticTableFunctions.lookup("imprimei");
+  cout << sf->name << endl;
+  cout << sf->type << endl;
+  for (auto i = sf->args.begin(); i != sf->args.end(); ++i)
+    cout << *i << " ";
+
   return 0;
 }
