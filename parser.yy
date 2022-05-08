@@ -26,6 +26,7 @@
   #include "../classes/declaracao.h"
   #include "../classes/programa.h"
   #include "../classes/local_armazenamento.h"
+  #include "../classes/lista_declaracao.h"
 
   using namespace A;
   using namespace std;
@@ -171,7 +172,7 @@ lista_declaracoes_de_globais : { $$ = nullptr; }
                              | GLOBAL DOIS_PONTOS lista_declaracao_variavel { $$ = $3; }
 
 lista_declaracao_variavel : IDENTIFIER DOIS_PONTOS IDENTIFIER DOIS_PONTOS_IGUAL expr { $$ = new Declaracao(driver.line, driver.col, $1, $3, $5); }
-                          | lista_declaracao_variavel IDENTIFIER DOIS_PONTOS IDENTIFIER DOIS_PONTOS_IGUAL expr
+                          | IDENTIFIER DOIS_PONTOS IDENTIFIER DOIS_PONTOS_IGUAL expr lista_declaracao_variavel { $$ = new ListaDeclaracao(driver.line, driver.col, $1, $3, $5, $6); }
 
 criacao_de_registro : tipo_registro
                     | criacao_de_registro VIRGULA tipo_registro
