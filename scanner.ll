@@ -256,7 +256,7 @@ eol     [\n\r]+
 }
 ":=" {
 	ADJ_COL;
-	return token::PONTO_IGUAL;
+	return token::DOIS_PONTOS_IGUAL;
 }
 "=" {
 	ADJ_COL;

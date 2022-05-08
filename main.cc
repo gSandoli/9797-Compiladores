@@ -112,18 +112,10 @@ int main(int argc, char **argv) {
     system(cmdRmFileLib.c_str());
   }
 
-  const string cmdLib =
-      "clang-13 -c -o output/lib.o classes/util/lib.cpp";
+  const string cmdLib = "clang-13 -c -o output/lib.o classes/util/lib.cpp";
   system(cmdLib.c_str());
   // default: g++ output/llvm.out output/lib.o -o output/a.out
   const string cmd = "g++ " + llvmFile + " output/lib.o -o " + output;
   system(cmd.c_str());
-
-  SemanticTableFunction *sf = driver.semanticTableFunctions.lookup("imprimei");
-  cout << sf->name << endl;
-  cout << sf->type << endl;
-  for (auto i = sf->args.begin(); i != sf->args.end(); ++i)
-    cout << *i << " ";
-
   return 0;
 }

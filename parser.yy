@@ -86,54 +86,54 @@
 %type <ast> expr expr_ari expr_ari_ expr_log expr_rel fator literal
 
 // simbolos
-%token  VIRGULA       "virgula"
-%token  DOIS_PONTOS   "doisPontos"
-%token  PONTO_VIRUGLA "pontoVirgula"
-%token  ABR_PRT       "abreParenteses"
-%token  FCH_PRT       "fechaParenteses"
-%token  ABR_COL       "abreColchetes"
-%token  FCH_COL       "fechaColchetes"
-%token  ABR_CHV       "abreChaves"
-%token  FCH_CHV       "fechaChaves"
-%token  PONTO         "ponto"
-%token  SOMA          "mais"
-%token  SUBTRACAO     "menos"
-%token  MULTIPLICACAO "multiplicacao"
-%token  DIVISAO       "divisao"
-%token  IGUAL_IGUAL   "igual_igual"
-%token  DIFERENTE     "diferente"
-%token  MENOR         "menor"
-%token  MENOR_IGUAL   "menorIgual"
-%token  MAIOR         "maior"
-%token  MAIOR_IGUAL   "maiorIgual"
-%token  E             "e"
-%token  OU            "ou"
-%token  PONTO_IGUAL   "pontoIgual"
-%token  IGUAL         "igual"
+%token  VIRGULA           ","
+%token  DOIS_PONTOS       ":"
+%token  PONTO_VIRUGLA     ";"
+%token  ABR_PRT           "("
+%token  FCH_PRT           ")"
+%token  ABR_COL           "["
+%token  FCH_COL           "]"
+%token  ABR_CHV           "{"
+%token  FCH_CHV           "\\{"
+%token  PONTO             "."
+%token  SOMA              "+"
+%token  SUBTRACAO         "-"
+%token  MULTIPLICACAO     "*"
+%token  DIVISAO           "/"
+%token  IGUAL_IGUAL       "=="
+%token  DIFERENTE         "!="
+%token  MENOR             ">"
+%token  MENOR_IGUAL       "<="
+%token  MAIOR             "\\>"
+%token  MAIOR_IGUAL       ">="
+%token  E                 "&"
+%token  OU                "||"
+%token  DOIS_PONTOS_IGUAL ":="
+%token  IGUAL             "="
 
 //palavras reservadas
-%token  PARE          "pare"
-%token  CONTINUE      "continue"
-%token  PARA          "para"
-%token  FPARA         "fpara"
-%token  ENQUANTO      "enquanto"
-%token  FENQUANTO     "fenquanto"
-%token  FACA          "faça"
-%token  SE            "se"
-%token  FSE           "fse"
-%token  VERDADEIRO    "verdadeiro"
-%token  FALSO         "falso"
-%token  TIPO          "tipo"
-%token  DE            "de"
-%token  LIMITE        "limite"
-%token  GLOBAL        "global"
-%token  LOCAL         "local"
-%token  VALOR         "valor"
-%token  REF           "ref"
-%token  RETORNE       "retorne"
-%token  NULO          "nulo"
-%token  FUNCAO        "função"
-%token  ACAO          "ação"
+%token  PARE              "pare"
+%token  CONTINUE          "continue"
+%token  PARA              "para"
+%token  FPARA             "fpara"
+%token  ENQUANTO          "enquanto"
+%token  FENQUANTO         "fenquanto"
+%token  FACA              "faça"
+%token  SE                "se"
+%token  FSE               "fse"
+%token  VERDADEIRO        "verdadeiro"
+%token  FALSO             "falso"
+%token  TIPO              "tipo"
+%token  DE                "de"
+%token  LIMITE            "limite"
+%token  GLOBAL            "global"
+%token  LOCAL             "local"
+%token  VALOR             "valor"
+%token  REF               "ref"
+%token  RETORNE           "retorne"
+%token  NULO              "nulo"
+%token  FUNCAO            "função"
+%token  ACAO              "ação"
 
 %%
 
@@ -167,8 +167,8 @@ tipo_constantes : INTEIROV
 lista_declaracoes_de_globais : 
                              | GLOBAL DOIS_PONTOS lista_declaracao_variavel 
 
-lista_declaracao_variavel : IDENTIFIER DOIS_PONTOS IDENTIFIER PONTO_IGUAL expr
-                          | lista_declaracao_variavel IDENTIFIER DOIS_PONTOS IDENTIFIER PONTO_IGUAL expr
+lista_declaracao_variavel : IDENTIFIER DOIS_PONTOS IDENTIFIER DOIS_PONTOS_IGUAL expr
+                          | lista_declaracao_variavel IDENTIFIER DOIS_PONTOS IDENTIFIER DOIS_PONTOS_IGUAL expr
 
 criacao_de_registro : tipo_registro
                     | criacao_de_registro VIRGULA tipo_registro
@@ -245,7 +245,7 @@ lista_comandos: { $$ = nullptr; }
               | comando { $$ = $1; }
               | comando PONTO_VIRUGLA lista_comandos { $$ = new ListaComando(driver.line, driver.col, $1, $3); }
 
-comando: IDENTIFIER PONTO_IGUAL expr 
+comando: IDENTIFIER DOIS_PONTOS_IGUAL expr 
        | chamada_funcao { $$ = $1; }
        | SE expr VERDADEIRO lista_comandos FSE 
        | SE expr VERDADEIRO lista_comandos FALSO lista_comandos FSE 
