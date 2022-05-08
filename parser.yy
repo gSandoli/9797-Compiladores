@@ -206,8 +206,8 @@ declaracao_de_locais:
 expr : expr_log { $$ = $1; }
      | ABR_CHV criacao_de_registro FCH_CHV 
 
-expr_log : expr_log OU expr_rel { $$ = new ExpressaoLogicaE(driver.line, driver.col, $1, $3); }
-         | expr_log E expr_rel { $$ = new ExpressaoLogicaOU(driver.line, driver.col, $1, $3); }
+expr_log : expr_log OU expr_rel { $$ = new ExpressaoLogicaOU(driver.line, driver.col, $1, $3); }
+         | expr_log E expr_rel { $$ = new ExpressaoLogicaE(driver.line, driver.col, $1, $3); }
          | expr_rel { $$ = $1; }
 
 expr_rel : expr_rel MENOR_IGUAL expr_ari { $$ = new ExpressaoRelacionalMenorIgual(driver.line, driver.col, $1, $3); }

@@ -247,7 +247,12 @@ public:
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
-    return nullptr;
+    Value *L =
+        esquerda->tradutor(context, builder, module, functions, namedValues);
+    Value *R =
+        direita->tradutor(context, builder, module, functions, namedValues);
+    return builder->CreateZExt(builder->CreateICmpEQ(L, R, "cmptmp"),
+                               llvm::Type::getInt64Ty(*context), "cmptmp");
   }
 
   void print(FILE *out, int d) const {
@@ -277,7 +282,12 @@ public:
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
-    return nullptr;
+    Value *L =
+        esquerda->tradutor(context, builder, module, functions, namedValues);
+    Value *R =
+        direita->tradutor(context, builder, module, functions, namedValues);
+    return builder->CreateZExt(builder->CreateICmpNE(L, R, "cmptmp"),
+                               llvm::Type::getInt64Ty(*context), "cmptmp");
   }
 
   void print(FILE *out, int d) const {
@@ -308,7 +318,12 @@ public:
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
-    return nullptr;
+    Value *L =
+        esquerda->tradutor(context, builder, module, functions, namedValues);
+    Value *R =
+        direita->tradutor(context, builder, module, functions, namedValues);
+    return builder->CreateZExt(builder->CreateICmpSGT(L, R, "cmptmp"),
+                               llvm::Type::getInt64Ty(*context), "cmptmp");
   }
 
   void print(FILE *out, int d) const {
@@ -339,7 +354,12 @@ public:
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
-    return nullptr;
+    Value *L =
+        esquerda->tradutor(context, builder, module, functions, namedValues);
+    Value *R =
+        direita->tradutor(context, builder, module, functions, namedValues);
+    return builder->CreateZExt(builder->CreateICmpSLT(L, R, "cmptmp"),
+                               llvm::Type::getInt64Ty(*context), "cmptmp");
   }
 
   void print(FILE *out, int d) const {
@@ -372,7 +392,12 @@ public:
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
-    return nullptr;
+    Value *L =
+        esquerda->tradutor(context, builder, module, functions, namedValues);
+    Value *R =
+        direita->tradutor(context, builder, module, functions, namedValues);
+    return builder->CreateZExt(builder->CreateICmpSGE(L, R, "cmptmp"),
+                               llvm::Type::getInt64Ty(*context), "cmptmp");
   }
 
   void print(FILE *out, int d) const {
@@ -405,7 +430,12 @@ public:
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
-    return nullptr;
+    Value *L =
+        esquerda->tradutor(context, builder, module, functions, namedValues);
+    Value *R =
+        direita->tradutor(context, builder, module, functions, namedValues);
+    return builder->CreateZExt(builder->CreateICmpSLE(L, R, "cmptmp"),
+                               llvm::Type::getInt64Ty(*context), "cmptmp");
   }
 
   void print(FILE *out, int d) const {
@@ -436,7 +466,11 @@ public:
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
-    return nullptr;
+    Value *L =
+        esquerda->tradutor(context, builder, module, functions, namedValues);
+    Value *R =
+        direita->tradutor(context, builder, module, functions, namedValues);
+    return builder->CreateAnd(L, R, "andtmp");
   }
 
   void print(FILE *out, int d) const {
@@ -467,7 +501,11 @@ public:
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
-    return nullptr;
+    Value *L =
+        esquerda->tradutor(context, builder, module, functions, namedValues);
+    Value *R =
+        direita->tradutor(context, builder, module, functions, namedValues);
+    return builder->CreateOr(L, R, "andtmp");
   }
 
   void print(FILE *out, int d) const {
