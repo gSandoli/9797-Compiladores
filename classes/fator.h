@@ -39,8 +39,8 @@ public:
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
-                  map<string, AllocaInst *> NamedValues) const {
-    return literal->tradutor(context, builder, module, functions, NamedValues);
+                  map<string, AllocaInst *> &namedValues) const {
+    return literal->tradutor(context, builder, module, functions, namedValues);
   }
 
   void print(FILE *out, int d) const {
@@ -68,9 +68,9 @@ public:
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
-                  map<string, AllocaInst *> NamedValues) const {
+                  map<string, AllocaInst *> &namedValues) const {
     return expressao->tradutor(context, builder, module, functions,
-                               NamedValues);
+                               namedValues);
   }
 
   void print(FILE *out, int d) const {
@@ -97,8 +97,8 @@ public:
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
-                  map<string, AllocaInst *> NamedValues) const {
-    return funcao->tradutor(context, builder, module, functions, NamedValues);
+                  map<string, AllocaInst *> &namedValues) const {
+    return funcao->tradutor(context, builder, module, functions, namedValues);
   }
 
   void print(FILE *out, int d) const {
@@ -123,7 +123,7 @@ public:
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
-                  map<string, AllocaInst *> NamedValues) const {
+                  map<string, AllocaInst *> &namedValues) const {
     return ConstantPointerNull::get(
         PointerType::getUnqual(StructType::get(*context)));
   }
@@ -149,9 +149,9 @@ public:
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
-                  map<string, AllocaInst *> NamedValues) const {
+                  map<string, AllocaInst *> &namedValues) const {
     return localDeArmazenamento->tradutor(context, builder, module, functions,
-                                          NamedValues);
+                                          namedValues);
   }
 
   void print(FILE *out, int d) const {

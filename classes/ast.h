@@ -33,7 +33,7 @@ public:
                           unique_ptr<IRBuilder<>> &builder,
                           unique_ptr<Module> &module,
                           SymbolTable<Function> &functions,
-                          map<string, AllocaInst *> NamedValues) const = 0;
+                          map<string, AllocaInst *> &namedValues) const = 0;
 
   virtual void print(FILE *out, int d) const = 0;
 };

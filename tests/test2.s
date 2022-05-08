@@ -1,5 +1,4 @@
 global:
-    doli : inteiro := 10
+    a : real := gere_real() / gere_real()  
 ação:
-    imprimei(1);
-    imprimei(doli)
+    imprimer(a)

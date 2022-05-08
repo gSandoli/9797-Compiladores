@@ -28,12 +28,11 @@ public:
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                unique_ptr<IRBuilder<>> &builder,
-                unique_ptr<Module> &module,
-                SymbolTable<Function> &functions,
-                map<string, AllocaInst *> NamedValues) const {
-    comando->tradutor(context, builder, module, functions, NamedValues);
-    return list->tradutor(context, builder, module, functions, NamedValues);
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions,
+                  map<string, AllocaInst *> &namedValues) const {
+    comando->tradutor(context, builder, module, functions, namedValues);
+    return list->tradutor(context, builder, module, functions, namedValues);
   }
 
   void print(FILE *out, int d) const {

@@ -38,10 +38,8 @@ public:
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
-                  map<string, AllocaInst *> NamedValues) const {
-    cout << "entrou tradutor declaracao\n";
+                  map<string, AllocaInst *> &namedValues) const {
     Function *TheFunction = builder->GetInsertBlock()->getParent();
-    cout << "funcao retornada: " << TheFunction->getName().str() << endl;
 
     AllocaInst *Alloca;
     if (type == "inteiro") {
@@ -56,13 +54,12 @@ public:
                           identifier.c_str());
     }
 
-    NamedValues[identifier] = Alloca;
+    namedValues[identifier] = Alloca;
 
     Value *auxValor =
-        exp->tradutor(context, builder, module, functions, NamedValues);
+        exp->tradutor(context, builder, module, functions, namedValues);
 
     Value *v = builder->CreateStore(auxValor, Alloca);
-    cout << "criou store\n";
     return v;
   }
 

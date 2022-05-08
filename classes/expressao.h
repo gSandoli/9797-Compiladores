@@ -42,11 +42,10 @@ public:
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                unique_ptr<IRBuilder<>> &builder,
-                unique_ptr<Module> &module,
-                SymbolTable<Function> &functions,
-                map<string, AllocaInst *> NamedValues) const {
-    return fator->tradutor(context, builder, module, functions, NamedValues);
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions,
+                  map<string, AllocaInst *> &namedValues) const {
+    return fator->tradutor(context, builder, module, functions, namedValues);
   }
 };
 
@@ -172,12 +171,13 @@ if (fesq->type == Fator::LITERAL && fdir->type == Fator::LITERAL) {
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                unique_ptr<IRBuilder<>> &builder,
-                unique_ptr<Module> &module,
-                SymbolTable<Function> &functions,
-                map<string, AllocaInst *> NamedValues) const {
-    Value *L = esquerda->tradutor(context, builder, module, functions, NamedValues);
-    Value *R = direita->tradutor(context, builder, module, functions, NamedValues);
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions,
+                  map<string, AllocaInst *> &namedValues) const {
+    Value *L =
+        esquerda->tradutor(context, builder, module, functions, namedValues);
+    Value *R =
+        direita->tradutor(context, builder, module, functions, namedValues);
     Value *RL = builder->CreateSIToFP(L, llvm::Type::getDoubleTy(*context));
     Value *DL = builder->CreateSIToFP(R, llvm::Type::getDoubleTy(*context));
     Value *divF = builder->CreateFDiv(RL, DL, "divftmp");
@@ -304,12 +304,13 @@ if (fesq->type == Fator::LITERAL && fdir->type == Fator::LITERAL) {
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                unique_ptr<IRBuilder<>> &builder,
-                unique_ptr<Module> &module,
-                SymbolTable<Function> &functions,
-                map<string, AllocaInst *> NamedValues) const {
-    Value *L = esquerda->tradutor(context, builder, module, functions, NamedValues);
-    Value *R = direita->tradutor(context, builder, module, functions, NamedValues);
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions,
+                  map<string, AllocaInst *> &namedValues) const {
+    Value *L =
+        esquerda->tradutor(context, builder, module, functions, namedValues);
+    Value *R =
+        direita->tradutor(context, builder, module, functions, namedValues);
     if (L->getType()->getTypeID() == llvm::Type::IntegerTyID &&
         R->getType()->getTypeID() == llvm::Type::IntegerTyID) {
       return builder->CreateMul(L, R, "multmp");
@@ -419,12 +420,13 @@ public:
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                unique_ptr<IRBuilder<>> &builder,
-                unique_ptr<Module> &module,
-                SymbolTable<Function> &functions,
-                map<string, AllocaInst *> NamedValues) const {
-    Value *L = esquerda->tradutor(context, builder, module, functions, NamedValues);
-    Value *R = direita->tradutor(context, builder, module, functions, NamedValues);
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions,
+                  map<string, AllocaInst *> &namedValues) const {
+    Value *L =
+        esquerda->tradutor(context, builder, module, functions, namedValues);
+    Value *R =
+        direita->tradutor(context, builder, module, functions, namedValues);
     if (L->getType()->getTypeID() == llvm::Type::IntegerTyID &&
         R->getType()->getTypeID() == llvm::Type::IntegerTyID) {
       return builder->CreateAdd(L, R, "addtmp");
@@ -544,12 +546,13 @@ public:
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                unique_ptr<IRBuilder<>> &builder,
-                unique_ptr<Module> &module,
-                SymbolTable<Function> &functions,
-                map<string, AllocaInst *> NamedValues) const {
-    Value *L = esquerda->tradutor(context, builder, module, functions, NamedValues);
-    Value *R = direita->tradutor(context, builder, module, functions, NamedValues);
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions,
+                  map<string, AllocaInst *> &namedValues) const {
+    Value *L =
+        esquerda->tradutor(context, builder, module, functions, namedValues);
+    Value *R =
+        direita->tradutor(context, builder, module, functions, namedValues);
     if (L->getType()->getTypeID() == llvm::Type::IntegerTyID &&
         R->getType()->getTypeID() == llvm::Type::IntegerTyID) {
       return builder->CreateSub(L, R, "subtmp");

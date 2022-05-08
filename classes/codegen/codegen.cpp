@@ -26,8 +26,8 @@ using namespace sys;
 using namespace fs;
 
 /*
-* Método para criar funções do LLVM com linkagem externa
-*/
+ * Método para criar funções do LLVM com linkagem externa
+ */
 void createFunction(unique_ptr<Module> &module,
                     SymbolTable<Function> &functions, string const &name,
                     vector<Type *> const &args, Type *retType) {
@@ -38,8 +38,8 @@ void createFunction(unique_ptr<Module> &module,
 }
 
 /*
-* Método que cria as funções LLVM da biblioteca padrão
-*/
+ * Método que cria as funções LLVM da biblioteca padrão
+ */
 void seedFunctions(SymbolTable<Function> &functions,
                    unique_ptr<LLVMContext> &context,
                    unique_ptr<Module> &module) {
@@ -69,13 +69,14 @@ void seedFunctions(SymbolTable<Function> &functions,
 }
 
 /*
-* Método principal para criação da representação intermediária e de código executável
-*/
+ * Método principal para criação da representação intermediária e de código
+ * executável
+ */
 Value *tradutor(unique_ptr<LLVMContext> &context,
                 unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                 Ast *root, string outputFileName,
                 string intermediateCodeFilename,
-                map<string, AllocaInst *> NamedValues) {
+                map<string, AllocaInst *> &namedValues) {
 
   // Inicialização dos targets para geração de código
   InitializeAllTargetInfos();
@@ -84,7 +85,8 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   InitializeAllAsmParsers();
   InitializeAllAsmPrinters();
 
-  // Retorna o targetTriple da máquina atual, e configura o module para utilizá-lo
+  // Retorna o targetTriple da máquina atual, e configura o module para
+  // utilizá-lo
   string targetTriple = getDefaultTargetTriple();
   module->setTargetTriple(targetTriple);
   string error;
@@ -106,16 +108,15 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   module->setDataLayout(targetMachine->createDataLayout());
 
   // Cria o prototipo da função main, do tipo void.
-  FunctionType *mainProto =
-      FunctionType::get(Type::getVoidTy(*context), false);
+  FunctionType *mainProto = FunctionType::get(Type::getVoidTy(*context), false);
   Function *mainFunction = Function::Create(
       mainProto, GlobalValue::ExternalLinkage, "main", module.get());
-  
+
   // Cria o bloco básico da função principal
   BasicBlock *block = BasicBlock::Create(*context, "entry", mainFunction);
 
-  // Seta o entry point da main  
-  builder->SetInsertPoint(block);  
+  // Seta o entry point da main
+  builder->SetInsertPoint(block);
   IRBuilder<> TmpB(&mainFunction->getEntryBlock(),
                    mainFunction->getEntryBlock().begin());
 
@@ -124,7 +125,7 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   seedFunctions(functions, context, module);
 
   // Chama os métodos tradutor de toda a árvore
-  root->tradutor(context, builder, module, functions, NamedValues);
+  root->tradutor(context, builder, module, functions, namedValues);
 
   // Cria o retorno da função main
   builder->CreateRetVoid();
