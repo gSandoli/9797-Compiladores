@@ -97,11 +97,9 @@ int main(int argc, char **argv) {
   static unique_ptr<Module> module = make_unique<Module>("main", *context);
   static unique_ptr<IRBuilder<>> builder = make_unique<IRBuilder<>>(*context);
   static map<string, AllocaInst *> namedValues;
-  
-  cout << "\n\nInicio codegen";
+
   Value *codegen = tradutor(context, builder, module, driver.root, llvmFile,
                             fonte, namedValues);
-  cout << "Fim codegen\n\n";
   if (assemblyCode) {
     // default: llc-13 output/fonte.ll -o output/fonte.s
     const string cmdAss = "llc-13 " + fonte + " -o " + fonteAssembly;
