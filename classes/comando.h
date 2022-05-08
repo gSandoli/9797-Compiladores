@@ -16,7 +16,7 @@ using namespace std;
 namespace A {
 class Comando : public Ast {
 public:
-  enum Type { ATRIBUICAO, FUNCAO, IF };
+  enum Type { ATRIBUICAO, FUNCAO, IF, WHILE };
   Type type;
 
   Comando(int line, int col, Type type) : Ast(line, col), type(type) {}
@@ -101,7 +101,6 @@ public:
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
-    // IF
     Value *test =
         ifExp->tradutor(context, builder, module, functions, namedValues);
 
@@ -221,6 +220,41 @@ public:
     fprintf(out, ")\n");
   }
 };
+class ComandoWhile : public Comando {
+public:
+  Ast *exp;
+  Ast *list;
+  ComandoWhile(int line, int col, Ast *exp, Ast *list)
+      : Comando(line, col, WHILE), exp(exp), list(list){};
+
+  Ast *semanticAnalyze(
+      SymbolTable<SemanticTableFunction> semanticTableFunction) const {
+    exp->semanticAnalyze(semanticTableFunction);
+    list->semanticAnalyze(semanticTableFunction);
+    return ((Ast *)this);
+  }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions,
+                  map<string, AllocaInst *> &namedValues) const {
+    Function *function = builder->GetInsertBlock()->getParent();
+    
+
+    return nullptr;
+  }
+
+  void print(FILE *out, int d) const {
+    indent(out, d);
+    fprintf(out, "ComandoWhile(\n");
+    exp->print(out, d + 1);
+    virgula(out, d);
+    list->print(out, d + 1);
+    indent(out, d);
+    fprintf(out, ")\n");
+  }
+};
+
 } // namespace A
 
 #endif /* COMANDO_H */
