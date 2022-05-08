@@ -84,11 +84,11 @@ public:
   }
 };
 
-class ComandoIF : public Comando {
+class ComandoSe : public Comando {
 public:
   Ast *ifExp;
   Ast *ifList;
-  ComandoIF(int line, int col, Ast *ifExp, Ast *ifList)
+  ComandoSe(int line, int col, Ast *ifExp, Ast *ifList)
       : Comando(line, col, IF), ifExp(ifExp), ifList(ifList){};
 
   Ast *semanticAnalyze(
@@ -136,7 +136,7 @@ public:
 
   void print(FILE *out, int d) const {
     indent(out, d);
-    fprintf(out, "ComandoIF(\n");
+    fprintf(out, "ComandoSe(\n");
     ifExp->print(out, d + 1);
     virgula(out, d);
     ifList->print(out, d + 1);
@@ -145,12 +145,13 @@ public:
   }
 };
 
-class ComandoIFThenElse : public Comando {
+class ComandoSeVerdadeiroFalso : public Comando {
 public:
   Ast *ifExp;
   Ast *ifList;
   Ast *elseList;
-  ComandoIFThenElse(int line, int col, Ast *ifExp, Ast *ifList, Ast *elseList)
+  ComandoSeVerdadeiroFalso(int line, int col, Ast *ifExp, Ast *ifList,
+                           Ast *elseList)
       : Comando(line, col, IF), ifExp(ifExp), ifList(ifList),
         elseList(elseList){};
 
@@ -165,7 +166,7 @@ public:
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
-    cout << "entrou tradutor ComandoIFThenElse" << endl;
+    cout << "entrou tradutor ComandoSeVerdadeiroFalso" << endl;
     // IF
     Value *test =
         ifExp->tradutor(context, builder, module, functions, namedValues);
@@ -213,7 +214,7 @@ public:
 
   void print(FILE *out, int d) const {
     indent(out, d);
-    fprintf(out, "ComandoIFThenElse(\n");
+    fprintf(out, "ComandoSeVerdadeiroFalso(\n");
     ifExp->print(out, d + 1);
     virgula(out, d);
     ifList->print(out, d + 1);
@@ -221,11 +222,11 @@ public:
     fprintf(out, ")\n");
   }
 };
-class ComandoWhile : public Comando {
+class ComandoEnquanto : public Comando {
 public:
   Ast *exp;
   Ast *list;
-  ComandoWhile(int line, int col, Ast *exp, Ast *list)
+  ComandoEnquanto(int line, int col, Ast *exp, Ast *list)
       : Comando(line, col, WHILE), exp(exp), list(list){};
 
   Ast *semanticAnalyze(
@@ -240,21 +241,24 @@ public:
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
     Function *function = builder->GetInsertBlock()->getParent();
-    BasicBlock *testBB = llvm::BasicBlock::Create(*context, "test", function);
-    BasicBlock *loopBB = llvm::BasicBlock::Create(*context, "loop", function);
-    BasicBlock *nextBB = llvm::BasicBlock::Create(*context, "next", function);
-    BasicBlock *afterBB = llvm::BasicBlock::Create(*context, "after", function);
+    BasicBlock *testBB = BasicBlock::Create(*context, "test", function);
+    BasicBlock *loopBB = BasicBlock::Create(*context, "loop", function);
+    BasicBlock *nextBB = BasicBlock::Create(*context, "next", function);
+    BasicBlock *afterBB = BasicBlock::Create(*context, "after", function);
 
     builder->CreateBr(testBB);
     builder->SetInsertPoint(testBB);
-    
+
     Value *test =
         exp->tradutor(context, builder, module, functions, namedValues);
 
     if (!test)
       return nullptr;
 
-    Value *EndCond = builder->CreateICmpEQ(test, ConstantInt::get(llvm::Type::getInt64Ty(*context), llvm::APInt(64, 0)), "loopcond");
+    Value *EndCond = builder->CreateICmpEQ(
+        test,
+        ConstantInt::get(llvm::Type::getInt64Ty(*context), llvm::APInt(64, 0)),
+        "loopcond");
 
     // goto after or loop
     builder->CreateCondBr(EndCond, afterBB, loopBB);
@@ -275,12 +279,12 @@ public:
     // after:
     builder->SetInsertPoint(afterBB);
 
-    return llvm::Constant::getNullValue(llvm::Type::getInt64Ty(*context));
+    return Constant::getNullValue(llvm::Type::getInt64Ty(*context));
   }
 
   void print(FILE *out, int d) const {
     indent(out, d);
-    fprintf(out, "ComandoWhile(\n");
+    fprintf(out, "ComandoEnquanto(\n");
     exp->print(out, d + 1);
     virgula(out, d);
     list->print(out, d + 1);

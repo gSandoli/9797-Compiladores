@@ -253,10 +253,10 @@ lista_comandos: { $$ = nullptr; }
 
 comando: IDENTIFIER DOIS_PONTOS_IGUAL expr { $$ = new ComandoAtribuicao(driver.line, driver.col, $1, $3); }
        | chamada_funcao { $$ = new ComandoChamadaFuncao(driver.line, driver.col, $1); }
-       | SE expr VERDADEIRO lista_comandos FSE { $$ = new ComandoIF(driver.line, driver.col, $2, $4); }
-       | SE expr VERDADEIRO lista_comandos FALSO lista_comandos FSE  { $$ = new ComandoIFThenElse(driver.line, driver.col, $2, $4, $6); }
+       | SE expr VERDADEIRO lista_comandos FSE { $$ = new ComandoSe(driver.line, driver.col, $2, $4); }
+       | SE expr VERDADEIRO lista_comandos FALSO lista_comandos FSE  { $$ = new ComandoSeVerdadeiroFalso(driver.line, driver.col, $2, $4, $6); }
        | PARA IDENTIFIER DE expr LIMITE expr FACA lista_comandos FPARA  
-       | ENQUANTO expr FACA lista_comandos FENQUANTO { $$ = new ComandoWhile(driver.line, driver.col, $2, $4); }
+       | ENQUANTO expr FACA lista_comandos FENQUANTO { $$ = new ComandoEnquanto(driver.line, driver.col, $2, $4); }
        | PARE 
        | CONTINUE 
        | RETORNE expr 
