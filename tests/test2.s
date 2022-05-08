@@ -1,8 +1,10 @@
 global:
     a : inteiro := 0
 ação:
-    se a == 0 verdadeiro
+    se a == 1 verdadeiro
         imprimei(9000)
+    falso
+        imprimei(50)
     fse;
 
     imprimei(a==0);

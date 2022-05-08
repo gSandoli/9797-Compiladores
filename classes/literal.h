@@ -91,7 +91,7 @@ public:
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
-    return builder->CreateGlobalStringPtr(value, "str" + value.substr(0, 2));
+    return builder->CreateGlobalStringPtr(value, "str");
   }
 
   void print(FILE *out, int d) const {

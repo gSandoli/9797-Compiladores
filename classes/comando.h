@@ -101,13 +101,14 @@ public:
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
-    cout << "entrou tradutor ComandoIF" << endl;
     // IF
     Value *test =
         ifExp->tradutor(context, builder, module, functions, namedValues);
 
-    test = builder->CreateIntCast(test, llvm::Type::getInt1Ty(*context), 0, "ifcast");
-    builder->CreateICmpNE(test, ConstantInt::get(*context, APInt(1, 1)), "iftest");
+    test = builder->CreateIntCast(test, llvm::Type::getInt1Ty(*context), 0,
+                                  "ifcast");
+    builder->CreateICmpNE(test, ConstantInt::get(*context, APInt(1, 1)),
+                          "iftest");
 
     Function *function = builder->GetInsertBlock()->getParent();
     BasicBlock *thenBlock = BasicBlock::Create(*context, "then", function);
@@ -136,6 +137,83 @@ public:
   void print(FILE *out, int d) const {
     indent(out, d);
     fprintf(out, "ComandoIF(\n");
+    ifExp->print(out, d + 1);
+    virgula(out, d);
+    ifList->print(out, d + 1);
+    indent(out, d);
+    fprintf(out, ")\n");
+  }
+};
+
+class ComandoIFThenElse : public Comando {
+public:
+  Ast *ifExp;
+  Ast *ifList;
+  Ast *elseList;
+  ComandoIFThenElse(int line, int col, Ast *ifExp, Ast *ifList, Ast *elseList)
+      : Comando(line, col, IF), ifExp(ifExp), ifList(ifList),
+        elseList(elseList){};
+
+  Ast *semanticAnalyze(
+      SymbolTable<SemanticTableFunction> semanticTableFunction) const {
+    ifExp->semanticAnalyze(semanticTableFunction);
+    ifList->semanticAnalyze(semanticTableFunction);
+    return ((Ast *)this);
+  }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions,
+                  map<string, AllocaInst *> &namedValues) const {
+    cout << "entrou tradutor ComandoIFThenElse" << endl;
+    // IF
+    Value *test =
+        ifExp->tradutor(context, builder, module, functions, namedValues);
+
+    test = builder->CreateIntCast(test, llvm::Type::getInt1Ty(*context), 0,
+                                  "ifcast");
+    builder->CreateICmpNE(test, ConstantInt::get(*context, APInt(1, 1)),
+                          "iftest");
+
+    Function *function = builder->GetInsertBlock()->getParent();
+    BasicBlock *thenBlock = BasicBlock::Create(*context, "then", function);
+    BasicBlock *elseBlock = llvm::BasicBlock::Create(*context, "else");
+    BasicBlock *mergeBlock = BasicBlock::Create(*context, "ifcont");
+
+    builder->CreateCondBr(test, thenBlock, elseBlock);
+    builder->SetInsertPoint(thenBlock);
+    thenBlock = builder->GetInsertBlock();
+
+    // THEN
+    Value *then =
+        ifList->tradutor(context, builder, module, functions, namedValues);
+
+    builder->CreateBr(mergeBlock);
+
+    function->getBasicBlockList().push_back(elseBlock);
+    builder->SetInsertPoint(elseBlock);
+
+    // ELSE
+    Value *elsee =
+        elseList->tradutor(context, builder, module, functions, namedValues);
+
+    builder->CreateBr(mergeBlock);
+
+    function->getBasicBlockList().push_back(mergeBlock);
+    builder->SetInsertPoint(mergeBlock);
+
+    if (!then->getType()->isVoidTy() && !elsee->getType()->isVoidTy()) {
+      auto PN = builder->CreatePHI(then->getType(), 2, "iftmp");
+      PN->addIncoming(then, thenBlock);
+      PN->addIncoming(elsee, elseBlock);
+      return PN;
+    }
+    return nullptr;
+  }
+
+  void print(FILE *out, int d) const {
+    indent(out, d);
+    fprintf(out, "ComandoIFThenElse(\n");
     ifExp->print(out, d + 1);
     virgula(out, d);
     ifList->print(out, d + 1);
