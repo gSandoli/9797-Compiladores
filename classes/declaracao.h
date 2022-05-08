@@ -45,13 +45,9 @@ public:
     if (type == "inteiro") {
       Alloca = CreateEntryBlockAlloca(TheFunction, identifier, context,
                                       Type::getInt64Ty(*context));
-      builder->CreateLoad(Type::getInt64Ty(*context), Alloca,
-                          identifier.c_str());
     } else {
       Alloca = CreateEntryBlockAlloca(TheFunction, identifier, context,
                                       Type::getDoubleTy(*context));
-      builder->CreateLoad(Type::getDoubleTy(*context), Alloca,
-                          identifier.c_str());
     }
 
     namedValues[identifier] = Alloca;

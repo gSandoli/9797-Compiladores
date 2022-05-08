@@ -1,5 +1,5 @@
 #include <iostream>
-#include <llvm-13/llvm/IR/Instructions.h>
+#include <llvm/IR/Instructions.h>
 #include <llvm/IR/Module.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -83,7 +83,6 @@ int main(int argc, char **argv) {
 
   Simples::Driver driver;
   driver.parse_file(filename);
-
   driver.root->semanticAnalyze(driver.semanticTableFunctions);
 
   system("mkdir -p output");
@@ -98,10 +97,11 @@ int main(int argc, char **argv) {
   static unique_ptr<Module> module = make_unique<Module>("main", *context);
   static unique_ptr<IRBuilder<>> builder = make_unique<IRBuilder<>>(*context);
   static map<string, AllocaInst *> namedValues;
-
+  
+  cout << "\n\nInicio codegen";
   Value *codegen = tradutor(context, builder, module, driver.root, llvmFile,
                             fonte, namedValues);
-
+  cout << "Fim codegen\n\n";
   if (assemblyCode) {
     // default: llc-13 output/fonte.ll -o output/fonte.s
     const string cmdAss = "llc-13 " + fonte + " -o " + fonteAssembly;

@@ -32,8 +32,10 @@ public:
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
+    cout << "entrou tradutor\n";
     Value *v = exp->tradutor(context, builder, module, functions, namedValues);
 
+    cout << "tradutor do value: " << v->getValueID() << endl;
     AllocaInst *A = namedValues[identifier];
     if (!A) {
       cerr << "Variável não declarada: " << identifier;

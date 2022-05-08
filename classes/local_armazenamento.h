@@ -40,9 +40,10 @@ public:
                   map<string, AllocaInst *> &namedValues) const {
     // Look this variable up in the function.
     AllocaInst *A = namedValues[identifier];
-    if (!A)
+    if (!A){
       cerr << "Variável não declarada: " << identifier;
-    exit(0);
+      exit(0);
+    }
 
     // Load the value.
     return builder->CreateLoad(A->getAllocatedType(), A, identifier);
