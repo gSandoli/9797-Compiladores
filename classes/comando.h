@@ -241,13 +241,13 @@ public:
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
     Function *function = builder->GetInsertBlock()->getParent();
-    BasicBlock *testBB = BasicBlock::Create(*context, "test", function);
-    BasicBlock *loopBB = BasicBlock::Create(*context, "loop", function);
-    BasicBlock *nextBB = BasicBlock::Create(*context, "next", function);
-    BasicBlock *afterBB = BasicBlock::Create(*context, "after", function);
+    BasicBlock *testBlock = BasicBlock::Create(*context, "test", function);
+    BasicBlock *loopBlock = BasicBlock::Create(*context, "loop", function);
+    BasicBlock *nextStepBlock = BasicBlock::Create(*context, "next", function);
+    BasicBlock *stopLoopBlock = BasicBlock::Create(*context, "after", function);
 
-    builder->CreateBr(testBB);
-    builder->SetInsertPoint(testBB);
+    builder->CreateBr(testBlock);
+    builder->SetInsertPoint(testBlock);
 
     Value *test =
         exp->tradutor(context, builder, module, functions, namedValues);
@@ -261,23 +261,22 @@ public:
         "loopcond");
 
     // goto after or loop
-    builder->CreateCondBr(EndCond, afterBB, loopBB);
-    builder->SetInsertPoint(loopBB);
+    builder->CreateCondBr(EndCond, stopLoopBlock, loopBlock);
+    builder->SetInsertPoint(loopBlock);
 
-    // loop:
+    // loop
     if (!list->tradutor(context, builder, module, functions, namedValues))
       return nullptr;
 
-    // goto next:
-    builder->CreateBr(nextBB);
+    // goto next
+    builder->CreateBr(nextStepBlock);
 
-    // next:
-    builder->SetInsertPoint(nextBB);
+    // next
+    builder->SetInsertPoint(nextStepBlock);
+    builder->CreateBr(testBlock);
 
-    builder->CreateBr(testBB);
-
-    // after:
-    builder->SetInsertPoint(afterBB);
+    // after
+    builder->SetInsertPoint(stopLoopBlock);
 
     return Constant::getNullValue(llvm::Type::getInt64Ty(*context));
   }
