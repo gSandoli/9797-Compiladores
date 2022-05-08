@@ -26,9 +26,7 @@ public:
   Ast *declaracoes;
   Ast *acoes;
   Programa(int line, int col, Ast *declaracoes, Ast *acoes)
-      : Ast(line, col), declaracoes(declaracoes), acoes(acoes) {
-    cout << "criando programa " << endl;
-  }
+      : Ast(line, col), declaracoes(declaracoes), acoes(acoes) {}
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {

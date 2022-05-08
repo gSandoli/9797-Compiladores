@@ -128,6 +128,35 @@ public:
     fprintf(out, "FatorNil(NULL)\n");
   }
 };
+
+class FatorLocalArmazenamento : public Fator {
+public:
+  Ast *localDeArmazenamento;
+  FatorLocalArmazenamento(int line, int col, Ast *localDeArmazenamento)
+      : Fator(line, col, LOCAL_ARMAZENAMENTO),
+        localDeArmazenamento(localDeArmazenamento) {}
+
+  Ast *semanticAnalyze(
+      SymbolTable<SemanticTableFunction> semanticTableFunction) const {
+    return ((Ast *)this);
+  }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions) const {
+    return ConstantPointerNull::get(
+        PointerType::getUnqual(StructType::get(*context)));
+  }
+
+  void print(FILE *out, int d) const {
+    indent(out, d);
+    fprintf(out, "FatorLocalArmazenamento(\n");
+    localDeArmazenamento->print(out, d + 1);
+    fprintf(out, "\n");
+    indent(out, d);
+    fprintf(out, ")\n");
+  }
+};
 } // namespace A
 
 #endif /* FATOR_H */

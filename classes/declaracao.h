@@ -27,9 +27,7 @@ public:
   string type;
   Ast *exp;
   Declaracao(int line, int col, string *identifier, string *type, Ast *exp)
-      : Ast(line, col), identifier(*identifier), type(*type), exp(exp) {
-    cout << "criando declaração " << identifier << " do tipo " << type << endl;
-  }
+      : Ast(line, col), identifier(*identifier), type(*type), exp(exp) {}
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {
@@ -44,9 +42,7 @@ public:
 
   void print(FILE *out, int d) const {
     indent(out, d);
-    fprintf(out, "Declaracao(%s,\n", identifier.c_str());
-    indent(out, d);
-    fprintf(out, "%s\n", type.c_str());
+    fprintf(out, "Declaracao(%s,%s,\n", identifier.c_str(), type.c_str());
     virgula(out, d);
     exp->print(out, d + 1);
     indent(out, d);

@@ -25,6 +25,7 @@
   #include "../classes/comando.h"
   #include "../classes/declaracao.h"
   #include "../classes/programa.h"
+  #include "../classes/local_armazenamento.h"
 
   using namespace A;
   using namespace std;
@@ -86,7 +87,7 @@
 // tipos
 %type <ast> program lista_comandos comando chamada_funcao args_chamada 
 %type <ast> declaracoes lista_declaracao_de_tipos lista_declaracoes_de_globais lista_declaracoes_de_funcoes lista_declaracao_variavel
-%type <ast> expr expr_ari expr_ari_ expr_log expr_rel fator literal  
+%type <ast> expr expr_ari expr_ari_ expr_log expr_rel fator literal local_de_armazenamento
 
 // simbolos
 %token  VIRGULA           ","
@@ -226,7 +227,7 @@ fator : ABR_PRT expr FCH_PRT { $$ = new FatorExpressao(driver.line, driver.col, 
       | literal { $$ = new FatorLiteral(driver.line, driver.col, $1); }
       | NULO { $$ = new FatorNil(driver.line, driver.col); }
       | chamada_funcao { $$ = new FatorFuncao(driver.line, driver.col, $1); }
-      | local_de_armazenamento
+      | local_de_armazenamento { $$ = new FatorLocalArmazenamento(driver.line, driver.col, $1); }
 
 chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT { $$ = new Funcao(driver.line, driver.col, $1, $3); }
 
@@ -234,11 +235,11 @@ args_chamada: { $$ = nullptr; }
             | expr { $$ = $1; }
             | args_chamada VIRGULA expr
 
-local_de_armazenamento : IDENTIFIER
+local_de_armazenamento : IDENTIFIER { $$ = new VariavelLocalArmazenamento(driver.line, driver.col, $1); }
                        | local_de_armazenamento PONTO IDENTIFIER
-                       | local_de_armazenamento ABR_PRT expr FCH_PRT
+                       | local_de_armazenamento ABR_COL expr FCH_COL
 
-literal : INTEIROV {  $$ = new LiteralInteiro(driver.line, driver.col, $1); }
+literal : INTEIROV { $$ = new LiteralInteiro(driver.line, driver.col, $1); }
         | REALV { $$ = new LiteralReal(driver.line, driver.col, $1); }
         | CADEIAV { $$ = new LiteralCadeia(driver.line, driver.col, $1); }
 
