@@ -7,8 +7,8 @@
 #include <unistd.h>
 
 #include "classes/ast.h"
+#include "classes/chamada_funcao.h"
 #include "classes/fator.h"
-#include "classes/funcao.h"
 #include "classes/literal.h"
 #include "driver.hh"
 

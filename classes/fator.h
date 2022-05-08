@@ -27,7 +27,6 @@ public:
   Ast *literal;
   FatorLiteral(int line, int col, Ast *literal)
       : Fator(line, col, LITERAL), literal(literal) {
-    Literal *fl = ((Literal *)literal);
   }
 
   Ast *semanticAnalyze(

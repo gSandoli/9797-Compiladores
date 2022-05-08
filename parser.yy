@@ -21,7 +21,9 @@
   #include "../classes/literal.h"
   #include "../classes/fator.h"
   #include "../classes/expressao.h"
-  #include "../classes/funcao.h"
+  #include "../classes/chamada_funcao.h"
+  #include "../classes/comando.h"
+  #include "../classes/atribuicao.h"
   #include "../classes/lista_comando.h"
   #include "../classes/declaracao.h"
   #include "../classes/programa.h"
@@ -230,7 +232,7 @@ fator : ABR_PRT expr FCH_PRT { $$ = new FatorExpressao(driver.line, driver.col, 
       | chamada_funcao { $$ = new FatorFuncao(driver.line, driver.col, $1); }
       | local_de_armazenamento { $$ = new FatorLocalArmazenamento(driver.line, driver.col, $1); }
 
-chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT { $$ = new Funcao(driver.line, driver.col, $1, $3); }
+chamada_funcao: IDENTIFIER ABR_PRT args_chamada FCH_PRT { $$ = new ChamadaFuncao(driver.line, driver.col, $1, $3); }
 
 args_chamada: { $$ = nullptr; }
             | expr { $$ = $1; }
@@ -249,7 +251,7 @@ lista_comandos: { $$ = nullptr; }
               | comando { $$ = $1; }
               | comando PONTO_VIRUGLA lista_comandos { $$ = new ListaComando(driver.line, driver.col, $1, $3); }
 
-comando: IDENTIFIER DOIS_PONTOS_IGUAL expr 
+comando: IDENTIFIER DOIS_PONTOS_IGUAL expr { new Atribuicao($1, $3); }
        | chamada_funcao { $$ = $1; }
        | SE expr VERDADEIRO lista_comandos FSE 
        | SE expr VERDADEIRO lista_comandos FALSO lista_comandos FSE  

@@ -37,13 +37,13 @@ public:
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
-                  map<string, AllocaInst *> &namedValues) const {
+                  map<string, AllocaInst *> NamedValues) const {
     // Look this variable up in the function.
-    AllocaInst *A = namedValues[identifier];
-    if (!A) {
+    AllocaInst *A = NamedValues[identifier];
+    if (!A)
       cerr << "Variável não declarada: " << identifier;
       exit(0);
-    }
+
     // Load the value.
     return builder->CreateLoad(A->getAllocatedType(), A, identifier);
   }

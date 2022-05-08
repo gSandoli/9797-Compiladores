@@ -59,8 +59,7 @@ public:
     Value *auxValor =
         exp->tradutor(context, builder, module, functions, namedValues);
 
-    Value *v = builder->CreateStore(auxValor, Alloca);
-    return v;
+    return builder->CreateStore(auxValor, Alloca);
   }
 
   void print(FILE *out, int d) const {

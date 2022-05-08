@@ -1,7 +1,7 @@
 // arquivo header das classes e métodos utilizados para construir a AST do
 // compilador
-#ifndef FUNCAO_H // include guard
-#define FUNCAO_H
+#ifndef CHAMADA_FUNCAO // include guard
+#define CHAMADA_FUNCAO
 
 #include "ast.h"
 #include "util/print.h"
@@ -21,11 +21,11 @@ using namespace std;
 using namespace llvm;
 
 namespace A {
-class Funcao : public Ast {
+class ChamadaFuncao : public Ast {
 public:
   string identifier;
   Ast *args;
-  Funcao(int line, int col, string *identifier, Ast *args)
+  ChamadaFuncao(int line, int col, string *identifier, Ast *args)
       : Ast(line, col), identifier(*identifier), args(args) {}
 
   Ast *semanticAnalyze(
@@ -74,15 +74,15 @@ public:
   void print(FILE *out, int d) const {
     indent(out, d);
     if (args != nullptr) {
-      fprintf(out, "Funcao(%s,\n", identifier.c_str());
+      fprintf(out, "ChamadaFuncao(%s,\n", identifier.c_str());
       args->print(out, d + 1);
       indent(out, d);
       fprintf(out, ")\n");
     } else {
-      fprintf(out, "Funcao(%s)", identifier.c_str());
+      fprintf(out, "ChamadaFuncao(%s)", identifier.c_str());
     }
   }
 };
 } // namespace A
 
-#endif /* FUNCAO_H */
+#endif /* CHAMADA_FUNCAO */

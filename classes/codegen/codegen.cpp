@@ -1,5 +1,5 @@
 #include "../ast.h"
-#include "../funcao.h"
+#include "../chamada_funcao.h"
 #include "../util/symboltable.h"
 #include <llvm/IR/Function.h>
 #include <llvm/IR/IRBuilder.h>
