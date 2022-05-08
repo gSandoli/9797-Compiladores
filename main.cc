@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
 
   Simples::Driver driver;
   driver.parse_file(filename);
-  driver.root->semanticAnalyze(driver.semanticTableFunctions);
+  // driver.root->semanticAnalyze(driver.semanticTableFunctions);
 
   system("mkdir -p output");
   FILE *treeOutput = fopen(tree.c_str(), "w");

@@ -16,7 +16,7 @@ using namespace std;
 namespace A {
 class Comando : public Ast {
 public:
-  enum Type { ATRIBUICAO, FUNCAO };
+  enum Type { ATRIBUICAO, FUNCAO, IF };
   Type type;
 
   Comando(int line, int col, Type type) : Ast(line, col), type(type) {}
@@ -78,6 +78,62 @@ public:
     fprintf(out, "ComandoChamadaFuncao(\n");
     chamadaFuncao->print(out, d + 1);
     fprintf(out, "\n");
+    indent(out, d);
+    fprintf(out, ")\n");
+  }
+};
+
+class ComandoIF : public Comando {
+public:
+  Ast *ifExp;
+  Ast *ifList;
+  ComandoIF(int line, int col, Ast *ifExp, Ast *ifList)
+      : Comando(line, col, IF), ifExp(ifExp), ifList(ifList){};
+
+  Ast *semanticAnalyze(
+      SymbolTable<SemanticTableFunction> semanticTableFunction) const {
+    ifExp->semanticAnalyze(semanticTableFunction);
+    ifList->semanticAnalyze(semanticTableFunction);
+    return ((Ast *)this);
+  }
+
+  Value *tradutor(unique_ptr<LLVMContext> &context,
+                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
+                  SymbolTable<Function> &functions,
+                  map<string, AllocaInst *> &namedValues) const {
+    cout << "entrou tradutor ComandoIF" << endl;
+    Value *test =
+        ifExp->tradutor(context, builder, module, functions, namedValues);
+    Value *then =
+        ifList->tradutor(context, builder, module, functions, namedValues);
+
+    builder->CreateICmpNE(test, ConstantInt::get(*context, APInt(64, 0)),
+                          "iftest");
+
+    Function *function = builder->GetInsertBlock()->getParent();
+
+    BasicBlock *thenBlock = BasicBlock::Create(*context, "then", function);
+
+    BasicBlock *mergeBlock = BasicBlock::Create(*context, "ifcont");
+    builder->CreateCondBr(test, thenBlock, mergeBlock);
+    builder->SetInsertPoint(thenBlock);
+
+    thenBlock = builder->GetInsertBlock();
+
+    if (then && !then->getType()->isVoidTy()) {
+      auto PN = builder->CreatePHI(then->getType(), 2, "iftmp");
+      PN->addIncoming(then, thenBlock);
+      return PN;
+    }
+    return nullptr;
+  }
+
+  void print(FILE *out, int d) const {
+    indent(out, d);
+    fprintf(out, "ComandoIF(\n");
+    ifExp->print(out, d + 1);
+    virgula(out, d);
+    ifList->print(out, d + 1);
     indent(out, d);
     fprintf(out, ")\n");
   }
