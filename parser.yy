@@ -23,6 +23,8 @@
   #include "../classes/expressao.h"
   #include "../classes/funcao.h"
   #include "../classes/comando.h"
+  #include "../classes/declaracao.h"
+  #include "../classes/programa.h"
 
   using namespace A;
   using namespace std;
@@ -82,8 +84,9 @@
 %token <stringVal>  CADEIAV       "cadeia"
 
 // tipos
-%type <ast> program lista_comandos comando chamada_funcao args_chamada
-%type <ast> expr expr_ari expr_ari_ expr_log expr_rel fator literal
+%type <ast> program lista_comandos comando chamada_funcao args_chamada 
+%type <ast> declaracoes lista_declaracao_de_tipos lista_declaracoes_de_globais lista_declaracoes_de_funcoes lista_declaracao_variavel
+%type <ast> expr expr_ari expr_ari_ expr_log expr_rel fator literal  
 
 // simbolos
 %token  VIRGULA           ","
@@ -137,10 +140,9 @@
 
 %%
 
-program: declaracoes 
-       | ACAO DOIS_PONTOS lista_comandos { driver.root = $3; }
+program: declaracoes ACAO DOIS_PONTOS lista_comandos { driver.root = new Programa(driver.line, driver.col, $1, $4); }
 
-declaracoes : lista_declaracao_de_tipos lista_declaracoes_de_globais lista_declaracoes_de_funcoes program
+declaracoes : lista_declaracao_de_tipos lista_declaracoes_de_globais lista_declaracoes_de_funcoes { $$ = $2; }
 
 /* declaracao de tipos */
 lista_declaracao_de_tipos : 
@@ -164,10 +166,10 @@ tipo_constantes : INTEIROV
 			        	| tipo_constantes VIRGULA INTEIROV
 
 /* declaracao de globais */
-lista_declaracoes_de_globais : 
-                             | GLOBAL DOIS_PONTOS lista_declaracao_variavel 
+lista_declaracoes_de_globais : { $$ = nullptr; }
+                             | GLOBAL DOIS_PONTOS lista_declaracao_variavel { $$ = $3; }
 
-lista_declaracao_variavel : IDENTIFIER DOIS_PONTOS IDENTIFIER DOIS_PONTOS_IGUAL expr
+lista_declaracao_variavel : IDENTIFIER DOIS_PONTOS IDENTIFIER DOIS_PONTOS_IGUAL expr { $$ = new Declaracao(driver.line, driver.col, $1, $3, $5); }
                           | lista_declaracao_variavel IDENTIFIER DOIS_PONTOS IDENTIFIER DOIS_PONTOS_IGUAL expr
 
 criacao_de_registro : tipo_registro

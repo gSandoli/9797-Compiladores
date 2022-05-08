@@ -30,6 +30,11 @@ public:
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {
+
+    if (args != nullptr) {
+      args->semanticAnalyze(semanticTableFunction);
+    }
+
     SemanticTableFunction *sf = semanticTableFunction.lookup(identifier);
     // validando se função existe
     if (sf == 0) {
@@ -42,19 +47,6 @@ public:
       printPosition();
       exit(0);
     }
-    /*
-    if (!functionTable.exists(identifier)) {
-      cerr << "[ERRO SEMÂNTICO] Função não existe: " << identifier;
-      printPosition();
-      exit(0);
-    }
-
-    // validando se função necessita de parâmetros
-    if (functionTable.getArgs(identifier) != 0 && args == nullptr) {
-      cerr << "[ERRO SEMÂNTICO] Parâmetros faltando: " << identifier;
-      printPosition();
-      exit(0);
-    }*/
     return ((Ast *)this);
   }
 
