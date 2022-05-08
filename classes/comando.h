@@ -9,6 +9,7 @@
 #include "util/print.h"
 #include <cstddef>
 #include <iostream>
+#include <llvm-13/llvm/IR/BasicBlock.h>
 #include <string>
 
 using namespace std;
@@ -239,9 +240,42 @@ public:
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
     Function *function = builder->GetInsertBlock()->getParent();
-    
+    BasicBlock *testBB = llvm::BasicBlock::Create(*context, "test", function);
+    BasicBlock *loopBB = llvm::BasicBlock::Create(*context, "loop", function);
+    BasicBlock *nextBB = llvm::BasicBlock::Create(*context, "next", function);
+    BasicBlock *afterBB = llvm::BasicBlock::Create(*context, "after", function);
 
-    return nullptr;
+    builder->CreateBr(testBB);
+    builder->SetInsertPoint(testBB);
+    
+    Value *test =
+        exp->tradutor(context, builder, module, functions, namedValues);
+
+    if (!test)
+      return nullptr;
+
+    Value *EndCond = builder->CreateICmpEQ(test, ConstantInt::get(llvm::Type::getInt64Ty(*context), llvm::APInt(64, 0)), "loopcond");
+
+    // goto after or loop
+    builder->CreateCondBr(EndCond, afterBB, loopBB);
+    builder->SetInsertPoint(loopBB);
+
+    // loop:
+    if (!list->tradutor(context, builder, module, functions, namedValues))
+      return nullptr;
+
+    // goto next:
+    builder->CreateBr(nextBB);
+
+    // next:
+    builder->SetInsertPoint(nextBB);
+
+    builder->CreateBr(testBB);
+
+    // after:
+    builder->SetInsertPoint(afterBB);
+
+    return llvm::Constant::getNullValue(llvm::Type::getInt64Ty(*context));
   }
 
   void print(FILE *out, int d) const {
