@@ -1,5 +1,5 @@
 global:
-    a : inteiro := 0
+    a : inteiro := 1
 ação:
     se a == 0 verdadeiro
         imprimei(a)

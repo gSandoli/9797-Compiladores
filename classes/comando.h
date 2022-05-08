@@ -102,26 +102,31 @@ public:
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
     cout << "entrou tradutor ComandoIF" << endl;
+    // IF
     Value *test =
         ifExp->tradutor(context, builder, module, functions, namedValues);
-    Value *then =
-        ifList->tradutor(context, builder, module, functions, namedValues);
 
-    builder->CreateICmpNE(test, ConstantInt::get(*context, APInt(64, 0)),
+    builder->CreateICmpNE(test, ConstantInt::get(*context, APInt(1, 1)),
                           "iftest");
 
     Function *function = builder->GetInsertBlock()->getParent();
-
     BasicBlock *thenBlock = BasicBlock::Create(*context, "then", function);
-
     BasicBlock *mergeBlock = BasicBlock::Create(*context, "ifcont");
+
     builder->CreateCondBr(test, thenBlock, mergeBlock);
     builder->SetInsertPoint(thenBlock);
-
     thenBlock = builder->GetInsertBlock();
 
+    // THEN
+    Value *then =
+        ifList->tradutor(context, builder, module, functions, namedValues);
+
+    builder->CreateBr(mergeBlock);
+    function->getBasicBlockList().push_back(mergeBlock);
+    builder->SetInsertPoint(mergeBlock);
+
     if (then && !then->getType()->isVoidTy()) {
-      auto PN = builder->CreatePHI(then->getType(), 2, "iftmp");
+      PHINode *PN = builder->CreatePHI(then->getType(), 2, "iftmp");
       PN->addIncoming(then, thenBlock);
       return PN;
     }

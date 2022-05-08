@@ -10,6 +10,7 @@
 #include "util/print.h"
 #include <iostream>
 #include <string>
+#include "llvm/IR/Type.h"
 
 using namespace std;
 
@@ -252,7 +253,7 @@ public:
     Value *R =
         direita->tradutor(context, builder, module, functions, namedValues);
     return builder->CreateZExt(builder->CreateICmpEQ(L, R, "cmptmp"),
-                               llvm::Type::getInt64Ty(*context), "cmptmp");
+                               llvm::Type::getInt1Ty(*context), "cmptmp");
   }
 
   void print(FILE *out, int d) const {
