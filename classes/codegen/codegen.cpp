@@ -74,7 +74,8 @@ void seedFunctions(SymbolTable<Function> &functions,
 Value *tradutor(unique_ptr<LLVMContext> &context,
                 unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                 Ast *root, string outputFileName,
-                string intermediateCodeFilename) {
+                string intermediateCodeFilename,
+                map<string, AllocaInst *> NamedValues) {
 
   // Inicialização dos targets para geração de código
   InitializeAllTargetInfos();
@@ -105,26 +106,25 @@ Value *tradutor(unique_ptr<LLVMContext> &context,
   module->setDataLayout(targetMachine->createDataLayout());
 
   // Cria o prototipo da função main, do tipo void.
-  vector<Type *> args;
   FunctionType *mainProto =
-      FunctionType::get(Type::getVoidTy(*context), args, false);
+      FunctionType::get(Type::getVoidTy(*context), false);
   Function *mainFunction = Function::Create(
       mainProto, GlobalValue::ExternalLinkage, "main", module.get());
   
   // Cria o bloco básico da função principal
   BasicBlock *block = BasicBlock::Create(*context, "entry", mainFunction);
-  SymbolTable<Function> functions;
-
-  // Cria as chamdas de funções da bilbioteca padrão
-  seedFunctions(functions, context, module);
 
   // Seta o entry point da main  
   builder->SetInsertPoint(block);  
   IRBuilder<> TmpB(&mainFunction->getEntryBlock(),
                    mainFunction->getEntryBlock().begin());
 
+  // Cria as chamdas de funções da bilbioteca padrão
+  SymbolTable<Function> functions;
+  seedFunctions(functions, context, module);
+
   // Chama os métodos tradutor de toda a árvore
-  root->tradutor(context, builder, module, functions);
+  root->tradutor(context, builder, module, functions, NamedValues);
 
   // Cria o retorno da função main
   builder->CreateRetVoid();

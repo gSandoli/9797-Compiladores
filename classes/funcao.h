@@ -51,8 +51,10 @@ public:
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) const {
+                unique_ptr<IRBuilder<>> &builder,
+                unique_ptr<Module> &module,
+                SymbolTable<Function> &functions,
+                map<string, AllocaInst *> NamedValues) const {
     Function *fn = functions.lookup(identifier);
     if (!fn) {
       cerr << "[ERRO DE GERAÇÃO DE CÓDIGO] Função não existe: " << identifier;
@@ -62,7 +64,7 @@ public:
 
     if (args != nullptr) {
       vector<Value *> ArgsV;
-      ArgsV.push_back(args->tradutor(context, builder, module, functions));
+      ArgsV.push_back(args->tradutor(context, builder, module, functions, NamedValues));
       return builder->CreateCall(fn, ArgsV);
     }
 

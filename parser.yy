@@ -201,7 +201,7 @@ declaracao_de_locais:
 
 /* expressoes */
 expr : expr_log { $$ = $1; }
-     | ABR_CHV criacao_de_registro FCH_CHV
+     | ABR_CHV criacao_de_registro FCH_CHV 
 
 expr_log : expr_log OU expr_rel
          | expr_log E expr_rel
@@ -251,11 +251,11 @@ lista_comandos: { $$ = nullptr; }
 comando: IDENTIFIER DOIS_PONTOS_IGUAL expr 
        | chamada_funcao { $$ = $1; }
        | SE expr VERDADEIRO lista_comandos FSE 
-       | SE expr VERDADEIRO lista_comandos FALSO lista_comandos FSE 
-       | PARA IDENTIFIER DE expr LIMITE expr FACA lista_comandos FPARA 
+       | SE expr VERDADEIRO lista_comandos FALSO lista_comandos FSE  
+       | PARA IDENTIFIER DE expr LIMITE expr FACA lista_comandos FPARA  
        | ENQUANTO expr FACA lista_comandos FENQUANTO 
-       | PARE  
-       | CONTINUE  
+       | PARE 
+       | CONTINUE 
        | RETORNE expr 
 %%
 

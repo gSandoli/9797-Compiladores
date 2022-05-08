@@ -1,4 +1,5 @@
 #include <iostream>
+#include <llvm-13/llvm/IR/Instructions.h>
 #include <llvm/IR/Module.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -92,14 +93,15 @@ int main(int argc, char **argv) {
   }
   fclose(treeOutput);
 
+
+  // Codegen
   static unique_ptr<LLVMContext> context = make_unique<LLVMContext>();
   static unique_ptr<Module> module = make_unique<Module>("main", *context);
   static unique_ptr<IRBuilder<>> builder = make_unique<IRBuilder<>>(*context);
-  static map<string, Value *> NamedValues;
+  static map<string, AllocaInst *> NamedValues;
 
-  // Geração de código intermediário
   Value *codegen =
-      tradutor(context, builder, module, driver.root, llvmFile, fonte);
+      tradutor(context, builder, module, driver.root, llvmFile, fonte, NamedValues);
 
   if (assemblyCode) {
     // default: llc-13 output/fonte.ll -o output/fonte.s

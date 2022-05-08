@@ -8,6 +8,7 @@
 #include "util/symboltable.h"
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <type_traits>
 
@@ -36,8 +37,33 @@ public:
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) const {
-    return exp->tradutor(context, builder, module, functions);
+                  SymbolTable<Function> &functions,
+                  map<string, AllocaInst *> NamedValues) const {
+    cout << "entrou tradutor declaracao\n";
+    Function *TheFunction = builder->GetInsertBlock()->getParent();
+    cout << "funcao retornada: " << TheFunction->getName().str() << endl;
+
+    AllocaInst *Alloca;
+    if (type == "inteiro") {
+      Alloca = CreateEntryBlockAlloca(TheFunction, identifier, context,
+                                      Type::getInt64Ty(*context));
+      builder->CreateLoad(Type::getInt64Ty(*context), Alloca,
+                          identifier.c_str());
+    } else {
+      Alloca = CreateEntryBlockAlloca(TheFunction, identifier, context,
+                                      Type::getDoubleTy(*context));
+      builder->CreateLoad(Type::getDoubleTy(*context), Alloca,
+                          identifier.c_str());
+    }
+
+    NamedValues[identifier] = Alloca;
+
+    Value *auxValor =
+        exp->tradutor(context, builder, module, functions, NamedValues);
+
+    Value *v = builder->CreateStore(auxValor, Alloca);
+    cout << "criou store\n";
+    return v;
   }
 
   void print(FILE *out, int d) const {
@@ -47,6 +73,17 @@ public:
     exp->print(out, d + 1);
     indent(out, d);
     fprintf(out, ")\n");
+  }
+
+  /// CreateEntryBlockAlloca - Create an alloca instruction in the entry block
+  /// of the function.  This is used for mutable variables etc.
+  static AllocaInst *CreateEntryBlockAlloca(Function *TheFunction,
+                                            StringRef VarName,
+                                            unique_ptr<LLVMContext> &context,
+                                            Type *tipo) {
+    IRBuilder<> TmpB(&TheFunction->getEntryBlock(),
+                     TheFunction->getEntryBlock().begin());
+    return TmpB.CreateAlloca(tipo, nullptr, VarName);
   }
 };
 } // namespace A

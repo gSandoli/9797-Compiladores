@@ -39,8 +39,10 @@ public:
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) const {
+                unique_ptr<IRBuilder<>> &builder,
+                unique_ptr<Module> &module,
+                SymbolTable<Function> &functions,
+                map<string, AllocaInst *> NamedValues) const {
     return ConstantInt::get(*context, APInt(64, value));
   }
 
@@ -62,8 +64,10 @@ public:
   }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) const {
+                unique_ptr<IRBuilder<>> &builder,
+                unique_ptr<Module> &module,
+                SymbolTable<Function> &functions,
+                map<string, AllocaInst *> NamedValues) const {
     return ConstantFP::get(*context, APFloat(value));
   }
 
@@ -86,8 +90,10 @@ public:
 
   // TOODO: achar a "classe" do llvm que referencia string
   Value *tradutor(unique_ptr<LLVMContext> &context,
-                  unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
-                  SymbolTable<Function> &functions) const {
+                unique_ptr<IRBuilder<>> &builder,
+                unique_ptr<Module> &module,
+                SymbolTable<Function> &functions,
+                map<string, AllocaInst *> NamedValues) const {
     return builder->CreateGlobalStringPtr(value, "str" + value.substr(0, 2));
   }
 

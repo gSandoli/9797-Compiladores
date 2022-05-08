@@ -32,7 +32,8 @@ public:
   virtual Value *tradutor(unique_ptr<LLVMContext> &context,
                           unique_ptr<IRBuilder<>> &builder,
                           unique_ptr<Module> &module,
-                          SymbolTable<Function> &functions) const = 0;
+                          SymbolTable<Function> &functions,
+                          map<string, AllocaInst *> NamedValues) const = 0;
 
   virtual void print(FILE *out, int d) const = 0;
 };

@@ -1,5 +1,5 @@
 global:
-    var : inteiro := 10
+    doli : inteiro := 10
 ação:
-    imprimei(1)
-  
+    imprimei(1);
+    imprimei(doli)

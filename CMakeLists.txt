@@ -34,7 +34,6 @@ execute_process(COMMAND llvm-config-13 --ldflags OUTPUT_VARIABLE LDF)
 string(STRIP ${LIBS} LIBS)
 string(STRIP ${SYS_LIBS} SYS_LIBS)
 string(STRIP ${LDF} LDF)
-set(LLVM_ENABLE_PIC OFF)
 
 link_libraries(${LIBS} ${SYS_LIBS} ${LDF})
 
