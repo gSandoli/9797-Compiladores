@@ -22,7 +22,7 @@
   #include "../classes/fator.h"
   #include "../classes/expressao.h"
   #include "../classes/funcao.h"
-  #include "../classes/comando.h"
+  #include "../classes/lista_comando.h"
   #include "../classes/declaracao.h"
   #include "../classes/programa.h"
   #include "../classes/local_armazenamento.h"

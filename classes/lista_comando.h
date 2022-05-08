@@ -1,7 +1,7 @@
 // arquivo header das classes e métodos utilizados para construir a AST do
 // compilador
-#ifndef COMANDO_H // include guard
-#define COMANDO_H
+#ifndef LISTA_COMANDO_H // include guard
+#define LISTA_COMANDO_H
 
 #include "ast.h"
 #include "util/print.h"
@@ -46,4 +46,4 @@ public:
   }
 };
 } // namespace A
-#endif /* COMANDO_H */
+#endif /* LISTA_COMANDO_H */
