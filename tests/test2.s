@@ -1,6 +1,16 @@
 global:
-    a : inteiro := 1
+    a : inteiro := 0
 ação:
     se a == 0 verdadeiro
-        imprimei(a)
-    fse
+        imprimei(9000)
+    fse;
+
+    imprimei(a==0);
+    imprimei(a>=0);
+    imprimei(a<=0);
+    a := 10;
+    imprimei(a!=0);
+    imprimei(a>0);
+    imprimei(a<2);
+    imprimei(a&1);
+    imprimei(a|0)

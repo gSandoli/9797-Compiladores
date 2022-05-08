@@ -106,8 +106,8 @@ public:
     Value *test =
         ifExp->tradutor(context, builder, module, functions, namedValues);
 
-    builder->CreateICmpNE(test, ConstantInt::get(*context, APInt(1, 1)),
-                          "iftest");
+    test = builder->CreateIntCast(test, llvm::Type::getInt1Ty(*context), 0, "ifcast");
+    builder->CreateICmpNE(test, ConstantInt::get(*context, APInt(1, 1)), "iftest");
 
     Function *function = builder->GetInsertBlock()->getParent();
     BasicBlock *thenBlock = BasicBlock::Create(*context, "then", function);
