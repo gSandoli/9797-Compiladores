@@ -37,6 +37,7 @@ public:
     AllocaInst *A = namedValues[identifier];
     if (!A) {
       cerr << "Variável não declarada: " << identifier;
+      printPosition();
       exit(0);
     }
 

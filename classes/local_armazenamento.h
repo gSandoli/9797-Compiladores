@@ -40,8 +40,9 @@ public:
                   map<string, AllocaInst *> &namedValues) const {
     // Look this variable up in the function.
     AllocaInst *A = namedValues[identifier];
-    if (!A){
+    if (!A) {
       cerr << "Variável não declarada: " << identifier;
+      printPosition();
       exit(0);
     }
 

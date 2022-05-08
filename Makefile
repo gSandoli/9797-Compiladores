@@ -1,5 +1,5 @@
 # Makefile
-.PHONY: all build test container cp
+.PHONY: all build test container container-run cp
 
 all: build test
 
@@ -14,7 +14,9 @@ build:
 	make ; \
 
 test:
-	@./sc tests/test.s ; \
+	@./sc -i -s -o impar tests/impar.s ; \
+	./sc -i -s -o par tests/par.s ; \
+	./sc -i -s -o pow tests/pow.s ; \
 
 container: 
 	@docker build -t environment-compiler-9797 . ; \

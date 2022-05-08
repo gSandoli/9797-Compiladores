@@ -166,7 +166,6 @@ public:
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
-    cout << "entrou tradutor ComandoSeVerdadeiroFalso" << endl;
     // IF
     Value *test =
         ifExp->tradutor(context, builder, module, functions, namedValues);

@@ -8,9 +8,9 @@
 #include "fator.h"
 #include "literal.h"
 #include "util/print.h"
+#include "llvm/IR/Type.h"
 #include <iostream>
 #include <string>
-#include "llvm/IR/Type.h"
 
 using namespace std;
 
@@ -73,7 +73,6 @@ public:
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {
-    cout << "Análise semântica do nó expressão aritmética (divisão) " << endl;
     return ((Ast *)this);
   }
 
@@ -119,8 +118,6 @@ public:
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {
-    cout << "Análise semântica do nó expressão aritmética (multiplicação) "
-         << endl;
     return ((Ast *)this);
   }
 
@@ -160,7 +157,6 @@ public:
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {
-    cout << "Análise semântica do nó expressão aritmética (soma) " << endl;
     return ((Ast *)this);
   }
 
@@ -200,7 +196,6 @@ public:
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {
-    cout << "Análise semântica do nó expressão aritmética (subtração) " << endl;
     return ((Ast *)this);
   }
 
@@ -240,7 +235,6 @@ public:
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {
-    cout << "Análise semântica do nó expressão relacional (igual) " << endl;
     return ((Ast *)this);
   }
 
@@ -275,7 +269,6 @@ public:
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {
-    cout << "Análise semântica do nó expressão relacional (diferente) " << endl;
     return ((Ast *)this);
   }
 
@@ -311,7 +304,6 @@ public:
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {
-    cout << "Análise semântica do nó expressão relacional (maior) " << endl;
     return ((Ast *)this);
   }
 
@@ -347,7 +339,6 @@ public:
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {
-    cout << "Análise semântica do nó expressão relacional (menor) " << endl;
     return ((Ast *)this);
   }
 
@@ -384,8 +375,6 @@ public:
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {
-    cout << "Análise semântica do nó expressão relacional (maior igual) "
-         << endl;
     return ((Ast *)this);
   }
 
@@ -422,8 +411,6 @@ public:
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {
-    cout << "Análise semântica do nó expressão relacional (menor igual) "
-         << endl;
     return ((Ast *)this);
   }
 
@@ -459,7 +446,6 @@ public:
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {
-    cout << "Análise semântica do nó expressão lógica (e) " << endl;
     return ((Ast *)this);
   }
 
@@ -494,7 +480,6 @@ public:
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {
-    cout << "Análise semântica do nó expressão lógica (ou) " << endl;
     return ((Ast *)this);
   }
 

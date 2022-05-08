@@ -1,25 +1,17 @@
 #include <iostream>
-#include <llvm/IR/Instructions.h>
-#include <llvm/IR/Module.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
 #include <unistd.h>
 
-#include "classes/ast.h"
-#include "classes/chamada_funcao.h"
-#include "classes/fator.h"
-#include "classes/literal.h"
 #include "driver.hh"
 
-#include "classes/util/function_table.h"
 #include <iostream>
 
 #include "classes/codegen/codegen.cpp"
 #include <map>
 
 using namespace std;
-using namespace T;
 using namespace llvm;
 
 int main(int argc, char **argv) {
@@ -83,7 +75,7 @@ int main(int argc, char **argv) {
 
   Simples::Driver driver;
   driver.parse_file(filename);
-  // driver.root->semanticAnalyze(driver.semanticTableFunctions);
+  driver.root->semanticAnalyze(driver.semanticTableFunctions);
 
   system("mkdir -p output");
   FILE *treeOutput = fopen(tree.c_str(), "w");
