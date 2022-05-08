@@ -8,7 +8,7 @@
 #include "util/print.h"
 #include <cstddef>
 #include <iostream>
-#include <llvm-13/llvm/IR/Constants.h>
+#include <llvm/IR/Constants.h>
 #include <string>
 
 using namespace std;
@@ -37,12 +37,12 @@ public:
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
-                  map<string, AllocaInst *> NamedValues) const {
+                  map<string, AllocaInst *> &namedValues) const {
     // Look this variable up in the function.
-    AllocaInst *A = NamedValues[identifier];
+    AllocaInst *A = namedValues[identifier];
     if (!A)
       cerr << "Variável não declarada: " << identifier;
-      exit(0);
+    exit(0);
 
     // Load the value.
     return builder->CreateLoad(A->getAllocatedType(), A, identifier);

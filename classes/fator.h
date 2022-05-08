@@ -8,7 +8,7 @@
 #include "util/print.h"
 #include <cstddef>
 #include <iostream>
-#include <llvm-13/llvm/IR/Constants.h>
+#include <llvm/IR/Constants.h>
 #include <string>
 
 using namespace std;
@@ -26,8 +26,7 @@ class FatorLiteral : public Fator {
 public:
   Ast *literal;
   FatorLiteral(int line, int col, Ast *literal)
-      : Fator(line, col, LITERAL), literal(literal) {
-  }
+      : Fator(line, col, LITERAL), literal(literal) {}
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {

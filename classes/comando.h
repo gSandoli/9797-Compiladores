@@ -4,6 +4,7 @@
 #define COMANDO_H
 
 #include "ast.h"
+#include "atribuicao.h"
 #include "literal.h"
 #include "util/print.h"
 #include <cstddef>
@@ -15,26 +16,18 @@ using namespace std;
 namespace A {
 class Comando : public Ast {
 public:
-  enum Type {
-    ATRIBUICAO,
-    CHAMADA_FUNCAO,
-    IF,
-    IF_THEN_ELSE,
-    FOR,
-    WHILE,
-    PARE,
-    CONTINUE,
-    RETORNO
-  };
+  enum Type { ATRIBUICAO, FUNCAO };
   Type type;
 
   Comando(int line, int col, Type type) : Ast(line, col), type(type) {}
 };
 
 class ComandoAtribuicao : public Comando {
+public:
   Ast *atribuicao;
-  ComandoAtribuicao(int line, int col, Ast *atribuicao)
-      : Comando(line, col, ATRIBUICAO), atribuicao(atribuicao){};
+  ComandoAtribuicao(int line, int col, string *identifier, Ast *exp)
+      : Comando(line, col, ATRIBUICAO),
+        atribuicao(new Atribuicao(line, col, identifier, exp)){};
 
   Ast *semanticAnalyze(
       SymbolTable<SemanticTableFunction> semanticTableFunction) const {
@@ -61,9 +54,16 @@ class ComandoAtribuicao : public Comando {
 };
 
 class ComandoChamadaFuncao : public Comando {
+public:
   Ast *chamadaFuncao;
   ComandoChamadaFuncao(int line, int col, Ast *chamadaFuncao)
-      : Comando(line, col, CHAMADA_FUNCAO), chamadaFuncao(chamadaFuncao) {};
+      : Comando(line, col, FUNCAO), chamadaFuncao(chamadaFuncao){};
+
+  Ast *semanticAnalyze(
+      SymbolTable<SemanticTableFunction> semanticTableFunction) const {
+    chamadaFuncao->semanticAnalyze(semanticTableFunction);
+    return ((Ast *)this);
+  }
 
   Value *tradutor(unique_ptr<LLVMContext> &context,
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,

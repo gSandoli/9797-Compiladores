@@ -18,17 +18,17 @@
   #include "location.hh"
   #include "position.hh"
   #include "../classes/ast.h"
-  #include "../classes/literal.h"
-  #include "../classes/fator.h"
-  #include "../classes/expressao.h"
+  #include "../classes/atribuicao.h"
   #include "../classes/chamada_funcao.h"
   #include "../classes/comando.h"
-  #include "../classes/atribuicao.h"
-  #include "../classes/lista_comando.h"
   #include "../classes/declaracao.h"
-  #include "../classes/programa.h"
-  #include "../classes/local_armazenamento.h"
+  #include "../classes/expressao.h"
+  #include "../classes/fator.h"
+  #include "../classes/lista_comando.h"
   #include "../classes/lista_declaracao.h"
+  #include "../classes/literal.h"
+  #include "../classes/local_armazenamento.h"
+  #include "../classes/programa.h"
 
   using namespace A;
   using namespace std;
@@ -251,8 +251,8 @@ lista_comandos: { $$ = nullptr; }
               | comando { $$ = $1; }
               | comando PONTO_VIRUGLA lista_comandos { $$ = new ListaComando(driver.line, driver.col, $1, $3); }
 
-comando: IDENTIFIER DOIS_PONTOS_IGUAL expr { new Atribuicao($1, $3); }
-       | chamada_funcao { $$ = $1; }
+comando: IDENTIFIER DOIS_PONTOS_IGUAL expr { $$ = new ComandoAtribuicao(driver.line, driver.col, $1, $3); }
+       | chamada_funcao { $$ = new ComandoChamadaFuncao(driver.line, driver.col, $1); }
        | SE expr VERDADEIRO lista_comandos FSE 
        | SE expr VERDADEIRO lista_comandos FALSO lista_comandos FSE  
        | PARA IDENTIFIER DE expr LIMITE expr FACA lista_comandos FPARA  

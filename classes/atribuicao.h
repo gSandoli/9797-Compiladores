@@ -3,9 +3,14 @@
 #ifndef ATRIBUICAO_H // include guard
 #define ATRIBUICAO_H
 
-#include "classes/ast.h"
-#include "classes/util/print.h"
+#include "ast.h"
+#include "literal.h"
+#include "util/print.h"
+#include <cstddef>
+#include <iostream>
+#include <llvm/IR/Constants.h>
 #include <string>
+
 using namespace std;
 using namespace llvm;
 
@@ -30,11 +35,11 @@ public:
     Value *v = exp->tradutor(context, builder, module, functions, namedValues);
 
     AllocaInst *A = namedValues[identifier];
-    if (!A){
+    if (!A) {
       cerr << "Variável não declarada: " << identifier;
       exit(0);
     }
-    
+
     return builder->CreateStore(v, A);
   }
 
