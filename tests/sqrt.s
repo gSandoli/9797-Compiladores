@@ -5,25 +5,25 @@
 
 global:
     /* Declaração de variáveis */
-    n : real := 0.0
-    i : real := 0.0
-    r : real := 1.0
+    n : inteiro := 0
+    i : inteiro := 0
+    r : inteiro := 1
 ação:
-    n := lr();
+    n := li();
     /* Caso base */
-    se (n==0.0)|(n==1.0) verdadeiro
-        imprimer(n);
+    se (n==0)|(n==1) verdadeiro
+        imprimei(n);
         termine(0)
     fse;
 
     /* Loop */
     enquanto r <= n faça
-        i := i + 1.0;
-        r := i * 1.0
+        i := i + 1;
+        r := i * i
     fenquanto;
 
     /* Resultado */
-    imprimer(i-1.0);
+    imprimei(i-1);
     
     /* Finalizando programa */
     termine(0)
