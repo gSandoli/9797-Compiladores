@@ -1,32 +1,29 @@
 /* 
-    ## Potenciação ## 
-    b^e = r
+    ## Raiz quadrada ## 
+    √x = r
 */
 
 global:
-    x : inteiro := 1
-    start : inteiro := 1
-    end : inteiro := 1
-    mid : inteiro := 0
+    /* Declaração de variáveis */
+    n : real := 0.0
+    i : real := 0.0
+    r : real := 1.0
 ação:
-    /* caso base */
-    se (x==0)|(x==1) verdadeiro
-        imprimei(x);
+    n := lr();
+    /* Caso base */
+    se (n==0.0)|(n==1.0) verdadeiro
+        imprimer(n);
         termine(0)
     fse;
 
-    enquanto start + 1 < end faça
-        mid := start+(end-start)/2;
-
-        se (mid==(x/mid)) verdadeiro
-            imprimei(mid);
-            termine(0)
-        fse;
-
-        se (mid>(x/mid)) verdadeiro
-            end := mid
-        falso
-            start := mid
-        fse
+    /* Loop */
+    enquanto r <= n faça
+        i := i + 1.0;
+        r := i * 1.0
     fenquanto;
-    imprimei(start)
+
+    /* Resultado */
+    imprimer(i-1.0);
+    
+    /* Finalizando programa */
+    termine(0)

@@ -37,7 +37,9 @@ public:
                   unique_ptr<IRBuilder<>> &builder, unique_ptr<Module> &module,
                   SymbolTable<Function> &functions,
                   map<string, AllocaInst *> &namedValues) const {
-    declaracoes->tradutor(context, builder, module, functions, namedValues);
+    if (declaracoes) {
+      declaracoes->tradutor(context, builder, module, functions, namedValues);
+    }
     return acoes->tradutor(context, builder, module, functions, namedValues);
   }
 
@@ -45,10 +47,11 @@ public:
     indent(out, d);
     fprintf(out, "Programa(\n");
     indent(out, d);
-    declaracoes->print(out, d + 1);
-    virgula(out, d);
+    if (declaracoes) {
+      declaracoes->print(out, d + 1);
+      virgula(out, d);
+    }
     acoes->print(out, d + 1);
-    indent(out, d);
     fprintf(out, ")\n");
   }
 };

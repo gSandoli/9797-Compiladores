@@ -144,12 +144,15 @@
 
 %%
 
-program: declaracoes ACAO DOIS_PONTOS lista_comandos { driver.root = new Programa(driver.line, driver.col, $1, $4); }
+program : declaracoes ACAO DOIS_PONTOS lista_comandos { 
+  if ($1) driver.root = new Programa(driver.line, driver.col, $1, $4); 
+  else driver.root = new Programa(driver.line, driver.col, nullptr, $4); 
+}
 
 declaracoes : lista_declaracao_de_tipos lista_declaracoes_de_globais lista_declaracoes_de_funcoes { $$ = $2; }
 
 /* declaracao de tipos */
-lista_declaracao_de_tipos : 
+lista_declaracao_de_tipos : { $$ = nullptr; }
                           | TIPO DOIS_PONTOS lista_declaracao_tipo 
 
 lista_declaracao_tipo : declaracao_tipo
@@ -183,7 +186,7 @@ tipo_registro : IDENTIFIER IGUAL literal
 
 /* declaracao de funcoes */
 
-lista_declaracoes_de_funcoes: 
+lista_declaracoes_de_funcoes: { $$ = nullptr; }
                             | FUNCAO DOIS_PONTOS lista_declaracao_funcao 
 
 lista_declaracao_funcao: 

@@ -4,7 +4,7 @@
 #define EXPRESSAO_H
 
 #include "ast.h"
-#include "classes/chamada_funcao.h"
+#include "chamada_funcao.h"
 #include "fator.h"
 #include "literal.h"
 #include "util/print.h"

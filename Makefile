@@ -17,6 +17,8 @@ test:
 	@./sc -i -s -o impar tests/impar.s ; \
 	./sc -i -s -o par tests/par.s ; \
 	./sc -i -s -o pow tests/pow.s ; \
+	./sc -i -s -o sqrt tests/sqrt.s ; \
+	./sc -i -s -o fibonacci tests/fibonacci.s ; \
 
 container: 
 	@docker build -t environment-compiler-9797 . ; \
