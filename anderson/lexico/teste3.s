@@ -1,0 +1,2 @@
+ação:
+    imprimei(1)

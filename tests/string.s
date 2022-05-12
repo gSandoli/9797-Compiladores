@@ -1,2 +1,0 @@
-ação:
-    imprimec("gabriel")
