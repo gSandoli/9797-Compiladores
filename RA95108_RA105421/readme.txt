@@ -28,6 +28,7 @@ As principais funcionalidades NÃO implementadas são:
 * O erro é: /usr/bin/ld: output/llvm.out: relocalização R_X86_64_32 contra ".rodata.str1.1" não pode ser usada ao fazer um objecto PIE; recompile with -fPIE
 * A flag "-fPIE" foi adicionada no comando de compilação, entretanto o erro persistiu.
 * Sendo assim, as implementações não consideraram o tipo cadeia.
+* Outro ponto importante é que acabamos confundindo o nome da função "imprime" e colocamos "imprimec".
 
 ############################ Código Intermediário, Assembly e Executável ############################
 Os testes utilizados nessas 3 fases são:
@@ -36,3 +37,8 @@ Os testes utilizados nessas 3 fases são:
     - teste3.s = imprime os pares de 0 ao valor digitado.
     - teste4.s = imprime a potência do valor digitado.
     - teste5.s = imprime a raíz quadrada do valor digitado.
+    - teste6.s = cria uma variável do tipo inteiro e imprime seu valor.
+    - teste7.s = exemplo do loop enquanto no qual imprime o valor de 0 a 9.
+    - teste8.s = exemplo do comando "se verdadeiro".
+    - teste9.s = exemplo do comando "se verdadeiro falso" com operador lógico "&".
+    - teste10.s = exemplo do comando "se verdadeiro falso" com operador lógico "|".
